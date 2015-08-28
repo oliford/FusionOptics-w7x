@@ -18,11 +18,12 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class LightAssessmentAET21 {
 	
-	// For drawing
+	// For fast drawing/debugging
 	/*public final static int nPoints = 5;
 	public final static double R0 = 5.5;
 	public final static double R1 = 6.0;
 	public final static int nAttempts = 1000;
+	public final static int beamSelect = 4; //4 = Q5 = lower, nearer the other beams (away from AET21 observation port)
 	//*/
 	
 	// For calc
@@ -30,10 +31,8 @@ public class LightAssessmentAET21 {
 	public final static double R0 = 5.3;
 	public final static double R1 = 6.2;
 	public final static int nAttempts = 5000;
-		
-	
 	public final static int beamSelect = -1;
-	
+	//*/
 
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/aet21";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -53,7 +52,7 @@ public class LightAssessmentAET21 {
 		BinaryMatrixWriter lightInfoOut = new BinaryMatrixWriter(outPath + "/sourceSolidAng.bin", 4); 
 		
 		for(int beamIdx=4; beamIdx < 8; beamIdx++){
-			if(beamSelect > 0 && beamSelect != beamIdx)
+			if(beamSelect >= 0 && beamSelect != beamIdx)
 				continue;
 			
 			for(int iP=0; iP < nPoints; iP++){

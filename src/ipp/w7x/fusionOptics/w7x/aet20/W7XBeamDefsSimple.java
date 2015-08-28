@@ -11,11 +11,25 @@ import fusionOptics.types.Optic;
  * */
 public abstract class W7XBeamDefsSimple {
 	
+	/* upper/lower = real hall Z
+	 * near/away = near/away from the other beam box, or AEA21
+	 * 
+	 * Q0 is upper, away 
+	 * Q1 is upper, nearer
+	 * Q2 is lower, nearer
+	 * Q3 is lower, away
+	 *   
+	 * Q5 is lower, nearer
+	 * Q6 is lower, away
+	 * Q7 is upper, away
+	 * Q8 is upper, nearer
+	 */
+	
 	public static final double nbiStart[][] = {
 		{3.480123, 5.144472, -0.305}, 
 		{3.415672, 5.175421, -0.305}, 
 		{3.415672, 5.175421, -0.305}, 
-		{3.480123, 5.144472, -0.305}, 
+		{3.480123, 5.144472, -0.305},
 		{0.2787, 6.194685, 0.305}, 
 		{0.208366, 6.20753, 0.305}, 
 		{0.208366, 6.20753, 0.305}, 
