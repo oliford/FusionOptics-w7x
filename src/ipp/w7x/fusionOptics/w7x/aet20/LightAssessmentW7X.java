@@ -16,7 +16,12 @@ import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
 
 /** Basic pictures for BeamEmissSpecAET21 model */
-public class LightAssessmentAET21 {
+public class LightAssessmentW7X {
+	
+	//public static BeamEmissSpecAET21 sys = new BeamEmissSpecAET21();
+	//public static Surface mustHitToDraw = sys.entryWindowFront;
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static Surface mustHitToDraw = sys.mirror;
 	
 	// For fast drawing/debugging
 	/*public final static int nPoints = 5;
@@ -34,15 +39,13 @@ public class LightAssessmentAET21 {
 	public final static int beamSelect = -1;
 	//*/
 
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/aet21";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getName();
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
 	public static void main(String[] args) {
-		BeamEmissSpecAET21 sys = new BeamEmissSpecAET21();
-		Surface mustHitToDraw = sys.entryWindowFront;
 				
-		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/aet21.vrml", 1.005);
+		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/imaging.vrml", 1.005);
 		vrmlOut.setRotationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
 		vrmlOut.setSkipRays(nAttempts*nPoints / 500);
@@ -65,7 +68,7 @@ public class LightAssessmentAET21 {
 				for(int i=0; i < nAttempts; i++){
 					RaySegment ray = new RaySegment();
 					ray.startPos = startPos;
-					ray.dir = Tracer.generateRandomRayTowardSurface(startPos, sys.entryWindowFront);
+					ray.dir = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget);
 					ray.wavelength = sys.designWavelenth;
 					ray.E0 = new double[][]{{1,0,0,0}};
 					ray.up = Util.createPerp(ray.dir);
@@ -81,7 +84,7 @@ public class LightAssessmentAET21 {
 					}
 				}
 				
-				double dir[] = Tracer.generateRandomRayTowardSurface(startPos, sys.entryWindowFront, true);
+				double dir[] = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget, true);
 				double targetSolidAngle = Util.length(dir);
 				
 				double solidAngleFP = intensityInfo.getSourceSolidAng(sys.fibrePlane, targetSolidAngle, nAttempts); 
@@ -90,7 +93,7 @@ public class LightAssessmentAET21 {
 				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
 				System.out.println("Q" + (beamIdx+1) + "\tiP=" + iP + "(R=" + R + "):\t " + nHit + " of " + nAttempts + " attempts hit " + mustHitToDraw.getName() + " and have been drawn");
 				//intensityInfo.dump();
-				System.out.println("SR = " + solidAngleFP);
+				System.out.println("SR = " + solidAngleFP*1e6 + " µSR");
 				intensityInfo.reset();
 				
 				

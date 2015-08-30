@@ -1,5 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.aet20;
 
+import oneLiners.OneLiners;
 import algorithmrepository.Algorithms;
 import jafama.FastMath;
 import fusionOptics.Util;
@@ -15,6 +16,7 @@ import fusionOptics.surfaces.Cylinder;
 import fusionOptics.surfaces.Disc;
 import fusionOptics.surfaces.Iris;
 import fusionOptics.surfaces.Square;
+import fusionOptics.types.Element;
 import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
 
@@ -22,8 +24,6 @@ import fusionOptics.types.Optic;
 public class BeamEmissSpecAET21 extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 600e-9;
-	
-	
 	
 	/**** Shutter ****/
 	public double shutterPivotCentre[] = { -0.910603, 6.2042, -0.134334 };
@@ -150,8 +150,10 @@ public class BeamEmissSpecAET21 extends Optic {
 	/*** Fibre plane 2 ****/
 	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, inPortOpticalAxis, portUp, 0.070, 0.070, Absorber.ideal());
 	
+	public Element tracingTarget = entryWindowFront;
+	
 	public BeamEmissSpecAET21() {
-		super("beamSpec-aet20");
+		super("beamSpec-aet21");
 		
 		//make the window a prism
 		entryWindowFront.rotate(entryWindowFront.getCentre(), Algorithms.rotationMatrix(observationUp, -5 * Math.PI / 180));
@@ -170,7 +172,7 @@ public class BeamEmissSpecAET21 extends Optic {
 		double lensFibreDist = Util.length(Util.minus(lens.getBackSurface().getCentre(), fibrePlane.getCentre()));
 		System.out.println("Lens - Fibres distance = " + lensFibreDist*1000 + " / mm");
 		System.out.println("Max f/" + (lensFibreDist/lens.getRadius()/2) + " ");
-		
+		System.out.print("Window centre posXYZ = "); OneLiners.dumpArray(entryWindowFront.getCentre());
 		
 	}
 	
