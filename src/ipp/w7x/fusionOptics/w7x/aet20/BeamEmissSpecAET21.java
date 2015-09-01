@@ -58,8 +58,8 @@ public class BeamEmissSpecAET21 extends Optic {
 	public double entryWindowIrisDiameter = 0.060;
 	public double entryWindowDiameter = 0.050;
 	public double entryWindowAngularPosition = 116 * Math.PI / 180;
-	public double entryWindowMoveIn = 0.0150;
-	public double entryWindowThickness = 0.015;
+	public double entryWindowMoveIn = 0.010;
+	public double entryWindowThickness = 0.003;
 	public double entryWindowCyldLength = 0.025;
 	public double entryWindowIrisPos[] = Util.plus(shutterPivotCentre, 
 										Util.plus( Util.plus( Util.mul(shutterUp, entryWindowRadiusOnShutter * FastMath.cos(entryWindowAngularPosition)),
@@ -79,8 +79,9 @@ public class BeamEmissSpecAET21 extends Optic {
 	public Cylinder entryWindowCyld = new Cylinder("entryWindowCyld", entryWindowPos, shutterNormal, entryWindowDiameter/2, entryWindowCyldLength, Absorber.ideal());
 	
 	
+	
 	/***** Observation target ****/
-	public int targetBeamIdx = 4;
+	public int targetBeamIdx = 7; //Q8
 	public double targetBeamR = 5.8;
 	public double targetObsPos[] = W7XBeamDefsSimple.getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	
@@ -90,13 +91,24 @@ public class BeamEmissSpecAET21 extends Optic {
 	public double asideVector[] = Util.reNorm(Util.cross(observationUp, shutterNormal));
 	
 	/*** Fibre plane 1 ****/
-	public double fibrePlaneBackFromWindow = 0.260;
-	public double fibrePlanePortRight = -0.020;	
+	public double fibrePlaneBackFromWindow = 0.250;
+	public double fibrePlanePortRight = -0.030;	
 	public double fibrePlanePortUp = 0.010;	
 	public double fibrePlanePos[] = Util.plus(entryWindowPos, Util.plus(Util.mul(portNormal, fibrePlaneBackFromWindow),
 																		Util.plus(Util.mul(portRight, fibrePlanePortRight),
 																				  Util.mul(portUp, fibrePlanePortUp))));
 	
+	
+	/***** Prism on back of window ****/
+	public double backPrismAngle = 8 * Math.PI / 180;
+	public double backPrismBackNormal[] = Algorithms.rotateVector(Algorithms.rotationMatrix(observationUp, backPrismAngle), shutterNormal);
+	public double backPrismFrontPos[] = Util.plus(entryWindowBackPos, Util.mul(shutterNormal, 0.001));
+	public double backPrismBackPos[] = Util.plus(entryWindowBackPos, Util.mul(shutterNormal, 0.020));
+	public double backPrismIrisPos[] = Util.plus(entryWindowBackPos, Util.mul(shutterNormal, 0.010));
+	
+	public Disc backPrismFront = new Disc("backPrismFront", backPrismFrontPos, shutterNormal, entryWindowDiameter/2, entryWindowMedium, null, IsoIsoInterface.ideal());
+	public Disc backPrismBack = new Disc("backPrismBack", backPrismBackPos, backPrismBackNormal, entryWindowDiameter*0.55, null, entryWindowMedium, IsoIsoInterface.ideal());
+	public Iris backPrismIris = new Iris("backPrismIris", backPrismIrisPos, shutterNormal, 0.060, entryWindowDiameter*0.47, Absorber.ideal());
 	
 	
 	/**** Mirror ****/
@@ -131,33 +143,47 @@ public class BeamEmissSpecAET21 extends Optic {
 	
 	public double inPortOpticalAxis[] = Util.reNorm(Util.minus(fibrePlanePos, effMirrorPos));
 	
-	public double lensFromMirror = 0.080;
+	public double lensFromMirror = 0.070;
 	
 	public double lensCentrePos[] = Util.plus(effMirrorPos, Util.mul(inPortOpticalAxis, lensFromMirror));
 	
 	public Medium lensMedium = new Medium(new BK7()); 
-	public SimplePlanarConvexLens lens = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
-											"lens",
+	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
+											"lens1",
 											lensCentrePos,
 											inPortOpticalAxis,
 											0.035, // radius
-											0.150, // focal length
+											0.130, // focal length
 											0.010, // centreThickness, 
 											lensMedium, 
 											IsoIsoInterface.ideal(),
 											designWavelenth);
 	
 	/*** Fibre plane 2 ****/
-	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, inPortOpticalAxis, portUp, 0.070, 0.070, Absorber.ideal());
+	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, inPortOpticalAxis, portUp, 0.080, 0.080, Absorber.ideal());
 	
 	public Element tracingTarget = entryWindowFront;
+	
+	
+	public SimplePlanarConvexLens lens0 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
+			"lens0",
+			Util.plus(entryWindowBackPos, Util.mul(shutterNormal, 0.011)),
+			shutterNormal,
+			entryWindowDiameter/2, // radius
+			0.100, // focal length
+			0.010, // centreThickness, 
+			lensMedium, 
+			IsoIsoInterface.ideal(),
+			designWavelenth);
+
 	
 	public BeamEmissSpecAET21() {
 		super("beamSpec-aet21");
 		
 		//make the window a prism
-		entryWindowFront.rotate(entryWindowFront.getCentre(), Algorithms.rotationMatrix(observationUp, -5 * Math.PI / 180));
-		entryWindowBack.rotate(entryWindowBack.getCentre(), Algorithms.rotationMatrix(observationUp, 5 * Math.PI / 180));
+		//entryWindowFront.rotate(entryWindowFront.getCentre(), Algorithms.rotationMatrix(observationUp, -5 * Math.PI / 180));
+		//entryWindowBack.rotate(entryWindowBack.getCentre(), Algorithms.rotationMatrix(observationUp, 10 * Math.PI / 180));
+		
 		
 		addElement(shutter);
 		addElement(entryWindowFront);
@@ -165,16 +191,22 @@ public class BeamEmissSpecAET21 extends Optic {
 		addElement(entryWindowFrontIris);
 		addElement(entryWindowCyld);
 		addElement(mirror);
-		addElement(lens);
+		addElement(lens1);
 		addElement(fibrePlane);
 		//addElement(portTubeCyld);
+
+		addElement(backPrismFront);
+		addElement(backPrismBack);
+		addElement(backPrismIris);
 		
-		double lensFibreDist = Util.length(Util.minus(lens.getBackSurface().getCentre(), fibrePlane.getCentre()));
+		double lensFibreDist = Util.length(Util.minus(lens1.getBackSurface().getCentre(), fibrePlane.getCentre()));
 		System.out.println("Lens - Fibres distance = " + lensFibreDist*1000 + " / mm");
-		System.out.println("Max f/" + (lensFibreDist/lens.getRadius()/2) + " ");
+		System.out.println("Max f/" + (lensFibreDist/lens1.getRadius()/2) + " ");
 		System.out.print("Window centre posXYZ = "); OneLiners.dumpArray(entryWindowFront.getCentre());
 		
 	}
+
+	public String getDesignName() { return "aet21";	}
 	
 	
 

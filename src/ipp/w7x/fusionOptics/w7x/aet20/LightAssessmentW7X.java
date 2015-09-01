@@ -18,34 +18,34 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class LightAssessmentW7X {
 	
-	//public static BeamEmissSpecAET21 sys = new BeamEmissSpecAET21();
-	//public static Surface mustHitToDraw = sys.entryWindowFront;
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	public static Surface mustHitToDraw = sys.mirror;
+	public static BeamEmissSpecAET21 sys = new BeamEmissSpecAET21();
+	public static Surface mustHitToDraw = sys.entryWindowFront;
+	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	//public static Surface mustHitToDraw = sys.mirror;
 	
 	// For fast drawing/debugging
-	/*public final static int nPoints = 5;
+	public final static int nPoints = 5;
 	public final static double R0 = 5.5;
 	public final static double R1 = 6.0;
 	public final static int nAttempts = 1000;
-	public final static int beamSelect = 4; //4 = Q5 = lower, nearer the other beams (away from AET21 observation port)
+	public final static int beamSelect = 7; //7 = Q8 = lower, more tangential (away from the other beams, towards from AET21 observation port)
 	//*/
 	
 	// For calc
-	public final static int nPoints = 20;
+	/*public final static int nPoints = 20;
 	public final static double R0 = 5.3;
-	public final static double R1 = 6.2;
+	public final static double R1 = 6.1;
 	public final static int nAttempts = 5000;
 	public final static int beamSelect = -1;
 	//*/
 
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getName();
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName();
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
 	public static void main(String[] args) {
 				
-		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/imaging.vrml", 1.005);
+		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/"+sys.getDesignName()+".vrml", 1.005);
 		vrmlOut.setRotationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
 		vrmlOut.setSkipRays(nAttempts*nPoints / 500);
