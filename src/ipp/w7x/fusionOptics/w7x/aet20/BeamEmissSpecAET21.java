@@ -1,5 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.aet20;
 
+import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
 import algorithmrepository.Algorithms;
 import jafama.FastMath;
@@ -83,10 +84,10 @@ public class BeamEmissSpecAET21 extends Optic {
 	/***** Observation target ****/
 	public int targetBeamIdx = 7; //Q8
 	public double targetBeamR = 5.8;
-	public double targetObsPos[] = W7XBeamDefsSimple.getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
+	public double targetObsPos[] = W7xNBI.getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	
 	public double observationVec[] = Util.reNorm(Util.minus(targetObsPos, entryWindowPos));
-	public double observationUp[] = Util.reNorm(Util.cross(W7XBeamDefsSimple.nbiUnit[targetBeamIdx], observationVec));
+	public double observationUp[] = Util.reNorm(Util.cross(W7xNBI.nbiUnit[targetBeamIdx], observationVec));
 	
 	public double asideVector[] = Util.reNorm(Util.cross(observationUp, shutterNormal));
 	

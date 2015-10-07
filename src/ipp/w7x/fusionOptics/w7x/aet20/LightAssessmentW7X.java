@@ -1,5 +1,7 @@
 package ipp.w7x.fusionOptics.w7x.aet20;
 
+import ipp.w7x.neutralBeams.W7xNBI;
+
 import java.util.List;
 
 import binaryMatrixFile.BinaryMatrixWriter;
@@ -61,7 +63,7 @@ public class LightAssessmentW7X {
 			for(int iP=0; iP < nPoints; iP++){
 				
 				double R = R0 + iP * (R1 - R0) / (nPoints - 1.0);
-				double startPos[] = W7XBeamDefsSimple.getPosOfBeamAxisAtR(beamIdx, R);
+				double startPos[] = W7xNBI.getPosOfBeamAxisAtR(beamIdx, R);
 				
 				int nHit = 0;
 				

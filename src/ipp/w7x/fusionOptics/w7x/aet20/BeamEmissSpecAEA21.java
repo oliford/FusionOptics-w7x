@@ -1,5 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.aet20;
 
+import ipp.w7x.neutralBeams.W7xNBI;
 import fusionOptics.Util;
 import fusionOptics.interfaces.Absorber;
 import fusionOptics.interfaces.IsoIsoInterface;
@@ -43,10 +44,10 @@ public class BeamEmissSpecAEA21 extends Optic {
 	/***** Observation target ****/
 	public int targetBeamIdx = 4; //Q5
 	public double targetBeamR = 5.8;
-	public double targetObsPos[] = W7XBeamDefsSimple.getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
+	public double targetObsPos[] = W7xNBI.getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	
 	public double observationVec[] = Util.reNorm(Util.minus(targetObsPos, approxMirrorPos));
-	public double observationUp[] = Util.reNorm(Util.cross(W7XBeamDefsSimple.nbiUnit[targetBeamIdx], observationVec));
+	public double observationUp[] = Util.reNorm(Util.cross(W7xNBI.nbiUnit[targetBeamIdx], observationVec));
 	
 	/***** Mirror ****/
 	
