@@ -24,7 +24,7 @@ import fusionOptics.types.Optic;
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAET21 extends Optic {
 	public double globalUp[] = {0,0,1};
-	public double designWavelenth = 600e-9;
+	public double designWavelenth = 500e-9;
 	
 	/**** Shutter ****/
 	public double shutterPivotCentre[] = { -0.910603, 6.2042, -0.134334 };
@@ -84,10 +84,10 @@ public class BeamEmissSpecAET21 extends Optic {
 	/***** Observation target ****/
 	public int targetBeamIdx = 7; //Q8
 	public double targetBeamR = 5.8;
-	public double targetObsPos[] = W7xNBI.getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
+	public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	
 	public double observationVec[] = Util.reNorm(Util.minus(targetObsPos, entryWindowPos));
-	public double observationUp[] = Util.reNorm(Util.cross(W7xNBI.nbiUnit[targetBeamIdx], observationVec));
+	public double observationUp[] = Util.reNorm(Util.cross(W7xNBI.def().uVec(targetBeamIdx), observationVec));
 	
 	public double asideVector[] = Util.reNorm(Util.cross(observationUp, shutterNormal));
 	

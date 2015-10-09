@@ -14,7 +14,7 @@ import fusionOptics.types.Optic;
 
 public class BeamEmissSpecAEA21 extends Optic {
 	public double globalUp[] = new double[]{ 0,0,1 };
-	public double designWavelenth = 600e-9;
+	public double designWavelenth = 500e-9;
 	
 	/***** Port *****/
 	public double vesselHoleForPort[][] = {
@@ -44,10 +44,10 @@ public class BeamEmissSpecAEA21 extends Optic {
 	/***** Observation target ****/
 	public int targetBeamIdx = 4; //Q5
 	public double targetBeamR = 5.8;
-	public double targetObsPos[] = W7xNBI.getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
+	public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	
 	public double observationVec[] = Util.reNorm(Util.minus(targetObsPos, approxMirrorPos));
-	public double observationUp[] = Util.reNorm(Util.cross(W7xNBI.nbiUnit[targetBeamIdx], observationVec));
+	public double observationUp[] = Util.reNorm(Util.cross(W7xNBI.def().uVec(targetBeamIdx), observationVec));
 	
 	/***** Mirror ****/
 	

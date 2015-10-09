@@ -1,6 +1,9 @@
 package ipp.w7x.fusionOptics.w7x.aet20;
 
+import ipp.neutralBeams.SimpleBeamGeometry;
+import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
+import jafama.FastMath;
 
 import java.util.List;
 
@@ -20,17 +23,20 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class LightAssessmentW7X {
 	
-	public static BeamEmissSpecAET21 sys = new BeamEmissSpecAET21();
-	public static Surface mustHitToDraw = sys.entryWindowFront;
+	//public static BeamEmissSpecAET21 sys = new BeamEmissSpecAET21();
+	//public static Surface mustHitToDraw = sys.entryWindowFront;
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static Surface mustHitToDraw = sys.mirror;
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static Surface mustHitToDraw = sys.fibrePlane;
+	//SimpleBeamGeometry beams = W7xNBI.def();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	// For fast drawing/debugging
 	public final static int nPoints = 5;
 	public final static double R0 = 5.5;
 	public final static double R1 = 6.0;
 	public final static int nAttempts = 1000;
-	public final static int beamSelect = 7; //7 = Q8 = lower, more tangential (away from the other beams, towards from AET21 observation port)
 	//*/
 	
 	// For calc
@@ -56,51 +62,47 @@ public class LightAssessmentW7X {
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
 		BinaryMatrixWriter lightInfoOut = new BinaryMatrixWriter(outPath + "/sourceSolidAng.bin", 4); 
 		
-		for(int beamIdx=4; beamIdx < 8; beamIdx++){
-			if(beamSelect >= 0 && beamSelect != beamIdx)
-				continue;
+		for(int iP=0; iP < nPoints; iP++){
 			
-			for(int iP=0; iP < nPoints; iP++){
+			double R = R0 + iP * (R1 - R0) / (nPoints - 1.0);
+			double startPos[] = beams.getPosOfBeamAxisAtR(SimpleBeamGeometry.BEAM_BOXAVG, R);
+			R = FastMath.sqrt(startPos[0]*startPos[0] + startPos[1]*startPos[1]);
+			int nHit = 0;
+			
+			for(int i=0; i < nAttempts; i++){
+				RaySegment ray = new RaySegment();
+				ray.startPos = startPos;
+				ray.dir = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget);
+				ray.wavelength = sys.designWavelenth;
+				ray.E0 = new double[][]{{1,0,0,0}};
+				ray.up = Util.createPerp(ray.dir);
+						
+				Tracer.trace(sys, ray, 100, 0, false);
 				
-				double R = R0 + iP * (R1 - R0) / (nPoints - 1.0);
-				double startPos[] = W7xNBI.getPosOfBeamAxisAtR(beamIdx, R);
-				
-				int nHit = 0;
-				
-				for(int i=0; i < nAttempts; i++){
-					RaySegment ray = new RaySegment();
-					ray.startPos = startPos;
-					ray.dir = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget);
-					ray.wavelength = sys.designWavelenth;
-					ray.E0 = new double[][]{{1,0,0,0}};
-					ray.up = Util.createPerp(ray.dir);
-							
-					Tracer.trace(sys, ray, 100, 0, false);
-					
-					ray.processIntersections(null, intensityInfo);
-									
-					List<Intersection> hits = ray.getIntersections(mustHitToDraw);
-					if(hits.size() > 0){
-						vrmlOut.drawRay(ray, col[iP]);
-						nHit++;
-					}
+				ray.processIntersections(null, intensityInfo);
+								
+				List<Intersection> hits = ray.getIntersections(mustHitToDraw);
+				if(hits.size() > 0){
+					vrmlOut.drawRay(ray, col[iP]);
+					nHit++;
 				}
-				
-				double dir[] = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget, true);
-				double targetSolidAngle = Util.length(dir);
-				
-				double solidAngleFP = intensityInfo.getSourceSolidAng(sys.fibrePlane, targetSolidAngle, nAttempts); 
-				lightInfoOut.writeRow(beamIdx, iP, R, solidAngleFP);
-				
-				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
-				System.out.println("Q" + (beamIdx+1) + "\tiP=" + iP + "(R=" + R + "):\t " + nHit + " of " + nAttempts + " attempts hit " + mustHitToDraw.getName() + " and have been drawn");
-				//intensityInfo.dump();
-				System.out.println("SR = " + solidAngleFP*1e6 + " µSR");
-				intensityInfo.reset();
-				
-				
 			}
+			
+			double dir[] = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget, true);
+			double targetSolidAngle = Util.length(dir);
+			
+			double solidAngleFP = intensityInfo.getSourceSolidAng(sys.fibrePlane, targetSolidAngle, nAttempts); 
+			lightInfoOut.writeRow(-1, iP, R, solidAngleFP);
+			
+			System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
+			System.out.println("P=" + iP + "(R=" + R + "):\t " + nHit + " of " + nAttempts + " attempts hit " + mustHitToDraw.getName() + " and have been drawn");
+			//intensityInfo.dump();
+			System.out.println("SR = " + solidAngleFP*1e6 + " µSR");
+			intensityInfo.reset();
+			
+			
 		}
+	
 		
 		lightInfoOut.close();
 				
