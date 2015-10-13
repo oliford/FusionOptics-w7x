@@ -54,7 +54,7 @@ public class LightAssessmentW7X {
 	public static void main(String[] args) {
 				
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/"+sys.getDesignName()+".vrml", 1.005);
-		vrmlOut.setRotationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
+		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
 		vrmlOut.setSkipRays(nAttempts*nPoints / 500);
 		double col[][] = ColorMaps.jet(nPoints);
