@@ -24,17 +24,20 @@ import fusionOptics.types.Surface;
 public class LightAssessmentW7X {
 	
 	//public static BeamEmissSpecAET21 sys = new BeamEmissSpecAET21();
-	//public static Surface mustHitToDraw = sys.entryWindowFront;
+	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	//public static Surface mustHitToDraw = sys.mirror;
-	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	//public static Surface mustHitToDraw = sys.fibrePlane;
+	public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
 	public static Surface mustHitToDraw = sys.fibrePlane;
-	//SimpleBeamGeometry beams = W7xNBI.def();
-	public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static SimpleBeamGeometry beams = W7xNBI.def();
+
+	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	//public static Surface mustHitToDraw = sys.fibrePlane;
+	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	// For fast drawing/debugging
-	public final static int nPoints = 5;
-	public final static double R0 = 5.5;
+	public final static int nPoints = 10;
+	public final static double R0 = 5.2;
 	public final static double R1 = 6.0;
 	public final static int nAttempts = 1000;
 	//*/
@@ -65,7 +68,7 @@ public class LightAssessmentW7X {
 		for(int iP=0; iP < nPoints; iP++){
 			
 			double R = R0 + iP * (R1 - R0) / (nPoints - 1.0);
-			double startPos[] = beams.getPosOfBeamAxisAtR(SimpleBeamGeometry.BEAM_BOXAVG, R);
+			double startPos[] = beams.getPosOfBoxAxisAtR(1, R);
 			R = FastMath.sqrt(startPos[0]*startPos[0] + startPos[1]*startPos[1]);
 			int nHit = 0;
 			

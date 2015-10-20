@@ -15,7 +15,7 @@ public class MakeW7XBeamsVRML {
 	public static void main(String[] args) {
 		String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/w7xBeams/";
 		
-		W7xNBI w7xNBI = new W7xNBI();
+		W7xNBI w7xNBI = W7xNBI.def();
 		MakeBeamsVRML.makeBeamsRadialColoured(outPath + "/w7xNBI-colourByR.vrml", w7xNBI);
 		MakeBeamsVRML.makeBeamsAllGreen(outPath + "/w7xNBI-allGreen.vrml", w7xNBI);
 		MakeBeamsVRML.makeBeamsPINIColoured(outPath + "/w7xNBI-colourByPini.vrml", w7xNBI);
