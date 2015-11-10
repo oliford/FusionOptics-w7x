@@ -5,5 +5,6 @@
 	<classpathentry kind="src" path="/FusionOptics"/>
 	<classpathentry kind="src" path="/JavaOneLineUtils"/>
 	<classpathentry kind="src" path="/AlgorithmRepository"/>
+	<classpathentry kind="lib" path="/FusionOptics/lib/DigeomOptimMatrix.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

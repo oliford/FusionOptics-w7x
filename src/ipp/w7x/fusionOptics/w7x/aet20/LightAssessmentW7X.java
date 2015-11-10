@@ -32,9 +32,9 @@ public class LightAssessmentW7X {
 	//public static SimpleBeamGeometry beams = W7xNBI.def();
 
 	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	public static Surface mustHitToDraw = sys.fibrePlane;
+	public static Surface mustHitToDraw = sys.entryWindowFront;
 	public static SimpleBeamGeometry beams = W7XRudix.def();
-	public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076 
+	//public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076 
 	public final static int nPoints = 10;//as sightlines in fromDesigner-201511076
 	
 	// For fast drawing/debugging
@@ -58,10 +58,10 @@ public class LightAssessmentW7X {
 	
 	public static void main(String[] args) {
 				
-		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/lightAsses-"+sys.getDesignName()+".vrml", 1.005);
+		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/lightAssess-"+sys.getDesignName()+".vrml", 1.005);
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
-		vrmlOut.setSkipRays(nAttempts*nPoints / 500);
+		vrmlOut.setSkipRays(nAttempts*nPoints / 2000);
 		double col[][] = ColorMaps.jet(nPoints);
 		
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
@@ -69,7 +69,8 @@ public class LightAssessmentW7X {
 		
 		for(int iP=0; iP < nPoints; iP++){
 			
-			double R = R0 + iP * (R1 - R0) / (nPoints - 1.0);
+			//double R = R0 + iP * (R1 - R0) / (nPoints - 1.0);
+			double R = sys.R[iP];
 			double startPos[] = beams.getPosOfBoxAxisAtR(1, R);
 			R = FastMath.sqrt(startPos[0]*startPos[0] + startPos[1]*startPos[1]);
 			int nHit = 0;
@@ -101,7 +102,7 @@ public class LightAssessmentW7X {
 			
 			System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
 			System.out.println("P=" + iP + "(R=" + R + "):\t " + nHit + " of " + nAttempts + " attempts hit " + mustHitToDraw.getName() + " and have been drawn");
-			//intensityInfo.dump();
+			intensityInfo.dump();
 			System.out.println("SR = " + solidAngleFP*1e6 + " µSR");
 			intensityInfo.reset();
 			
