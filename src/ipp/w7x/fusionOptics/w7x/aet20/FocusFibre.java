@@ -19,8 +19,11 @@ import seed.optimization.Optimizer;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.collection.IntensityInfo;
+import fusionOptics.collection.IntersectionProcessor;
+import fusionOptics.collection.PlaneAngleInfo;
 import fusionOptics.drawing.SVGRayDrawing;
 import fusionOptics.drawing.VRMLDrawer;
+import fusionOptics.interfaces.Absorber;
 import fusionOptics.interfaces.NullInterface;
 import fusionOptics.optimisationMulti.MoveableElement;
 import fusionOptics.optimisationMulti.OptimiseMulti;
@@ -49,7 +52,7 @@ public class FocusFibre {
 	//public final static double R0 = 5.2;  
 	//public final static double R1 = 5.9;
 	public final static int nAttempts = 1000;
-	public final static int nRaysPerBeamPoint = 5000;
+	public final static int nRaysPerBeamPoint = 50000;
 	//*/
 	
 	// For calc
@@ -78,11 +81,13 @@ public class FocusFibre {
 		//Need to get through the single common fibre plane
 		sys.fibrePlane.setInterface(NullInterface.ideal());
 		sys.beamPlane.setInterface(NullInterface.ideal());
-		
-		double shift[] = new double[sys.nFibres];
+			
+		double fibreNorm[][] = new double[sys.nFibres][];
+		double fibrePos[][] = new double[sys.nFibres][];
 		double R[] = new double[sys.nFibres];
 		
 		for(int iP=0; iP < sys.nFibres; iP++){
+			sys.fibrePlanes[iP].setInterface(Absorber.ideal());
 			sys.fibrePlanes[iP].setWidth(0.100);
 			sys.fibrePlanes[iP].setHeight(0.100);
 			
@@ -94,12 +99,13 @@ public class FocusFibre {
 			
 			R[iP] = FastMath.sqrt(startPos[0]*startPos[0] + startPos[1]*startPos[1]);
 			
-			RayBundle rayBundle = new RayBundle(iP); // bundle IDs are beam number * 1000, so 5th point of Q7 is 7004
+			RayBundle rayBundle = new RayBundle(iP);
 			
 			rayBundle.setImagePlane(sys.fibrePlanes[iP]);
-			rayBundle.setSharpnessWeight(1.0); //we can weight the sharpness, intensity and targeting separately for each source point
+			//rayBundle.setSharpnessWeight(1.0); //we can weight the sharpness, intensity and targeting separately for each source point
+			rayBundle.setSharpnessWeights(1.0, 0.0);
 			rayBundle.setIntensityWeight(0.0); 
-			rayBundle.setTargetWeight(0.0);
+			rayBundle.setTargetWeight(1.0);
 			rayBundle.initRaysImaging(sys.lens1, startPos, sys.designWavelenth, nRaysPerBeamPoint);
 			rayBundle.setMinimumHitsForStatistics(50);
 			
@@ -111,7 +117,8 @@ public class FocusFibre {
 			
 			//try{
 				rayBundle.setOptimiser(optim);
-				rayBundle.findTarget(); //set target to current mean position
+				//rayBundle.findTarget(); //set target to current mean position
+				rayBundle.setTargetPos(new double[]{0, 0});
 				optim.addRayBundle(rayBundle);
 			//}catch(RuntimeException err){
 			//	System.err.println("Not adding ray bundle for point " + iP + " at R = " + R[iP]);
@@ -120,25 +127,46 @@ public class FocusFibre {
 			rayBundle.setMinimumHitsForStatistics(5);
 			
 			double fibreVec[] = Util.reNorm(Util.minus(sys.lensCentrePos, sys.fibreEndPos[iP]));
-			MoveableElement p = new MoveableElement(sys.fibrePlanes[iP], fibreVec, -0.050, 0.050); p.setScale(0.001); optim.addParameter(p);
+			//MoveableElement p = new MoveableElement(sys.fibrePlanes[iP], fibreVec, -0.050, 0.050); p.setScale(0.001); optim.addParameter(p);
+			{MoveableElement p = new MoveableElement(sys.fibrePlanes[iP], new double[]{1,0,0}, -0.050, 0.050); p.setScale(0.001); optim.addParameter(p);}
+			{MoveableElement p = new MoveableElement(sys.fibrePlanes[iP], new double[]{0,1,0}, -0.050, 0.050); p.setScale(0.001); optim.addParameter(p);}
+			{MoveableElement p = new MoveableElement(sys.fibrePlanes[iP], new double[]{0,0,1}, -0.050, 0.050); p.setScale(0.001); optim.addParameter(p);}
 			
 			Optimizer opt = new HookeAndJeeves(null);	
 		    optim.setOptimiser(opt);
 
 		    optim.setOutputPrefix(outPath + "/optim-ch_"+iP); 
-			//optim.addRegularDrawing(outPath + "/optim-ch_"+iP, VRMLDrawer.class, 1);
+			optim.addRegularDrawing(outPath + "/optim-ch_"+iP, VRMLDrawer.class, 100, "Separator {\nScale { scaleFactor 1000 1000 1000 }", "}");
 			//optim.addRegularDrawing(outPath + "/optim-ch_"+iP, SVGRayDrawing.class, 1);
 			optim.setOutputIterationPeriod(10);
 					
 			optim.eval(); //eval init position will set target positions at the image plane
 			optim.dumpParams();
 			optim.dumpRayBundles();
-			optim.optimise(40);
+			optim.optimise(20);
 			
 			optim.dumpParams();
 			optim.dumpRayBundles();
 			
-			shift[iP] = sys.shift[iP] + p.get(); //add to existing shift
+			//shift[iP] = sys.shift[iP] + p.get(); //add to existing shift
+			fibrePos[iP] = sys.fibrePlanes[iP].getCentre();
+			
+			//calc average of vector into plane, to find the best normal for the plane
+			
+			PlaneAngleInfo paInfo = new PlaneAngleInfo(sys.fibrePlanes[iP]);
+			rayBundle.setExtraIntersectionProcessor(paInfo);
+			rayBundle.traceAndEvaluate(null);
+			rayBundle.setExtraIntersectionProcessor(null);
+			
+			fibreNorm[iP] = paInfo.getMeanVector();
+			
+			
+			sys.fibrePlanes[iP].setInterface(NullInterface.ideal());
+			sys.fibrePlanes[iP].setWidth(0.001);
+			sys.fibrePlanes[iP].setHeight(0.001);
+			
+			System.out.println("[" + iP + "]:p = \t\t{ " + fibrePos[iP][0] + ", " +fibrePos[iP][1] + ", " +fibrePos[iP][2] + " },");
+			System.out.println("[" + iP + "]:v = \t\t{ " + -fibreNorm[iP][0] + ", " + -fibreNorm[iP][1] + ", " + -fibreNorm[iP][2] + " },");
 			
 		}
 		
@@ -146,10 +174,13 @@ public class FocusFibre {
 		System.out.print("public double[] R = { ");
 		for(int iP=0; iP < sys.nFibres; iP++)
 			System.out.print(fmt.format(R[iP])+ ", ");
-		System.out.print("}; \npublic double[] shift = { ");
+		System.out.println("}; \npublic double[][] fibreEndPos = { ");
 		for(int iP=0; iP < sys.nFibres; iP++)
-			System.out.print(fmt.format(shift[iP])+ ", ");
-		System.out.println("};");
+			System.out.println("\t\t{ " + fibrePos[iP][0] + ", " +fibrePos[iP][1] + ", " +fibrePos[iP][2] + " },");
+		System.out.println("\t}; \npublic double[][] fibreEndNorm = { ");
+		for(int iP=0; iP < sys.nFibres; iP++)
+			System.out.println("\t\t{ " + -fibreNorm[iP][0] + ", " + -fibreNorm[iP][1] + ", " + -fibreNorm[iP][2] + " },");
+		System.out.println("\t};");
 		
 		lightInfoOut.close();
 				
@@ -161,8 +192,13 @@ public class FocusFibre {
 	}
 
 	private static double[] getBeamPlanePos(int iP) {
+		
+		return W7XRudix.def().getPosOfBoxAxisAtR(0, sys.R[iP]);
+		
+		
 		//trace the central ray forwards and see where we hit the beam plane
-		RaySegment ray = new RaySegment();
+		/*
+		RaySegment ray = new RaySegment();		 
 		ray.startPos = sys.fibreEndPos[iP];
 		ray.dir = Util.reNorm(Util.minus(sys.lensCentrePos, sys.fibreEndPos[iP]));
 		ray.wavelength = sys.designWavelenth;
@@ -172,6 +208,6 @@ public class FocusFibre {
 		Tracer.trace(sys, ray, 100, 0, false);
 		
 		List<Intersection> hits = ray.getIntersections(sys.beamPlane);
-		return hits.get(0).pos;
+		return hits.get(0).pos;*/
 	}
 }

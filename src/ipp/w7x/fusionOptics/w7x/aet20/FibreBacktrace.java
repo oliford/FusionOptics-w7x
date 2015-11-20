@@ -35,6 +35,8 @@ public class FibreBacktrace {
 
 	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	public static SimpleBeamGeometry beams = W7XRudix.def();
+	
+	public static double fibreEffectiveNA = 0.125; //0.28; //f/4 = 0.124, f/6=0.083
 	 
 	// For fast drawing/debugging
 	//public final static int nPoints = 10;
@@ -58,7 +60,7 @@ public class FibreBacktrace {
 	public static void main(String[] args) {
 				
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+".vrml", 1.005);
-		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
+		//vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
 		vrmlOut.setSkipRays(nAttempts*sys.nFibres / 500);
 		double col[][] = ColorMaps.jet(sys.nFibres);
@@ -76,7 +78,7 @@ public class FibreBacktrace {
 			
 			double startPos[] = sys.fibreEndPos[iP];
 			
-			double sumI=0, sumIR=0;
+			double sumI=0, sumIR=0, sumIR2 = 0;
 			for(int i=0; i < nAttempts; i++){
 				double x, y, rMax = sys.fibreEndDiameter / 2;
 				do{
@@ -97,7 +99,7 @@ public class FibreBacktrace {
 				double aV[] = sys.fibrePlanes[iP].getUp();
 				double bV[] = sys.fibrePlanes[iP].getRight();
 				
-				double sinMaxTheta = sys.fibreNA;
+				double sinMaxTheta = fibreEffectiveNA; //sys.fibreNA;
 				double cosMaxTheta = FastMath.cos(FastMath.asin(sinMaxTheta)); //probably just 1-sinTheta, but... meh
 				
 				double cosTheta = 1 - RandomManager.instance().nextUniform(0, 1) * (1 - cosMaxTheta);
@@ -127,25 +129,43 @@ public class FibreBacktrace {
 					double R = FastMath.sqrt(p[0]*p[0] + p[1]*p[1]);
 					sumI += 1;
 					sumIR += R * 1;
-					
+					sumIR2 += R * R * 1;
+
+					vrmlOut.drawRay(ray, col[iP]);
 					
 					nHit++;
 				}
-				vrmlOut.drawRay(ray, col[iP]);
 				
 				Pol.recoverAll();
 			}
 			double R = sumIR / sumI;
 			
+			double var = 1.0/sumI*(sumIR2 - sumIR*sumIR/sumI);
+			double fwhmR = 2.35 * FastMath.sqrt(var);			
 			
 			lightInfoOut.writeRow(-1, iP, R, nHit / nAttempts);
 			
 			System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
-			System.out.println("P=" + iP + "(R=" + R + "):\t " + nHit + " of " + nAttempts + " attempts hit and have been drawn");
+			System.out.println("P=" + iP + "(R=" + R + ", fwhmR = " + fwhmR + "):\t " + nHit + " of " + nAttempts + " attempts hit and have been drawn");
 			
 			intensityInfo.reset();
 		}
-	
+		
+		
+		//spit out FreeCAD instructions to create fibre end block cylinders
+		double cyldLen = 0.030;
+		double cyldRadius = 0.0025;
+		
+		for(int i=0; i < sys.nFibres; i++){
+			 double u[] = sys.fibreEndNorm[i];
+			 double p[] = Util.plus(sys.fibreEndPos[i], Util.mul(u, -cyldLen));
+			 		
+			System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Cylinder\", \"FibreEnd"+i+"\"); "+
+						"o.Shape = Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
+						",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
+						"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
+			
+		}
 		
 		lightInfoOut.close();
 				

@@ -41,7 +41,7 @@ public class LightAssessmentW7X {
 	//public final static int nPoints = 10;
 	//public final static double R0 = 5.2;  
 	//public final static double R1 = 5.9;
-	public final static int nAttempts = 1000;
+	public final static int nAttempts = 5000;
 	//*/
 	
 	// For calc
@@ -61,7 +61,7 @@ public class LightAssessmentW7X {
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/lightAssess-"+sys.getDesignName()+".vrml", 1.005);
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
-		vrmlOut.setSkipRays(nAttempts*nPoints / 2000);
+		vrmlOut.setSkipRays(nAttempts*nPoints / 20000);
 		double col[][] = ColorMaps.jet(nPoints);
 		
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
