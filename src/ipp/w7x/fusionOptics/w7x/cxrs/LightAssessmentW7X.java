@@ -1,4 +1,4 @@
-package ipp.w7x.fusionOptics.w7x.aet20;
+package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import ipp.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.neutralBeams.W7XRudix;
@@ -27,21 +27,21 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
-	//public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
-	//public static Surface mustHitToDraw = sys.fibrePlane;
-	//public static SimpleBeamGeometry beams = W7xNBI.def();
+	public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
+	public static Surface mustHitToDraw = sys.fibrePlane;
+	public static SimpleBeamGeometry beams = W7xNBI.def();
 
-	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	public static Surface mustHitToDraw = sys.entryWindowFront;
-	public static SimpleBeamGeometry beams = W7XRudix.def();
+	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	//public static Surface mustHitToDraw = sys.entryWindowFront;
+	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	//public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076 
-	public final static int nPoints = 10;//as sightlines in fromDesigner-201511076
+	public final static int nPoints = sys.R.length;//as sightlines in fromDesigner-201511076
 	
 	// For fast drawing/debugging
 	//public final static int nPoints = 10;
 	//public final static double R0 = 5.2;  
 	//public final static double R1 = 5.9;
-	public final static int nAttempts = 5000;
+	public final static int nAttempts = 1000;
 	//*/
 	
 	// For calc

@@ -1,4 +1,4 @@
-package ipp.w7x.fusionOptics.w7x.aet20;
+package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
@@ -58,7 +58,9 @@ public class BeamEmissSpecAET21 extends Optic {
 	public double entryWindowRadiusOnShutter = 0.058;
 	public double entryWindowIrisDiameter = 0.060;
 	public double entryWindowDiameter = 0.050;
-	public double entryWindowAngularPosition = 116 * Math.PI / 180;
+	//public double entryWindowAngularPosition = 116 * Math.PI / 180;
+	//public double entryWindowAngularPosition = -4 * Math.PI / 180;
+	public double entryWindowAngularPosition = -124 * Math.PI / 180;
 	public double entryWindowMoveIn = 0.010;
 	public double entryWindowThickness = 0.003;
 	public double entryWindowCyldLength = 0.025;
@@ -176,7 +178,11 @@ public class BeamEmissSpecAET21 extends Optic {
 			lensMedium, 
 			IsoIsoInterface.ideal(),
 			designWavelenth);
-
+	
+	
+	/** Fibres, Observation volumes etc */
+	public double[] R = { 5.5, 5.6, 5.7, 5.8, 5.9, 6.0 };	
+	
 	
 	public BeamEmissSpecAET21() {
 		super("beamSpec-aet21");

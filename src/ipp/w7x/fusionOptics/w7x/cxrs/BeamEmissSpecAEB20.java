@@ -1,4 +1,4 @@
-package ipp.w7x.fusionOptics.w7x.aet20;
+package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
@@ -26,9 +26,13 @@ public class BeamEmissSpecAEB20 extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9;
 	
-	public double entryWindowFrontPos[] = { 2.122,  5.836,   0.912 }; // Crude est from CAD, entrace of port
+	//public double entryWindowFrontPos[] = { 2.122,  5.836,   0.912 }; // Crude est from CAD, entrace of port
+	public double panelLevelPos[] = { 2.0689, 5.7923, 0.8198 }; //levels with panels, shifted off centre from port
+	public double entryWindowNormal[] = { 0.21124654821000247, -0.06989548954606051, 0.9749305187604271 };
+	public double entryWindowFrontPos[] = Util.plus(panelLevelPos, Util.mul(entryWindowNormal, -0.020)); 
+			//
 	public double entryWindowDiameter = 0.050; //made up
-	public double entryWindowNormal[] = { -0.216, -0.777, -0.592 }; // Crude est from CAD, entrace of port
+	//public double entryWindowNormal[] = { -0.216, -0.777, -0.592 }; // Crude est from CAD, entrace of port
 	public double entryWindowIrisPos[] = Util.plus(entryWindowFrontPos, Util.mul(entryWindowNormal, +0.001)); 
 	public Disc entryWindowFront = new Disc("entryWindowFront", entryWindowFrontPos, entryWindowNormal, entryWindowDiameter/2, null, null, NullInterface.ideal());
 	public Iris entryWindowIris = new Iris("entryWindowIris", entryWindowIrisPos, entryWindowNormal, entryWindowDiameter*2, entryWindowDiameter*0.49, null, null, Absorber.ideal());
@@ -42,6 +46,10 @@ public class BeamEmissSpecAEB20 extends Optic {
 	public double targetObsPos[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
 	
 	public Element tracingTarget = entryWindowFront;
+	
+	
+	/** Fibres, Observation volumes etc */
+	public double[] R = { 5.50, 5.55, 5.60, 5.65, 5.70, 5.75, 5.80, 5.85, 5.90, 5.95, 6.00 };	
 	
 	
 	public BeamEmissSpecAEB20() {
