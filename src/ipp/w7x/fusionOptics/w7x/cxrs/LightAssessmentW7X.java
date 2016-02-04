@@ -1,7 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import ipp.neutralBeams.SimpleBeamGeometry;
-import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import jafama.FastMath;
 
@@ -27,7 +26,9 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
-	public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
+	//public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
+	//public static Surface mustHitToDraw = sys.fibrePlane;
+	public static BeamEmissSpecAEM21 sys = new BeamEmissSpecAEM21();
 	public static Surface mustHitToDraw = sys.fibrePlane;
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 
