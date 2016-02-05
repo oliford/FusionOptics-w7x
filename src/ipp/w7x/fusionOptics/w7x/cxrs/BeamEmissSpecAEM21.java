@@ -27,13 +27,17 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
-	public double portNormal[] = { 0.355, -0.145, 0.923 };
+	public double portNormal[] = { 0.355, -0.145, 0.923 };	// [fromDesigner-20151106] lens back plane normal, rotated to M21
+	//public double entryWindowFrontPos[] = { -0.424, 5.383, 1.218 }; // [ Jürgen's sim 'Mittelpunkt des Fensters im AEM41' rotated to module 21 ]
+	public double portPos[] = new double[] {-0.4614180908203125, 5.39522119140625, 1.2168809204101563 }; //point along port, nearer back, from CAD
+	public double entryWindowFrontPos[] = Util.plus(portPos, Util.mul(portNormal, 0.010));
 	
+	/***** Observation target ****/
+	public int targetBeamIdx = 6; // 6 = Q7 = K21 lower radial   
+	public double targetBeamR = 5.7;
+	public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	
-   // [fromDesigner-20151106] lens back plane normal, matches rod axis, pointing out of machine
-	public double entryWindowFrontPosM41[] = { -0.424, 5.383, 1.218 }; // [ Jürgen's sim 'Mittelpunkt des Fensters im AEM41' rotated to module 21 ]
-	public double entryWindowFrontPos[] = entryWindowFrontPosM41; //Util.plus(entryWindowFrontPosM41, Util.mul(portNormal, -0.100));
-	
+	/***** Entry Window *****/
 	public double entryWindowDiameter = 0.080; // [Jurgen's Frascati poster + talking to Jurgen + plm/CAD ]
 	public double entryWindowThickness = 0.010; // [Made up]
 	
@@ -46,17 +50,26 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public Iris entryWindowIris = new Iris("entryWindowIris", entryWindowIrisPos, portNormal, entryWindowDiameter*2, entryWindowDiameter*0.49, null, null, Absorber.ideal());
 	
 	/**** Mirror *****/
+	public double mirrorToWindowDist = 0.250;
+	public double mirrorPos[] = Util.plus(entryWindowFrontPos, Util.mul(portNormal, -mirrorToWindowDist));
 	
-	public double mirrorPos[] = Util.plus(entryWindowFrontPos, Util.mul(portNormal, 0.050));
-	public double mirrorAng = 45 * Math.PI / 180;
-	public double mirrorX[] = Util.reNorm(Util.cross());
+	public double mirrorRotation = 30 * Math.PI / 180;
+	public double mirrorWidth = 0.200;
+	public double mirrorHeight = 0.100;
+					
+	public double sourceNormal[] =  Util.reNorm(Util.minus(targetObsPos, mirrorPos));
+	public double mirrorNormal[] = Util.reNorm(Util.plus(sourceNormal, portNormal));
+	public double mirrorA[] = Util.reNorm(Util.cross(sourceNormal, portNormal));
+	public double mirrorB[] =  Util.reNorm(Util.cross(mirrorA, mirrorNormal));
+	public double mirrorX[] = Util.reNorm(Util.plus(Util.mul(mirrorA, FastMath.cos(mirrorRotation)), Util.mul(mirrorB, FastMath.sin(mirrorRotation))));
+	public double mirrorY[] = Util.reNorm(Util.plus(Util.mul(mirrorA, -FastMath.sin(mirrorRotation)), Util.mul(mirrorB, FastMath.cos(mirrorRotation))));
 	
-	public Square mirror = new Square("mirror", mirrorPos, mirrorNormal, upDir, height, width, frontMedium, backMedium, iface)
+	public Square mirror = new Square("mirror", mirrorPos, mirrorNormal, mirrorX, mirrorWidth, mirrorHeight, Reflector.ideal());
 			
 	/**** Lens *****/
 	
-	public double lensCentrePosM41[] = {-0.375, 5.363, 1.339, }; // [CAD fromDesigner-20151106, rotated to M21]
-	public double lensCentrePos[] = lensCentrePosM41; //Util.plus(lensCentrePosM41, Util.mul(portNormal, -0.180));
+	//public double lensCentrePosM41[] = {-0.375, 5.363, 1.339, }; // [CAD fromDesigner-20151106, rotated to M21]
+	public double lensCentrePos[] = Util.plus(entryWindowFrontPos, Util.mul(portNormal, 0.100));
 	
 	public double lensDiameter = 0.075 + 0.001;
 	
@@ -130,7 +143,7 @@ public class BeamEmissSpecAEM21 extends Optic {
 	
 	public double beamAxis[] = W7xNBI.def().uVec(0);
 	
-	public double fibrePlanePos[] = Util.plus(lensCentrePos, Util.mul(portNormal, -0.060)); 
+	public double fibrePlanePos[] = Util.plus(lensCentrePos, Util.mul(portNormal, 0.060)); 
 	public double fibresXVec[] = Util.reNorm(Util.cross(Util.cross(beamAxis, portNormal),portNormal));
 	public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, portNormal));	
 	
@@ -140,21 +153,18 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public Square catchPlane = new Square("catchPlane", Util.plus(fibrePlanePos, Util.mul(portNormal, 0.050)), 
 											portNormal, fibresYVec, 0.300, 0.300, Absorber.ideal());
 
-	/***** Observation target ****/
-	public int targetBeamIdx = 0; 
-	public double targetBeamR = 5.6;
-	public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
-	
+
 	public double beamObsPerp[] = Util.reNorm(Util.cross(Util.minus(lensCentrePos, targetObsPos), beamAxis));
 	public double beamObsPlaneNormal[] = Util.reNorm(Util.cross(beamAxis, beamObsPerp));
 	
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 0.500, 1.200, NullInterface.ideal());
 
-	public Element tracingTarget = entryWindowFront;
+	public Element tracingTarget = mirror;
 		
 	public BeamEmissSpecAEM21() {
 		super("beamSpec-aem21");
 		
+		addElement(mirror);
 		addElement(entryWindowIris);
 		addElement(entryWindowFront);
 		addElement(entryWindowBack);
