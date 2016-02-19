@@ -22,7 +22,7 @@ import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public class BeamEmissSpecAEB20 extends Optic {
+public class BeamEmissSpecAEB20old extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9;
 	
@@ -52,7 +52,7 @@ public class BeamEmissSpecAEB20 extends Optic {
 	public double[] R = { 5.50, 5.55, 5.60, 5.65, 5.70, 5.75, 5.80, 5.85, 5.90, 5.95, 6.00 };	
 	
 	
-	public BeamEmissSpecAEB20() {
+	public BeamEmissSpecAEB20old() {
 		super("beamSpec-aeb20");
 		addElement(entryWindowIris);
 		addElement(entryWindowFront);

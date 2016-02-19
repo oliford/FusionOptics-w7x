@@ -83,6 +83,8 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, portNormal, portUp, 0.150, 0.150, Absorber.ideal());	
 	
 	
+	public double[] R = { 5.50, 5.55, 5.60, 5.65, 5.70, 5.75, 5.80, 5.85, 5.90, 5.95, 6.00 };	
+	
 	
 	public Element tracingTarget = mirror;
 
