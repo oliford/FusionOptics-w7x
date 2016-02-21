@@ -46,4 +46,7 @@ public class W7XRudix extends SimpleBeamGeometry {
 
 	@Override
 	public double[] uVecBox(int boxIdx) { return u[0]; }
+
+	@Override
+	public double[] getVoltageAll() { return new double[]{ Double.NaN }; } // No idea what this will be
 }

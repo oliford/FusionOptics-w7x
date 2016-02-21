@@ -60,6 +60,8 @@ public class W7xNBI extends SimpleBeamGeometryAUGType {
 				{ -0.5, -0.5, -0.5, -0.5 },
 				{ -0.5, -0.5, -0.5, -0.5 },
 			}; 
+
+	private static final double defaultVoltage[] = new double[]{ 60e3, 60e3, 60e3, 60e3, 60e3, 60e3, 60e3, 60e3 };
 	
 	private static W7xNBI defaultInstance;
 	
@@ -81,6 +83,7 @@ public class W7xNBI extends SimpleBeamGeometryAUGType {
 		defaultInstance = new W7xNBI();
 		
 		defaultInstance.calcVectors(R_P0, theta, psi, alpha, beta, Dx, Z0);
+		defaultInstance.setVoltages(defaultVoltage);
 		
 		return defaultInstance;
 	}
