@@ -31,12 +31,8 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static BeamEmissSpecAET21 sys = new BeamEmissSpecAET21();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
-	//public static BeamEmissSpecAEB20new sys = new BeamEmissSpecAEB20new();
-	//public static Surface mustHitToDraw = sys.fibrePlane;
 	public static BeamEmissSpecAEM21 sys = new BeamEmissSpecAEM21();
 	public static Surface mustHitToDraw = sys.fibrePlane;
-	//public static BeamEmissSpecAEW21 sys = new BeamEmissSpecAEW21();
-	//public static Surface mustHitToDraw = sys.fibrePlane;
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
@@ -133,6 +129,7 @@ public class LightAssessmentW7X {
 			
 		}
 	
+		/* virtual observation calc
 		for(int iP=0; iP < nPoints; iP++){
 			Cylinder losCyld = new Cylinder("los" + iP, 
 					Util.mul(Util.plus(los[iP][0], los[iP][1]), 0.5),
@@ -141,7 +138,6 @@ public class LightAssessmentW7X {
 			
 			sys.addElement(losCyld);
 		}
-		
 		
 		double dL0[] = Util.reNorm(Util.minus(los[0][1], los[0][0]));
 		double dLN[] = Util.reNorm(Util.minus(los[nPoints-1][1], los[nPoints-1][0]));
@@ -155,7 +151,7 @@ public class LightAssessmentW7X {
 		System.out.print("Virtual obs pos: "); OneLiners.dumpArray(p);
 		Sphere virtObs = new Sphere("virtObs", p, 0.02, NullInterface.ideal());
 		sys.addElement(virtObs);
-		
+		*/
 		
 		lightInfoOut.close();
 				
