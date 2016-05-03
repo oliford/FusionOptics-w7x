@@ -11,6 +11,7 @@ import fusionOptics.interfaces.NullInterface;
 import fusionOptics.interfaces.Reflector;
 import fusionOptics.materials.BK7;
 import fusionOptics.materials.Sapphire;
+import fusionOptics.optics.STLMesh;
 import fusionOptics.optics.SimplePlanarConvexLens;
 import fusionOptics.surfaces.Disc;
 import fusionOptics.surfaces.Iris;
@@ -31,7 +32,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	
 	/***** Observation target ****/
 	//public int targetBeamIdx = 6; // 6 = Q7 = K21 lower radial   
-	public double targetBeamR = 5.8;
+	public double targetBeamR = 5.75;
 	//public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	public double targetObsPos[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
 	public double sourceNormal[] =  Util.reNorm(Util.minus(targetObsPos, portEntryPos));
@@ -46,9 +47,9 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double opticAxis[] = Util.reNorm(Algorithms.matrixMul(Algorithms.rotationMatrix(portSourcePlane, opticsTiltInPortSideways), opticAxisA));
 	
 	/**** Mirror *****/
-	public double mirrorDistIntoPort = -0.010;
-	public double mirrorDistAwayFromSource = 0.000;
-	public double mirrorDistSidewaysInPort = 0.000;
+	public double mirrorDistIntoPort = 0.010;
+	public double mirrorDistAwayFromSource = 0.000; //~toroidally in vessel
+	public double mirrorDistSidewaysInPort = 0.000; //up/down in vessel
 	public double mirrorPos0[] = Util.plus(portEntryPos, Util.mul(opticAxis, mirrorDistIntoPort)); 
 	public double mirrorPos[] = Util.plus(Util.plus(mirrorPos0, 
 													Util.mul(portSourcePlane, -mirrorDistAwayFromSource)),
@@ -74,7 +75,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double entryWindowDiameter = 0.120; // [Made up ]
 	public double entryWindowThickness = 0.010; // [Made up]
 	
-	public double entryWindowFrontPos[] = Util.plus(mirrorPos0, Util.mul(opticAxis, windowDistBehindMirror));
+	public double entryWindowFrontPos[] = Util.plus(mirrorPos, Util.mul(opticAxis, windowDistBehindMirror));
 	public double entryWindowIrisPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness / 2));
 	private double entryWindowBackPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness));
 	
@@ -133,13 +134,14 @@ public class BeamEmissSpecAEA21 extends Optic {
 	
 
 	/*** Fibres ****/
-	public double[] R = { 5.50, 5.75, 6.10 };
+	public double[] R = { 5.50, 5.78, 6.05  };
+	//public double[] R = OneLiners.linSpace(5.5, 6.1, 30);
 	
 	int nFibres = R.length;
 	
 	public double fibre1EndPos[] = { -2.89649, -4.54998, 1.44268 }; // core channel, [fromDesigner-20151106] 
 	public double fibre10EndPos[] = { -2.85912, -4.50896, 1.43616 }; // edge channel,  [fromDesigner-20151106]
-		
+
 	//public double[] R = { 5.50, 5.55, 5.60, 5.65, 5.70, 5.75, 5.80, 5.85, 5.90, 5.95, 6.00 };	
 	
 	public double[][] fibreEndPos = { 
@@ -204,6 +206,8 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public BeamEmissSpecAEA21() {
 		super("beamSpec-aea21");
 		
+		addElement(new STLMesh("panel", "/work/ipp/w7x/cad/aea21/panel-cutting-aea21-edge-channels-cut-front.stl", portEntryPos, 0.500));
+		
 		addElement(mirror);
 		addElement(entryWindowIris);
 		addElement(entryWindowFront);
@@ -234,7 +238,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 			addElement(fibrePlanes[i]);
 		}
 		*/
-		fibrePlanes = new Square[nFibres];
+		/*fibrePlanes = new Square[nFibres];
 		for(int i=0; i < nFibres; i++){
 			//double norm[] = Util.reNorm(Util.minus(lensCentrePos, fibreEndPos[i]));
 			double norm[] = fibreEndNorm[i];
@@ -242,7 +246,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 			double y[] = Util.reNorm(Util.cross(x, norm));
 			fibrePlanes[i] = new Square("fibrePlane_" + i, fibreEndPos[i], norm, y, 0.007, 0.007, NullInterface.ideal());
 			addElement(fibrePlanes[i]);
-		}
+		}*/
 			
 		addElement(catchPlane);
 		

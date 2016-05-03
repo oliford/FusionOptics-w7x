@@ -15,6 +15,7 @@ import fusionOptics.materials.BK7;
 import fusionOptics.materials.IsotropicFixedIndexGlass;
 import fusionOptics.materials.Sapphire;
 import fusionOptics.optics.NodesAndElementsMesh;
+import fusionOptics.optics.STLMesh;
 import fusionOptics.optics.SimplePlanarConvexLens;
 import fusionOptics.surfaces.Cylinder;
 import fusionOptics.surfaces.Disc;
@@ -36,7 +37,7 @@ public class BeamEmissSpecAEM21 extends Optic {
 	
 	/***** Observation target ****/
 	//public int targetBeamIdx = 6; // 6 = Q7 = K21 lower radial   
-	public double targetBeamR = 5.7;
+	public double targetBeamR = 5.65;
 	//public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	public double targetObsPos[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
 	public double sourceNormal[] =  Util.reNorm(Util.minus(targetObsPos, portEntryPos));
@@ -45,23 +46,23 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public double portSourcePerp[] = Util.reNorm(Util.cross(sourceNormal, portNormal));
 	public double portSourcePlane[] = Util.reNorm(Util.cross(portNormal, portSourcePerp));
 	
-	public double opticsTiltInPortSideways = 0 * Math.PI / 180;
-	public double opticsTiltInPortToSource = -3	 * Math.PI / 180; //+ve is away from source
+	public double opticsTiltInPortSideways = -2 * Math.PI / 180;
+	public double opticsTiltInPortToSource = -6	 * Math.PI / 180; //+ve is away from source
 	public double opticAxisA[] = Util.reNorm(Algorithms.matrixMul(Algorithms.rotationMatrix(portSourcePerp, opticsTiltInPortToSource), portNormal));
 	public double opticAxis[] = Util.reNorm(Algorithms.matrixMul(Algorithms.rotationMatrix(portSourcePlane, opticsTiltInPortSideways), opticAxisA));
 	
 	/**** Mirror *****/
-	public double mirrorDistIntoPort = 0.070;
-	public double mirrorDistAwayFromSource = 0.030;
-	public double mirrorDistSidewaysInPort = 0.000;
+	public double mirrorDistIntoPort = 0.100;
+	public double mirrorDistAwayFromSource = 0.050;
+	public double mirrorDistSidewaysInPort = -0.000;
 	public double mirrorPos[] = Util.plus(Util.plus(Util.plus(portEntryPos, 
 													Util.mul(opticAxis, mirrorDistIntoPort)), 
 													Util.mul(portSourcePlane, -mirrorDistAwayFromSource)),
 													Util.mul(portSourcePerp, mirrorDistSidewaysInPort));
 	
 	public double mirrorRotationInPlane = 40 * Math.PI / 180;
-	public double mirrorWidth = 0.240;
-	public double mirrorHeight = 0.100;
+	public double mirrorWidth = 0.300;
+	public double mirrorHeight = 0.150;
 					
 	public double mirrorNormal[] = Util.reNorm(Util.plus(sourceNormal, opticAxis));
 
@@ -76,7 +77,7 @@ public class BeamEmissSpecAEM21 extends Optic {
 	
 	/***** Entry Window *****/
 	public double windowDistBehindMirror = 0.130;
-	public double entryWindowDiameter = 0.200; // [Jurgen's Frascati poster + talking to Jurgen + plm/CAD ]
+	public double entryWindowDiameter = 0.150; // [Jurgen's Frascati poster + talking to Jurgen + plm/CAD ]
 	public double entryWindowThickness = 0.010; // [Made up]
 	
 	public double entryWindowFrontPos[] = Util.plus(mirrorPos, Util.mul(opticAxis, windowDistBehindMirror));
@@ -95,7 +96,7 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public double lensCentrePos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, lensDistBehindWindow));
 	
 	
-	public double focalLength = 0.500; // Would be better, NA~0.33, much better focus
+	public double focalLength = 0.400; // Would be better, NA~0.33, much better focus
 	
 	public Medium lensMedium = new Medium(new BK7());  // [J.Balzhuhn's eBANF for the lens]
 	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
@@ -114,12 +115,12 @@ public class BeamEmissSpecAEM21 extends Optic {
 	
 	
 	/**** Lens2 *****/
-	public double lens2DistBehindLens1 = 0.250;
+	public double lens2DistBehindLens1 = 0.270;
 	public double lens2Diameter = 0.180 + 0.001;
 	
 	public double lens2CentrePos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, lens2DistBehindLens1));
 	
-	public double focalLength2 = 0.500; // Would be better, NA~0.33, much better focus
+	public double focalLength2 = 0.400; // Would be better, NA~0.33, much better focus
 	
 	public Medium lens2Medium = new Medium(new BK7());  // [J.Balzhuhn's eBANF for the lens]
 	public SimplePlanarConvexLens lens2 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
@@ -138,7 +139,8 @@ public class BeamEmissSpecAEM21 extends Optic {
 	
 
 	/*** Fibres ****/
-	public double[] R = { 5.50, 5.75, 6.00 };
+	//public double[] R = OneLiners.linSpace(5.5, 6.1, 30);
+	public double[] R = { 5.50, 5.78, 6.05 };
 	
 	int nFibres = R.length;
 	
@@ -180,7 +182,7 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public double fibreNA = 0.28; // [ written on the fibre bundle packing reel ]
 	
 	public double fibreEndDiameter = 0.001; // roughly 1mm diameter [ looking at the fibres, and it agrees with 540x total / 10 = 54x per bundle. 54x * jacket size = ~1mm area ]
-	public double fibrePlaneBehindLens2 = 0.240;
+	public double fibrePlaneBehindLens2 = 0.130;
 	
 	//public double fibresXVec[] = Util.reNorm(Util.minus(fibre10EndPos, fibre1EndPos));
 	//public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, portNormal));
@@ -195,7 +197,7 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, opticAxis, fibresYVec, 0.300, 0.300, NullInterface.ideal());
 	public Square fibrePlanes[];
 	
-	public Square catchPlane = new Square("catchPlane", Util.plus(fibrePlanePos, Util.mul(opticAxis, 0.050)), 
+	public Square catchPlane = new Square("catchPlane", Util.plus(fibrePlanePos, Util.mul(opticAxis, 0.020)), 
 										opticAxis, fibresYVec, 0.300, 0.300, Absorber.ideal());
 
 
@@ -209,6 +211,8 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public BeamEmissSpecAEM21() {
 		super("beamSpec-aem21");
 		
+		addElement(new STLMesh("panel", "/work/ipp/w7x/cad/aem21/panel-cutting-edge-channels-cut.stl"));
+				
 		addElement(mirror);
 		addElement(entryWindowIris);
 		addElement(entryWindowFront);
@@ -239,7 +243,7 @@ public class BeamEmissSpecAEM21 extends Optic {
 			addElement(fibrePlanes[i]);
 		}
 		*/
-		fibrePlanes = new Square[nFibres];
+		/*fibrePlanes = new Square[nFibres];
 		for(int i=0; i < nFibres; i++){
 			//double norm[] = Util.reNorm(Util.minus(lensCentrePos, fibreEndPos[i]));
 			double norm[] = fibreEndNorm[i];
@@ -248,7 +252,7 @@ public class BeamEmissSpecAEM21 extends Optic {
 			fibrePlanes[i] = new Square("fibrePlane_" + i, fibreEndPos[i], norm, y, 0.007, 0.007, NullInterface.ideal());
 			addElement(fibrePlanes[i]);
 		}
-			
+			//*/
 		addElement(catchPlane);
 		
 		Z = new double[nFibres];

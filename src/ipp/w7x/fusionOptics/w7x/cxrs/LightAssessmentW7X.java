@@ -4,6 +4,7 @@ import ipp.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.neutralBeams.W7xNBI;
 import jafama.FastMath;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import oneLiners.OneLiners;
@@ -18,6 +19,7 @@ import fusionOptics.drawing.VRMLDrawer;
 import fusionOptics.interfaces.NullInterface;
 import fusionOptics.surfaces.Cylinder;
 import fusionOptics.surfaces.Sphere;
+import fusionOptics.surfaces.Triangle;
 import fusionOptics.tracer.Tracer;
 import fusionOptics.types.Element;
 import fusionOptics.types.Intersection;
@@ -27,13 +29,15 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class LightAssessmentW7X {
 	
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	//public static Surface mustHitToDraw = sys.fibrePlane;
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static BeamEmissSpecAET21 sys = new BeamEmissSpecAET21();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
-	public static BeamEmissSpecAEM21 sys = new BeamEmissSpecAEM21();
-	public static Surface mustHitToDraw = sys.fibrePlane;
+	//public static BeamEmissSpecAEM21 sys = new BeamEmissSpecAEM21();
+	//public static Surface mustHitToDraw = sys.fibrePlane;
 	public static SimpleBeamGeometry beams = W7xNBI.def();
+	
+	public static List<Surface> interestedSurfaces = new ArrayList<Surface>();
 
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static Surface mustHitToDraw = sys.entryWindowFront;
@@ -45,7 +49,7 @@ public class LightAssessmentW7X {
 	//public final static int nPoints = 10;
 	//public final static double R0 = 5.2;  
 	//public final static double R1 = 5.9;
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 5000;
 	//*/
 	
 	// For calc
@@ -72,7 +76,13 @@ public class LightAssessmentW7X {
 		double col[][] = ColorMaps.jet(nPoints);
 		
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
-		BinaryMatrixWriter lightInfoOut = new BinaryMatrixWriter(outPath + "/sourceSolidAng.bin", 4); 
+		BinaryMatrixWriter lightInfoOut = new BinaryMatrixWriter(outPath + "/sourceSolidAng.bin", 4);
+		
+		
+		for(Surface s : sys.getSurfacesAll()){
+			if(!(s instanceof Triangle))
+				interestedSurfaces.add(s);
+		}
 		
 		double los[][][] = new double[nPoints][2][];
 		for(int iP=0; iP < nPoints; iP++){
@@ -117,7 +127,7 @@ public class LightAssessmentW7X {
 			
 			System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
 			System.out.println("P=" + iP + "(R=" + R + "):\t " + nHit + " of " + nAttempts + " attempts hit " + mustHitToDraw.getName() + " and have been drawn");
-			intensityInfo.dump();
+			//intensityInfo.dump(interestedSurfaces, null, true, 0, 0);
 			System.out.println("SR = " + solidAngleFP*1e6 + " µSR");
 			intensityInfo.reset();
 			
