@@ -33,36 +33,37 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public double portNormal[] = { 0.355, -0.145, 0.923 };	// roughly , from CAD
 	public double portEntryPos[] = new double[] { -0.5450167236328125, 5.418457763671875, 0.9406844177246094  }; //point roughly in middle of hole in heat shield
 	
-	public double virtualObsPos[] = { -0.6546110237348162,	5.3526440924933905,	1.1287584849690853 }; //closest approach of all LOSs, from lightAssesment
+	public double virtualObsPos[] = { -0.5745897188359274, 5.358101041433857,	1.1084874747900637 }; //closest approach of all LOSs, from lightAssesment
 	
 	/***** Observation target ****/
-	//public int targetBeamIdx = 6; // 6 = Q7 = K21 lower radial   
-	public double targetBeamR = 5.65;
-	//public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
-	public double targetObsPos[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
+	public int targetBeamIdx = W7xNBI.BEAM_Q8; // Seems to work better targeted at Q8. Q6 then loses a bit but Q8 gains a lot.   
+	public double targetBeamR = 5.75;
+	public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
+	//public double targetObsPos[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
 	public double sourceNormal[] =  Util.reNorm(Util.minus(targetObsPos, portEntryPos));
 	
 	//directions perp to port, sidesways and toward/away from source 
 	public double portSourcePerp[] = Util.reNorm(Util.cross(sourceNormal, portNormal));
 	public double portSourcePlane[] = Util.reNorm(Util.cross(portNormal, portSourcePerp));
 	
-	public double opticsTiltInPortSideways = -2 * Math.PI / 180;
-	public double opticsTiltInPortToSource = -6	 * Math.PI / 180; //+ve is away from source
+	public double opticsTiltInPortSideways = 0 * Math.PI / 180;
+	public double opticsTiltInPortToSource = 0* Math.PI / 180; //+ve is away from source
 	public double opticAxisA[] = Util.reNorm(Algorithms.matrixMul(Algorithms.rotationMatrix(portSourcePerp, opticsTiltInPortToSource), portNormal));
 	public double opticAxis[] = Util.reNorm(Algorithms.matrixMul(Algorithms.rotationMatrix(portSourcePlane, opticsTiltInPortSideways), opticAxisA));
 	
 	/**** Mirror *****/
-	public double mirrorDistIntoPort = 0.100;
-	public double mirrorDistAwayFromSource = 0.050;
-	public double mirrorDistSidewaysInPort = -0.000;
+	public double mirrorDistIntoPort = 0.120;
+	public double mirrorDistAwayFromSource = 0.020;
+	public double mirrorDistSidewaysInPort = -0.006; //-0.005; // to match designer's window position better 
 	public double mirrorPos[] = Util.plus(Util.plus(Util.plus(portEntryPos, 
 													Util.mul(opticAxis, mirrorDistIntoPort)), 
 													Util.mul(portSourcePlane, -mirrorDistAwayFromSource)),
 													Util.mul(portSourcePerp, mirrorDistSidewaysInPort));
 	
-	public double mirrorRotationInPlane = 40 * Math.PI / 180;
-	public double mirrorWidth = 0.300;
-	public double mirrorHeight = 0.150;
+	public double mirrorRotationInPlane = 35 * Math.PI / 180;
+	//public double mirrorWidth = 0.200;
+	//public double mirrorHeight = 0.150;
+	public double mirrorDiameter = 0.100;
 					
 	public double mirrorNormal[] = Util.reNorm(Util.plus(sourceNormal, opticAxis));
 
@@ -71,14 +72,15 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public double mirrorX[] = Util.reNorm(Util.plus(Util.mul(mirrorA, FastMath.cos(mirrorRotationInPlane)), Util.mul(mirrorB, FastMath.sin(mirrorRotationInPlane))));
 	public double mirrorY[] = Util.reNorm(Util.plus(Util.mul(mirrorA, -FastMath.sin(mirrorRotationInPlane)), Util.mul(mirrorB, FastMath.cos(mirrorRotationInPlane))));
 	
-	public Square mirror = new Square("mirror", mirrorPos, mirrorNormal, mirrorX, mirrorWidth, mirrorHeight, Reflector.ideal());
+	//public Square mirror = new Square("mirror", mirrorPos, mirrorNormal, mirrorX, mirrorWidth, mirrorHeight, Reflector.ideal());
+	public Disc mirror = new Disc("mirror", mirrorPos, mirrorNormal, mirrorDiameter/2, Reflector.ideal());
 	
-	//public NodesAndElementsMesh shieldTiles = new2 NodesAndElementsMesh("shield", "/work/ipp/w7x/cad/shield-m2", mirrorPos, 0.150);
+	public STLMesh panelEdge = new STLMesh("panel", "/work/ipp/w7x/cad/aem21/panel-cutting-edge-channels-cut.stl");
 	
 	/***** Entry Window *****/
-	public double windowDistBehindMirror = 0.130;
-	public double entryWindowDiameter = 0.150; // [Jurgen's Frascati poster + talking to Jurgen + plm/CAD ]
-	public double entryWindowThickness = 0.010; // [Made up]
+	public double windowDistBehindMirror = 0.170;
+	public double entryWindowDiameter = 0.090; // 
+	public double entryWindowThickness = 0.010; // 
 	
 	public double entryWindowFrontPos[] = Util.plus(mirrorPos, Util.mul(opticAxis, windowDistBehindMirror));
 	public double entryWindowIrisPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness / 2));
@@ -90,59 +92,58 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public Iris entryWindowIris = new Iris("entryWindowIris", entryWindowIrisPos, opticAxis, entryWindowDiameter*2, entryWindowDiameter*0.49, null, null, Absorber.ideal());
 	
 	/**** Main Lens *****/
-	public double lensDistBehindWindow = 0.080;
-	public double lensDiameter = 0.150 + 0.001;
+	public double lensDistBehindWindow = 0.055;
+	public double lensDiameter = 0.120 + 0.005;
 	
 	public double lensCentrePos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, lensDistBehindWindow));
 	
 	
-	public double focalLength = 0.400; // Would be better, NA~0.33, much better focus
+	public double focalLength = 0.200; // Would be better, NA~0.33, much better focus
 	
-	public Medium lensMedium = new Medium(new BK7());  // [J.Balzhuhn's eBANF for the lens]
+	public Medium lensMedium = new Medium(new BK7());  
 	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
 											"lens1",
 											lensCentrePos,
 											opticAxis,
 											lensDiameter/2, // radius
 											focalLength, // focal length
-											0.030, // centreThickness [ fromDesigner CAD for glass - although it's curvature doesn't match Jurgen's eBANF's focal length] 
+											0.025,  
 											lensMedium, 
 											IsoIsoInterface.ideal(),
 											designWavelenth);
 	
-	public double lensIrisPos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, -0.002));
+	public double lensIrisPos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, -0.005));
 	public Iris lensIris = new Iris("lensIris", lensIrisPos, opticAxis, lensDiameter, lensDiameter*0.48, null, null, Absorber.ideal());
 	
 	
 	/**** Lens2 *****/
-	public double lens2DistBehindLens1 = 0.270;
-	public double lens2Diameter = 0.180 + 0.001;
+	public double lens2DistBehindLens1 = 0.030;
+	public double lens2Diameter = 0.120 + 0.005;
 	
 	public double lens2CentrePos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, lens2DistBehindLens1));
 	
-	public double focalLength2 = 0.400; // Would be better, NA~0.33, much better focus
+	public double focalLength2 = 0.200; // Would be better, NA~0.33, much better focus
 	
-	public Medium lens2Medium = new Medium(new BK7());  // [J.Balzhuhn's eBANF for the lens]
+	public Medium lens2Medium = new Medium(new BK7());  
 	public SimplePlanarConvexLens lens2 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
 											"lens2",
 											lens2CentrePos,
 											opticAxis,
 											lens2Diameter/2, // radius
 											focalLength2, // focal length
-											0.030, // centreThickness [ fromDesigner CAD for glass - although it's curvature doesn't match Jurgen's eBANF's focal length] 
+											0.025, // centreThickness [ fromDesigner CAD for glass - although it's curvature doesn't match Jurgen's eBANF's focal length] 
 											lens2Medium, 
 											IsoIsoInterface.ideal(),
 											designWavelenth);
 	
-	public double lens2IrisPos[] = Util.plus(lens2CentrePos, Util.mul(opticAxis, -0.002));
-	public Iris lens2Iris = new Iris("lens2Iris", lens2IrisPos, opticAxis, lens2Diameter, lens2Diameter*0.48, null, null, Absorber.ideal());
+	public double lens2IrisPos[] = Util.plus(lens2CentrePos, Util.mul(opticAxis, -0.005));
+	public Iris lens2Iris = new Iris("lens2Iris", lens2IrisPos, opticAxis, lens2Diameter*2, lens2Diameter*0.48, null, null, Absorber.ideal());
 	
 
 	/*** Fibres ****/
-	//public double[] R = OneLiners.linSpace(5.5, 6.1, 30);
-	public double[] R = { 5.50, 5.78, 6.05 };
+	public double[] channelR = OneLiners.linSpace(5.5, 6.1, 30);	
 	
-	int nFibres = R.length;
+	int nFibres = channelR.length;
 	
 	public double fibre1EndPos[] = { -2.89649, -4.54998, 1.44268 }; // core channel, [fromDesigner-20151106] 
 	public double fibre10EndPos[] = { -2.85912, -4.50896, 1.43616 }; // edge channel,  [fromDesigner-20151106]
@@ -176,13 +177,13 @@ public class BeamEmissSpecAEM21 extends Optic {
 		};
 
 	
-	public double[] Z;
+	public double[] channelZ;
 	
 	//public double fibreEndPos[][];
-	public double fibreNA = 0.28; // [ written on the fibre bundle packing reel ]
+	public double fibreNA = 0.22; // As AUG
 	
-	public double fibreEndDiameter = 0.001; // roughly 1mm diameter [ looking at the fibres, and it agrees with 540x total / 10 = 54x per bundle. 54x * jacket size = ~1mm area ]
-	public double fibrePlaneBehindLens2 = 0.130;
+	public double fibreEndDiameter = 0.0004; // as AUG
+	public double fibrePlaneBehindLens2 = 0.060;
 	
 	//public double fibresXVec[] = Util.reNorm(Util.minus(fibre10EndPos, fibre1EndPos));
 	//public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, portNormal));
@@ -211,7 +212,7 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public BeamEmissSpecAEM21() {
 		super("beamSpec-aem21");
 		
-		addElement(new STLMesh("panel", "/work/ipp/w7x/cad/aem21/panel-cutting-edge-channels-cut.stl"));
+		addElement(panelEdge);
 				
 		addElement(mirror);
 		addElement(entryWindowIris);
@@ -255,9 +256,9 @@ public class BeamEmissSpecAEM21 extends Optic {
 			//*/
 		addElement(catchPlane);
 		
-		Z = new double[nFibres];
+		channelZ = new double[nFibres];
 		for(int i=0; i < nFibres; i++){
-			Z[i] = W7xNBI.def().getPosOfBoxAxisAtR(0, R[i])[2];
+			channelZ[i] = W7xNBI.def().getPosOfBoxAxisAtR(0, channelR[i])[2];
 		}
 		
 		System.out.print("Window centre posXYZ = "); OneLiners.dumpArray(entryWindowFront.getCentre());		

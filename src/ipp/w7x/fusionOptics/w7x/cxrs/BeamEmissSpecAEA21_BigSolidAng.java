@@ -21,7 +21,7 @@ import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public class BeamEmissSpecAEA21 extends Optic {
+public class BeamEmissSpecAEA21_BigSolidAng extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
@@ -202,7 +202,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 
 	public Element tracingTarget = mirror;
 		
-	public BeamEmissSpecAEA21() {
+	public BeamEmissSpecAEA21_BigSolidAng() {
 		super("beamSpec-aea21");
 		
 		addElement(new STLMesh("panel", "/work/ipp/w7x/cad/aea21/panel-cutting-aea21-edge-channels-cut-front.stl", portEntryPos, 0.500));
