@@ -1,4 +1,4 @@
-package ipp.w7x.fusionOptics.w7x.cxrs;
+package ipp.w7x.fusionOptics.w7x.cxrs.other;
 
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;

@@ -1,6 +1,9 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import ipp.neutralBeams.SimpleBeamGeometry;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_topWindow_18deg;
+import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEW21;
 import ipp.w7x.neutralBeams.W7xNBI;
 import jafama.FastMath;
 
@@ -12,21 +15,30 @@ import java.util.List;
 
 import oneLiners.OneLiners;
 import algorithmrepository.Algorithms;
+import binaryMatrixFile.BinaryMatrixFile;
 import binaryMatrixFile.BinaryMatrixWriter;
+import otherSupport.BinarySTLFile;
 import otherSupport.ColorMaps;
 import otherSupport.ScientificNumberFormat;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.collection.HitPositionAverage;
 import fusionOptics.collection.IntensityInfo;
+import fusionOptics.collection.LightConeInfo;
+import fusionOptics.collection.PlaneAngleInfo;
+import fusionOptics.drawing.STLDrawer;
 import fusionOptics.drawing.VRMLDrawer;
 import fusionOptics.interfaces.NullInterface;
+import fusionOptics.optics.STLMesh;
 import fusionOptics.surfaces.Cylinder;
+import fusionOptics.surfaces.Disc;
+import fusionOptics.surfaces.Iris;
 import fusionOptics.surfaces.Sphere;
 import fusionOptics.surfaces.Triangle;
 import fusionOptics.tracer.Tracer;
 import fusionOptics.types.Element;
 import fusionOptics.types.Intersection;
+import fusionOptics.types.Optic;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
 
@@ -35,9 +47,9 @@ public class LightAssessmentW7X {
 	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
-	//public static BeamEmissSpecAET21 sys = new BeamEmissSpecAET21();
+	//public static BeamEmissSpecAET21_topWindow_18deg sys = new BeamEmissSpecAET21_topWindow_18deg();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
-	public static BeamEmissSpecAEM21 sys = new BeamEmissSpecAEM21();
+	public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
 	public static Surface mustHitToDraw = sys.fibrePlane;
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -51,145 +63,215 @@ public class LightAssessmentW7X {
 	//public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076 
 	
 	//public static int beamSelection[] = { beams.BEAM_Q5, beams.BEAM_Q6, beams.BEAM_Q7, beams.BEAM_Q8 };  
-	public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q8 }; //for AEM21, 6 and 8 are the extremes
+	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q8 }; //for AEM21, 6 and 8 are the extremes
+	//public static int beamSelection[] = { beams.BEAM_Q7 }; // OP1.2 beams (lower in plasma)
+	public static int beamSelection[] = { -2 }; // Box axis for K21
 	
 	// For fast drawing/debugging
-	public static double pointR[] = { 5.50, 5.78, 6.05 };
-	//public static double pointR[] = OneLiners.linSpace(5.5, 6.01, 0.10);
+	//public static double pointR[] = { 5.50, 5.70, 5.90 };
+	public static double pointR[] = OneLiners.linSpace(5.4, 6.051, 0.05);
 	//public static double pointR[] = OneLiners.linSpace(5.5, 6.051, 30);
 	//public final static int nAttempts = 5000;
 	
 	public static boolean writeSolidAngeInfo = true;
-	public static boolean writeWRLForDesigner = true;
-	public final static int nAttempts = 1000;
+	public static String writeWRLForDesigner = null;//"-20160626";
+	public final static int nAttempts = 10000;
 	//*/
 	
 	public static double wavelength = 650e-9;
+	
+	public static int nRaysToDraw = 10000;
 	// For calc
 	/*public static double pointR[] = sys.channelR;
 	public final static int nAttempts = 20000;
 	//*/
 	
+	public static double fibreCoreDiameter = 400e-6;
+	public static double fibreNA = 0.22;
+	
+	
+	public static class FibreInfo{		
+		double R;
+		double beamPos[];
+		double viewPos[];
+		double fibrePos[];
+		
+		/** Number of fired rays which hit the fibre plane */
+		int nHitPlane;				
+		/** Solid angle into which rays are fired */
+		double solidAngleFiring;
+		/** Fraction of rays reaching plane that enter the fibre aligned with the mean ray */
+		double fracInMeanCone;
+		/** Fraction of rays reaching plane that enter the fibre aligned perp to the fibre plane*/
+		double fracInPerpCone;
+		
+		/** Effective collected solid angle into fibre perp cone */
+		double effectiveSolidAngle;
+		
+	}
+	
 	public static int nPointsPerBeam = pointR.length;
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName();
-	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
-			"Scale { scaleFactor 1000 1000 1000 }\n";
-	
-		
-	public static void main(String[] args) {
 			
-		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/lightAssess-"+sys.getDesignName()+ (writeWRLForDesigner ? ".wrl" : ".vrml"), 1.005);
-		if(!writeWRLForDesigner){
+	public static void main(String[] args) {
+		int nBeams = beamSelection.length;
+		
+		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/lightAssess-"+sys.getDesignName()+ ((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 1.005);
+		if((writeWRLForDesigner == null)){
 			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});			
 		}
-		vrmlOut.setSkipRays(nAttempts*nPointsPerBeam / 200000);
+		vrmlOut.setSkipRays((nAttempts*nPointsPerBeam*nBeams) / nRaysToDraw);
 		double col[][] = ColorMaps.jet(nPointsPerBeam);
 		
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
-		BinaryMatrixWriter lightInfoOut = writeSolidAngeInfo ? new BinaryMatrixWriter(outPath + "/sourceSolidAng.bin", 4) : null;
+		LightConeInfo lightConeInfo = new LightConeInfo(sys.fibrePlane);
 		
+		Optic fibreCylds = new Optic("fibreCylds");
 		
 		for(Surface s : sys.getSurfacesAll()){
 			if(!(s instanceof Triangle))
 				interestedSurfaces.add(s);
 		}
 		
-		int nBeams = beamSelection.length;
-		double beamPos[][][] = new double[nBeams][nPointsPerBeam][];
-		double viewPos[][][] = new double[nBeams][nPointsPerBeam][3];
-		double fibrePos[][][] = new double[nBeams][nPointsPerBeam][3];	
-		double solidAngleFP[][] = new double[nBeams][nPointsPerBeam];
+		FibreInfo fibre[][] = new FibreInfo[nBeams][nPointsPerBeam];
 		for(int iB=0; iB < nBeams; iB++){
 			int beamSel = beamSelection[iB];
 			
 			for(int iP=0; iP < nPointsPerBeam; iP++){
+				fibre[iB][iP] = new FibreInfo();
 				
 				//double R = R0 + iP * (R1 - R0) / (nPoints - 1.0);
 				double R = pointR[iP];
+				fibre[iB][iP].R = R;
 				
-				beamPos[iB][iP] = (beamSel < 0) ? beams.getPosOfBoxAxisAtR(1, R) : beams.getPosOfBeamAxisAtR(beamSel, R);
-				R = FastMath.sqrt(beamPos[iB][iP][0]*beamPos[iB][iP][0] + beamPos[iB][iP][1]*beamPos[iB][iP][1]);
+				fibre[iB][iP].beamPos = (beamSel < 0) ? beams.getPosOfBoxAxisAtR((-beamSel)-1, R) : beams.getPosOfBeamAxisAtR(beamSel, R);
+				R = FastMath.sqrt(fibre[iB][iP].beamPos[0]*fibre[iB][iP].beamPos[0] + fibre[iB][iP].beamPos[1]*fibre[iB][iP].beamPos[1]);
 				int nHit = 0;
 				
+				fibre[iB][iP].viewPos = new double[3];
 				for(int i=0; i < nAttempts; i++){
 					RaySegment ray = new RaySegment();
-					ray.startPos = beamPos[iB][iP].clone();
-					ray.dir = Tracer.generateRandomRayTowardSurface(beamPos[iB][iP], sys.tracingTarget);
+					ray.startPos = fibre[iB][iP].beamPos.clone();
+					ray.dir = Tracer.generateRandomRayTowardSurface(fibre[iB][iP].beamPos, sys.tracingTarget);
 					ray.wavelength = wavelength;
 					ray.E0 = new double[][]{{1,0,0,0}};
 					ray.up = Util.createPerp(ray.dir);
 							
 					Tracer.trace(sys, ray, 100, 0, false);
 					
-					ray.processIntersections(null, intensityInfo);
+					ray.processIntersections(null, intensityInfo, lightConeInfo);
 					
 
 					List<Intersection> hits = ray.getIntersections(fibrePlane);
 					if(hits.size() > 0){
 						Intersection fibrePlaneHit = hits.get(0);
-						fibrePos[iB][iP][0] += fibrePlaneHit.pos[0];
-						fibrePos[iB][iP][1] += fibrePlaneHit.pos[1];
-						fibrePos[iB][iP][2] += fibrePlaneHit.pos[2];
 						
-						Intersection mirrorHit = fibrePlaneHit.incidentRay.findFirstEarlierIntersection(sys.mirror);
+						Intersection mirrorHit = fibrePlaneHit.incidentRay.findFirstEarlierIntersection(sys.mirror);						
 						if(mirrorHit == null){
 							System.err.println("WTF: Hit fibre plane without hitting mirror");
 						}else{
-							viewPos[iB][iP][0] += mirrorHit.pos[0];
-							viewPos[iB][iP][1] += mirrorHit.pos[1];
-							viewPos[iB][iP][2] += mirrorHit.pos[2];
-						}
-						
+							fibre[iB][iP].viewPos[0] += ray.endHit.pos[0];
+							fibre[iB][iP].viewPos[1] += ray.endHit.pos[1];
+							fibre[iB][iP].viewPos[2] += ray.endHit.pos[2];
+						}						
 						nHit++;
 					}
-						
+					
 					
 					hits = ray.getIntersections(mustHitToDraw);
 					if(hits.size() > 0){												
 						vrmlOut.drawRay(ray, col[iP]);
 					}
 				}
+
+				fibre[iB][iP].nHitPlane = nHit;
+				fibre[iB][iP].viewPos[0] /= nHit;
+				fibre[iB][iP].viewPos[1] /= nHit;
+				fibre[iB][iP].viewPos[2] /= nHit;
 				
-				double dir[] = Tracer.generateRandomRayTowardSurface(beamPos[iB][iP], sys.tracingTarget, true);
-				double targetSolidAngle = Util.length(dir);
+				double dir[] = Tracer.generateRandomRayTowardSurface(fibre[iB][iP].beamPos, sys.tracingTarget, true);
+				fibre[iB][iP].solidAngleFiring = Util.length(dir);
 				
-				solidAngleFP[iB][iP] = intensityInfo.getSourceSolidAng(sys.fibrePlane, targetSolidAngle, nAttempts);
-				if(lightInfoOut != null)
-					lightInfoOut.writeRow(beamSel, iP, R, solidAngleFP[iB][iP]);
+				double fillNA = 0;
+				if(nHit > 2){
+					fibre[iB][iP].fibrePos = lightConeInfo.getApproxFocusPos();
+					
+					fibreCylds.addElement(lightConeInfo.makeFibreCylinder(0.010, 0.000250, sys.fibrePlane.getNormal()));
+					
+					//BinaryMatrixFile.mustWrite(outPath + "/angles-p_" + iP + "-R_" + R + ".bin", lightConeInfo.getRayAngles());
+					
+					fillNA = FastMath.asin(lightConeInfo.getCapturingAngle(0.90));
+					fibre[iB][iP].fracInPerpCone = lightConeInfo.getFractionInPlanePerpCone(FastMath.asin(fibreNA));
+					fibre[iB][iP].fracInMeanCone = lightConeInfo.getFractionInMeanCone(FastMath.asin(fibreNA));
+				}else{
+					fibre[iB][iP].fibrePos = new double[]{ Double.NaN, Double.NaN, Double.NaN };					
+				}
 				
+				fibre[iB][iP].effectiveSolidAngle = fibre[iB][iP].solidAngleFiring * fibre[iB][iP].fracInPerpCone * nHit / nAttempts; 
+				
+
 				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
 				System.out.println("B=Q" + (beamSel+1) + "\tP=" + iP + "(R=" + R + "):\t " + nHit + " of " + nAttempts + " attempts hit " + mustHitToDraw.getName() + " and have been drawn");
-				//intensityInfo.dump(interestedSurfaces, null, true, 0, 0);
-				System.out.println("SR = " + solidAngleFP[iB][iP]*1e6 + " µSR");
-				intensityInfo.reset();
 				
-				fibrePos[iB][iP][0] /= nHit;
-				fibrePos[iB][iP][1] /= nHit;
-				fibrePos[iB][iP][2] /= nHit;
+				
+				System.out.println("SR = " + fibre[iB][iP].effectiveSolidAngle*1e6 + " µSR, fillNA = " + fillNA 
+						+ ", in cone = " + (fibre[iB][iP].fracInMeanCone*100) + "%"
+						+ ", lost by perpCone = " + ((fibre[iB][iP].fracInMeanCone - fibre[iB][iP].fracInPerpCone)*100) + "%" );
 
-				viewPos[iB][iP][0] /= nHit;
-				viewPos[iB][iP][1] /= nHit;
-				viewPos[iB][iP][2] /= nHit;				
+
+				intensityInfo.reset();
+				lightConeInfo.reset();
+				
 			}
 		}
+		System.out.println("\n------------------------------------------------------------------------------------\n");
 		
-		//double fibreCoreDiameter = 400e-6;
-		double fibreCoreDiameter = 400e-6;
-		double fibreNA = 0.22;
+		
+		//addLosSolids(fibre);		
+		processImaging(fibre);		
+		
+				
+		if( ((Object)sys) instanceof BeamEmissSpecAEW21) 
+			sys.removeElement(((BeamEmissSpecAEW21)(Object)sys).shieldTiles);
+		
+		//sys.addElement(fibreCylds);
+		
+		vrmlOut.drawOptic(sys);
+		//vrmlOut.drawOptic(W7XBeamDefsSimple.makeBeamClyds());
+		
+		//vrmlOut.addVRML("}");
+		vrmlOut.destroy();
+		//makeSTLFiles();
+	}
+
+
+	private static void processImaging(FibreInfo fibre[][]) {
+		NumberFormat fmt = new DecimalFormat("##.###");
+		
+
 		double fibreEtendue = FastMath.pow2(FastMath.PI * fibreCoreDiameter * fibreNA) /4;
-		System.out.println("Fibre: d=" + fibreCoreDiameter/1e-6 + "µm, NA=" + fibreNA + ", étendue="+fibreEtendue);
+		System.out.println("Fibre: d=" + fmt.format(fibreCoreDiameter/1e-6) + "µm, NA=" + fibreNA + ", étendue="+ fmt.format(fibreEtendue*1e12) + " µm² SR");
+		
+		BinaryMatrixWriter lightInfoOut = writeSolidAngeInfo ? new BinaryMatrixWriter(outPath + "/sourceSolidAng.bin", 5) : null;
 		
 		//calc magnification
-		for(int iB=0; iB < nBeams; iB++){
-			int beamSel = beamSelection[iB];			
-			double lengthAtBeam = Util.length(Util.minus(beamPos[iB][nPointsPerBeam-1], beamPos[iB][0]));
-			double lengthAtFibrePlane = Util.length(Util.minus(fibrePos[iB][nPointsPerBeam-1], fibrePos[iB][0]));
+		for(int iB=0; iB < fibre.length; iB++){
+			int beamSel = beamSelection[iB];
+			int iP0 = -1;
+			int iP1 = -1*1;
+			for(int iP=0; iP < nPointsPerBeam; iP++){
+				if(!Double.isNaN(fibre[iB][iP].fibrePos[0])){
+					if(iP0 < 0) iP0 = iP;
+					iP1 = iP;
+				}
+			}
+			double lengthAtBeam = Util.length(Util.minus(fibre[iB][iP1].beamPos, fibre[iB][iP0].beamPos));
+			double lengthAtFibrePlane = Util.length(Util.minus(fibre[iB][iP1].fibrePos, fibre[iB][iP0].fibrePos));
 			double magnification = lengthAtBeam/lengthAtFibrePlane;
-			double imageCentre[] = Util.mul(Util.plus(fibrePos[iB][nPointsPerBeam-1], fibrePos[iB][0]), 0.5);
+			double imageCentre[] = Util.mul(Util.plus(fibre[iB][iP1].fibrePos, fibre[iB][iP0].fibrePos), 0.5);
 			double fibrePlaneLensDist = Util.length(Util.minus(sys.lensCentrePos, imageCentre));
 			double effLensDiameter = 2 * fibreNA * fibrePlaneLensDist;
-			NumberFormat fmt = new DecimalFormat("##.###");
 						
 			System.out.println("Q"+(beamSel+1) 
 					+ ", Lbeam = " + fmt.format(lengthAtBeam) 
@@ -201,46 +283,59 @@ public class LightAssessmentW7X {
 					+ ":");
 			
 			for(int iP=0; iP < nPointsPerBeam; iP++){
-				double etendue = FastMath.PI * FastMath.pow2(fibreCoreDiameter/2 * magnification) * solidAngleFP[iB][iP];
+				double etendue = FastMath.PI * FastMath.pow2(fibreCoreDiameter/2 * magnification) * fibre[iB][iP].effectiveSolidAngle;
 				System.out.println("\tR="+fmt.format(pointR[iP])
-									+ ", SR=" + fmt.format(solidAngleFP[iB][iP]*1e6) + "µSR"
-									+ ", étd =" + etendue
-									+ ((etendue > fibreEtendue) ? ", overfilled" : ", ** UNDERFILLED **"));
+									+ ", SR=" + fmt.format(fibre[iB][iP].effectiveSolidAngle*1e6) + "µSR"
+									+ ", étd =" + fmt.format(etendue*1e12) + " µm² SR, "
+									+ ((etendue > fibreEtendue) ? "overfilled" : "** UNDERFILLED **"));
+				
+				if(lightInfoOut != null)
+					lightInfoOut.writeRow(beamSel, iP, fibre[iB][iP].R, fibre[iB][iP].effectiveSolidAngle, etendue);
+				
 				
 			}
 			
 		}
 		
-	
-		// virtual observation calc
-		for(int iB=0; iB < nBeams; iB++){
+		lightInfoOut.close();
+		
+		
+	}
+
+	private static void addLosSolids(FibreInfo fibre[][]) {
+		//LOS Cylinders
+		for(int iB=0; iB < fibre.length; iB++){
 			int beamSel = beamSelection[iB];
 			for(int iP=0; iP < nPointsPerBeam; iP++){
+				if(fibre[iB][iP].nHitPlane <= 0)
+					continue;
+				
 				Cylinder losCyld = new Cylinder("los-Q"+(beamSel+1) +"-R" + pointR[iP], 
-						Util.mul(Util.plus(beamPos[iB][iP], viewPos[iB][iP]), 0.5),
-						Util.reNorm(Util.minus(viewPos[iB][iP], beamPos[iB][iP])),
-						0.005, 5.0, NullInterface.ideal());
+						Util.mul(Util.plus(fibre[iB][iP].beamPos, fibre[iB][iP].viewPos), 0.5),
+						Util.reNorm(Util.minus(fibre[iB][iP].viewPos, fibre[iB][iP].beamPos)),
+						0.002, 5.0, NullInterface.ideal());
 				
 				sys.addElement(losCyld);
-			}
+			}		
 		}
 		
+		//Effective virtual obs position: average of closest approach of each LOSes
 		int n=0;
 		double avgObsPos[] = new double[3];
-		for(int iB=0; iB < nBeams; iB++){
+		for(int iB=0; iB < fibre.length; iB++){
 			for(int iP=0; iP < nPointsPerBeam; iP++){
-				for(int iB2=0; iB2 < nBeams; iB2++){
+				for(int iB2=0; iB2 < fibre.length; iB2++){
 					for(int iP2=0; iP < nPointsPerBeam; iP++){
-						if(iB2 == iB && iP2 == iP)
+						if((iB2 == iB && iP2 == iP) || fibre[iB][iP].nHitPlane <= 0 || fibre[iB2][iP2].nHitPlane <= 0)
 							continue;
 						
-						double dLa[] = Util.reNorm(Util.minus(viewPos[iB][iP], beamPos[iB][iP]));
-						double dLb[] = Util.reNorm(Util.minus(viewPos[iB2][iP2], beamPos[iB2][iP2]));
+						double dLa[] = Util.reNorm(Util.minus(fibre[iB][iP].viewPos, fibre[iB][iP].beamPos));
+						double dLb[] = Util.reNorm(Util.minus(fibre[iB2][iP2].viewPos, fibre[iB2][iP2].beamPos));
 						
-						double a = Algorithms.pointOnLineNearestAnotherLine(viewPos[iB][iP], dLa, viewPos[iB2][iP2], dLb);
-						double p0a[] = Util.plus(viewPos[iB][iP], Util.mul(dLa, a));
-						a = Algorithms.pointOnLineNearestAnotherLine(viewPos[iB2][iP2], dLb, viewPos[iB][iP], dLa);
-						double p0b[] = Util.plus(viewPos[iB2][iP2], Util.mul(dLb, a));
+						double a = Algorithms.pointOnLineNearestAnotherLine(fibre[iB][iP].viewPos, dLa, fibre[iB2][iP2].viewPos, dLb);
+						double p0a[] = Util.plus(fibre[iB][iP].viewPos, Util.mul(dLa, a));
+						a = Algorithms.pointOnLineNearestAnotherLine(fibre[iB2][iP2].viewPos, dLb, fibre[iB][iP].viewPos, dLa);
+						double p0b[] = Util.plus(fibre[iB2][iP2].viewPos, Util.mul(dLb, a));
 						double p[] = Util.mul(Util.plus(p0a, p0b), 0.5);
 						avgObsPos[0] += p[0];
 						avgObsPos[1] += p[1];
@@ -252,22 +347,35 @@ public class LightAssessmentW7X {
 		}
 		avgObsPos[0] /= n; avgObsPos[1] /= n; avgObsPos[2] /= n;
 		
-		
 		System.out.print("Virtual obs pos: "); OneLiners.dumpArray(avgObsPos);
-		Sphere virtObs = new Sphere("virtObs", avgObsPos, 0.02, NullInterface.ideal());
+		Sphere virtObs = new Sphere("virtObs", avgObsPos, 0.005, NullInterface.ideal());
 		sys.addElement(virtObs);
-		//*/
 		
-		if(lightInfoOut != null)
-			lightInfoOut.close();
-				
-		if( ((Object)sys) instanceof BeamEmissSpecAEW21) 
-			sys.removeElement(((BeamEmissSpecAEW21)(Object)sys).shieldTiles);
-			
-		vrmlOut.drawOptic(sys);
-		//vrmlOut.drawOptic(W7XBeamDefsSimple.makeBeamClyds());
+	}
+	
+
+	private static void makeSTLFiles() {
+
+		STLDrawer stlDrawer = new STLDrawer(outPath + "/fibreCylds-"+sys.getDesignName()+".stl");		
+		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
+		stlDrawer.drawOptic(sys);
+		stlDrawer.destroy();
 		
-		//vrmlOut.addVRML("}");
-		vrmlOut.destroy();
+		/*stlDrawer = new STLDrawer(outPath + "/model-"+sys.getDesignName()+".stl");
+		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
+		stlDrawer.ignoreElementType(Iris.class);
+		stlDrawer.ignoreElementType(STLMesh.class);
+		stlDrawer.drawOptic(sys);
+		stlDrawer.destroy();*/
+		
+		for(Element elem : sys.makeSimpleModel()){
+			elem.setApproxDrawQuality(50);
+			stlDrawer = new STLDrawer(outPath + "/simpleModel/" + elem.getName() + ".stl");			
+			stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
+			stlDrawer.ignoreElementType(Iris.class);
+			stlDrawer.ignoreElementType(STLMesh.class);
+			stlDrawer.drawElement(elem);
+			stlDrawer.destroy();
+		}
 	}
 }

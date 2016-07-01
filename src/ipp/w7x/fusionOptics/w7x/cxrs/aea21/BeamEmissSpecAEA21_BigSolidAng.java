@@ -1,4 +1,4 @@
-package ipp.w7x.fusionOptics.w7x.cxrs;
+package ipp.w7x.fusionOptics.w7x.cxrs.aea21;
 
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
