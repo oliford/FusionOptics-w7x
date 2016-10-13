@@ -33,7 +33,7 @@ public class BeamEmissSpecAEM21 extends Optic {
 	public double portNormal[] = { 0.355, -0.145, 0.923 };	// roughly , from CAD
 	public double portEntryPos[] = new double[] { -0.5450167236328125, 5.418457763671875, 0.9406844177246094  }; //point roughly in middle of hole in heat shield
 	
-	public double virtualObsPos[] = { -0.5745897188359274, 5.358101041433857,	1.1084874747900637 }; //closest approach of all LOSs, from lightAssesment
+	public double virtualObsPos[] = { -0.580884046192984,	5.363132206061525,	1.1237268681832868 }; //closest approach of all LOSs, from lightAssesment
 	
 	/***** Observation target ****/
 	public int targetBeamIdx = W7xNBI.BEAM_Q8; // Seems to work better targeted at Q8. Q6 then loses a bit but Q8 gains a lot.   

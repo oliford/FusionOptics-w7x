@@ -258,6 +258,10 @@ public class BeamEmissSpecAEA21 extends Optic {
 	}
 
 	public String getDesignName() { return "aea21";	}
+
+	public Element[] makeSimpleModel() {
+		return new Element[0];
+	}
 	
 	
 

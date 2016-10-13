@@ -1,9 +1,11 @@
 package ipp.w7x.neutralBeams;
 
 
+import algorithmrepository.Algorithms;
 import oneLiners.OneLiners;
 import ipp.neutralBeams.MakeBeamsVRML;
 import fusionOptics.MinervaOpticsSettings;
+import fusionOptics.Util;
 import fusionOptics.drawing.VRMLDrawer;
 import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
@@ -20,19 +22,13 @@ public class MakeW7XBeamsVRML {
 		MakeBeamsVRML.makeBeamsRadialColoured(outPath + "/w7xNBI-colourByR.vrml", w7xNBI);
 		MakeBeamsVRML.makeBeamsAllGreen(outPath + "/w7xNBI-allGreen.vrml", w7xNBI);
 		MakeBeamsVRML.makeBeamsPINIColoured(outPath + "/w7xNBI-colourByPini.vrml", w7xNBI);
+		MakeBeamsVRML.makeBeamsPINIColouredSeparate(outPath + "/w7xNBI-colourByPini", w7xNBI);
 		
 		W7XRudix w7xRudix = new W7XRudix();
 		MakeBeamsVRML.makeBeamsRadialColoured(outPath + "/w7xRuDIX-colourByR.vrml", w7xRudix);
 		MakeBeamsVRML.makeBeamsAllGreen(outPath + "/w7xRuDIX-allGreen.vrml", w7xRudix);
 		MakeBeamsVRML.makeBeamsPINIColoured(outPath + "/w7xRuDIX-colourByPini.vrml", w7xRudix);
 		
-
-		System.out.print("RuDIX p = ");		OneLiners.dumpArray(W7XRudix.def().startBox(0));
-		System.out.print("RuDIX v = ");		OneLiners.dumpArray(W7XRudix.def().uVec(0));
-		System.out.print("NBI K20 p = ");		OneLiners.dumpArray(W7xNBI.def().startBox(0));
-		System.out.print("NBI K20 v = ");		OneLiners.dumpArray(W7xNBI.def().uVec(0));
-		System.out.print("NBI K21 p = ");		OneLiners.dumpArray(W7xNBI.def().startBox(1));
-		System.out.print("NBI K21 v = ");		OneLiners.dumpArray(W7xNBI.def().uVec(1));
 	}	
 	
 }
