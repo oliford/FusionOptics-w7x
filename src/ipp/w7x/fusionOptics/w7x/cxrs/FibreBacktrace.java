@@ -60,7 +60,7 @@ public class FibreBacktrace {
 		double col[][] = ColorMaps.jet(sys.channelR[0].length);
 		
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
-		BinaryMatrixWriter lightInfoOut = new BinaryMatrixWriter(outPath + "/sourceSolidAng.bin", 4); 
+		BinaryMatrixWriter lightInfoOut = new BinaryMatrixWriter(outPath + "/sourceSolidAng.bin", 5); 
 				
 		//Need to get through the fibre plane
 		sys.fibrePlane.setInterface(NullInterface.ideal());		
@@ -70,7 +70,7 @@ public class FibreBacktrace {
 				
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){
 							
-				int nHit = 0;
+				int nHit = 0, nStray = 0;
 				
 				double startPos[] = sys.fibreEndPos[iB][iP];
 				
@@ -120,7 +120,7 @@ public class FibreBacktrace {
 					ray.processIntersections(null, intensityInfo);
 	
 					
-					vrmlOut.drawRay(ray, col[iP]);
+					//vrmlOut.drawRay(ray, col[iP]);
 					List<Intersection> hits = ray.getIntersections(sys.beamPlane);
 					if(hits.size() > 0){
 						double p[] = hits.get(0).pos;
@@ -131,10 +131,15 @@ public class FibreBacktrace {
 	
 						
 						nHit++;
-					}else{
-						//vrmlOut.drawRay(ray, col[iP]); //stray light
-						
 					}
+					
+					if(ray.getIntersections(sys.strayPlane).size() > 0){
+						nStray++;
+					}
+					
+					//if(ray.getIntersections(sys.strayPlane).size() > 0){					
+						vrmlOut.drawRay(ray, col[iP]); //stray light						
+					//}
 					
 					Pol.recoverAll();
 				}
@@ -143,10 +148,11 @@ public class FibreBacktrace {
 				double var = 1.0/sumI*(sumIR2 - sumIR*sumIR/sumI);
 				double fwhmR = 2.35 * FastMath.sqrt(var);			
 				
-				lightInfoOut.writeRow(-1, iP, R, nHit / nAttempts);
+				lightInfoOut.writeRow(-1, iP, R, (double)nHit / nAttempts, (double)nStray / nAttempts);
 				
 				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
-				System.out.println("P=" + iP + "(R=" + R + ", fwhmR = " + fwhmR + "):\t " + nHit + " of " + nAttempts + " attempts hit and have been drawn");
+				System.out.println("P=" + iP + "(R=" + R + ", fwhmR = " + fwhmR + "):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
+																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 				
 				intensityInfo.reset();
 			}

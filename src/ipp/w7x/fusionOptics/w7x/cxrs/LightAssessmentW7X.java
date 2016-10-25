@@ -50,13 +50,13 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = false;
 	
-	public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
-	public static Surface mustHitToDraw = sys.fibrePlane;
-	public static boolean forcePerpFibres = true;
-	
-	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
+	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
+	
+	public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
+	public static Surface mustHitToDraw = sys.fibrePlane;
+	public static boolean forcePerpFibres = true;
 	
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -78,9 +78,9 @@ public class LightAssessmentW7X {
 	// For fast drawing/debugging
 	//public static double pointR[] = { 5.50, 5.70, 5.90 };
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
-	public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x
+	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x
 		
-	//public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 11);
+	public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 11);
 	
 	//public final static int nAttempts = 5000;
 	
