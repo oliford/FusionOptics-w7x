@@ -80,13 +80,13 @@ public class LightAssessmentW7X {
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
 	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x
 		
-	public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 11);
+	public static double pointR[] = OneLiners.linSpace(5.45, 6.038, 50); // for AEM21
 	
 	//public final static int nAttempts = 5000;
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 1000;
+	public final static int nAttempts = 5000;
 	//*/
 	
 	public static double wavelength = 530e-9;
@@ -141,7 +141,8 @@ public class LightAssessmentW7X {
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
 		LightConeInfo lightConeInfo = new LightConeInfo(sys.fibrePlane);
 		
-		Optic fibreCylds = new Optic("fibreCylds");
+		Optic fibreCyldsParallel = new Optic("fibreCylds-parallel");
+		Optic fibreCyldsAligned = new Optic("fibreCylds-aligned");
 		
 		for(Surface s : sys.getSurfacesAll()){
 			if(!(s instanceof Triangle))
@@ -213,7 +214,8 @@ public class LightAssessmentW7X {
 					fibre[iB][iP].fibrePos = lightConeInfo.getApproxFocusPos();
 					fibre[iB][iP].fibreMeanVec = lightConeInfo.getMeanVector();
 					//fibreCylds.addElement(lightConeInfo.makeFibreCylinder(0.010, 0.000250, sys.fibrePlane.getNormal()));
-					fibreCylds.addElement(lightConeInfo.makeFibreCylinder(0.010, 0.000250, null));
+					fibreCyldsAligned.addElement(lightConeInfo.makeFibreCylinder(0.010, 0.000250, null));
+					fibreCyldsParallel.addElement(lightConeInfo.makeFibreCylinder(0.010, 0.000250, sys.fibrePlane.getNormal()));
 					
 					//BinaryMatrixFile.mustWrite(outPath + "/angles-p_" + iP + "-R_" + R + ".bin", lightConeInfo.getRayAngles());
 					
@@ -263,7 +265,7 @@ public class LightAssessmentW7X {
 		
 		//vrmlOut.addVRML("}");
 		vrmlOut.destroy();
-		makeSTLFiles(fibreCylds);
+		makeSTLFiles(fibreCyldsAligned, fibreCyldsParallel);
 	}
 
 
@@ -417,11 +419,16 @@ public class LightAssessmentW7X {
 	}
 	
 
-	private static void makeSTLFiles(Optic fibreCylds) {
+	private static void makeSTLFiles(Optic fibreCyldsAligned, Optic fibreCyldsParallel) {
 
-		STLDrawer stlDrawer = new STLDrawer(outPath + "/fibreCylds-"+sys.getDesignName()+".stl");		
+		STLDrawer stlDrawer = new STLDrawer(outPath + "/fibreCylds-aligned-"+sys.getDesignName()+".stl");		
 		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
-		stlDrawer.drawOptic(fibreCylds);
+		stlDrawer.drawOptic(fibreCyldsAligned);
+		stlDrawer.destroy();
+		
+		stlDrawer = new STLDrawer(outPath + "/fibreCylds-parallel-"+sys.getDesignName()+".stl");		
+		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
+		stlDrawer.drawOptic(fibreCyldsParallel);
 		stlDrawer.destroy();
 		
 		/*stlDrawer = new STLDrawer(outPath + "/model-"+sys.getDesignName()+".stl");
