@@ -301,7 +301,13 @@ public double[][] fibreFocus = {{
 		 5.84411621093991E-4 ,
 		 5.84411621093991E-4 ,
 	}};
-
+	
+	public final String backgroundSTLFiles[] = {
+			"/work/ipp/w7x/cad/aet21/bg-targetting/baffles-m2-aet21-cut.stl",
+			"/work/ipp/w7x/cad/aet21/bg-targetting/shield-m2-aet21-cut.stl",
+			"/work/ipp/w7x/cad/aet21/bg-targetting/target-m2-aet21-cut.stl",
+	};
+		
 
 	public double[][][] fibreEndPos;
 	public double[][][] fibreEndNorm;
@@ -309,6 +315,8 @@ public double[][] fibreFocus = {{
 	public Square fibrePlanes[][] = {{
 			
 	}};
+	
+	
 	
 	private void setupFibrePositions() {
 		int nBeams = channelR.length;

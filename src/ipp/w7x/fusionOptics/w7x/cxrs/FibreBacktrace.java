@@ -34,10 +34,10 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class FibreBacktrace {
 	
-	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
+	public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
-	public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
+	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
@@ -45,7 +45,7 @@ public class FibreBacktrace {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 2000;
+	public final static int nAttempts = 200;
 
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/l1l2_40mm/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -135,9 +135,9 @@ public class FibreBacktrace {
 						nHit++;
 					}
 					
-					if(ray.getIntersections(sys.strayPlane).size() > 0){
-						nStray++;
-					}
+					//if(ray.getIntersections(sys.strayPlane).size() > 0){
+					//	nStray++;
+					//}
 					
 					//if(ray.getIntersections(sys.strayPlane).size() > 0){					
 						vrmlOut.drawRay(ray, col[iP]); //stray light						
