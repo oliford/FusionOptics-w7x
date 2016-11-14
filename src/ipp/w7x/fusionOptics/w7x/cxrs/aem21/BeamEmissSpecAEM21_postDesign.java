@@ -676,6 +676,12 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 		//double shift = 0.015; //for lens2DistBehindLens1 = 60mm
 		double shift = 0.000; //for lens2DistBehindLens1 = 40mm
 		//double shift = -0.014; //for lens2DistBehindLens1 = 20mm
+		double shiftR = 0.000, shiftU = 0.000; //for tolerance testing
+		
+		double r[] = Util.reNorm(Util.minus(fibreEndPos[0][fibreEndPos[0].length-1], fibreEndPos[0][0]));
+		double u[] = Util.reNorm(Util.cross(r, portNormal));
+		r = Util.reNorm(Util.cross(portNormal, u));
+		
 		for(int iB=0; iB < channelR.length; iB++){
 			for(int iF=0; iF < channelR[iB].length; iF++){
 				double a[] = OneLiners.rotateVectorAroundAxis(tiltAng, mirrorPivotVector, fibreEndNorm[iB][iF]);
@@ -684,6 +690,8 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 				fibreEndNorm[iB][iF] = a;
 				
 				fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(portNormal, shift)); 
+				fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(r, shiftR)); 
+				fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(u, shiftU)); 
 				
 			}
 		}

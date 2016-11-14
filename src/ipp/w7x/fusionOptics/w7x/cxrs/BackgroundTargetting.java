@@ -36,9 +36,9 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class BackgroundTargetting {
 	
-	public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();	
+	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
+	public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
