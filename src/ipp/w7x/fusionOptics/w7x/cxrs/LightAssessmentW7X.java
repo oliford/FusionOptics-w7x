@@ -2,7 +2,9 @@ package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import ipp.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEW21;
 import ipp.w7x.neutralBeams.W7xNBI;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import oneLiners.OneLiners;
 import algorithmrepository.Algorithms;
+import binaryMatrixFile.AsciiMatrixFile;
 import binaryMatrixFile.BinaryMatrixFile;
 import binaryMatrixFile.BinaryMatrixWriter;
 import otherSupport.BinarySTLFile;
@@ -54,7 +57,8 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
-	public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
+	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
+	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
 	public static Surface mustHitToDraw = sys.fibrePlane;
 	public static boolean forcePerpFibres = true;
 	
@@ -80,13 +84,13 @@ public class LightAssessmentW7X {
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
 	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x
 		
-	public static double pointR[] = OneLiners.linSpace(5.45, 6.038, 50); // for AEM21
+	public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
 	
 	//public final static int nAttempts = 5000;
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 5000;
+	public final static int nAttempts = 10000;
 	//*/
 	
 	public static double wavelength = 530e-9;
@@ -303,6 +307,17 @@ public class LightAssessmentW7X {
 		}
 		System.out.println("\t};");
 		
+		//also write for the python processing
+		for(int iB=0;iB<fibre.length; iB++){
+			double posArr[][] = new double[fibre[iB].length][4];
+			for(int iF=0; iF < fibre[iB].length; iF++){
+				posArr[iF][0] = fibre[iB][iF].R;
+				posArr[iF][1] =fibre[iB][iF].fibrePos[0];
+				posArr[iF][2] =fibre[iB][iF].fibrePos[1];
+				posArr[iF][3] =fibre[iB][iF].fibrePos[2];
+			}
+			AsciiMatrixFile.mustWrite(outPath + "/fibrePositions-Q"+(beamSelection[iB]+1)+".txt", posArr, false);
+		}
 	}
 
 

@@ -35,18 +35,18 @@ import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public class BeamEmissSpecAEM21_postDesign extends Optic {
+public class BeamEmissSpecAEM21_LC3_tilt3 extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
 	// CAD from designer
 	
 	
-	public double portNormal[] = { 0.35536503, -0.14530594,  0.92336444 };
+	public double portNormal[] = { 0.34990733, -0.14383846,  0.92567562 };
 	
 	public double virtualObsPos[] = { -0.5830873174901741,	5.362082222103293,	1.1250303063301719 }; //closest approach of all LOSs, from lightAssesment
-									  
-	public double windowCentre[] = { -0.47792361,  5.38480054,  1.17044202 };
+	
+	public double windowCentre[] = { -0.47753508,  5.39110547,  1.15942511 };
 	
 	/***** Mirror/Shutter *****/
 	
@@ -56,11 +56,13 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 	
 	public double mirrorRingRotate = 0 * Math.PI / 180; //Adjustment of mirror mount ring
 	
-	public double mirrorCentrePos0[] = { -0.52209747,  5.40077637,  1.05967297 }; // shutter/mirror centre in default open position
-	public double mirrorNormal0[] = { 0.95671975,  0.18248719,  0.22668426 }; // shutter/mirror normal in default open position	
-	public double mirrorPivotCentre[] = { -0.53505125,  5.39330481,  1.07630972 }; //pivot of shutter/mirror to open/close -535 5393 1076
-	public double mirrorPivotVector[] = { -0.23614408,  0.94177839,  0.23935211 }; //pivot of shutter/mirror to open/close -2362, 9418, 2394
+	// Mirror open position in 'LC3' - deformation of vessel in operations condition 
+	public double mirrorCentrePos0[] = { -0.5207307281494141, 5.40764208984375, 1.0499673767089843 }; // shutter/mirror centre in default open position
+	public double mirrorNormal0[] = { 0.95542566,  0.18261446,  0.23197794 }; // shutter/mirror normal in default open position	
+	public double mirrorPivotCentre[] = { -0.5338059844970703, 5.400211059570313, 1.0664956359863282 }; //pivot of shutter/mirror to open/close
+	public double mirrorPivotVector[] = { -0.23735768,  0.94222986,  0.23635614 }; //pivot of shutter/mirror to open/close 
 	
+
 	//rotate around shutter pivot
 	public double mirrorCentrePos1[] = Util.plus(mirrorPivotCentre, 
 										Algorithms.rotateVector(Algorithms.rotationMatrix(mirrorPivotVector, mirrorAngleAdjust), 
@@ -78,12 +80,11 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 	public Disc mirror = new Disc("mirror", mirrorCentrePos, mirrorNormal, mirrorDiameter/2, Reflector.ideal());
 	
 	public STLMesh panelEdge = new STLMesh("panel", "/work/ipp/w7x/cad/aem21/panel-cutting-edge-channels-cut.stl");
-	public STLMesh mirrorBlock = new STLMesh("mirrorBlock", "/work/ipp/w7x/cad/aem21/mirrorBlockSimpleOpen.stl");	
-	public STLMesh mirrorClampRing = new STLMesh("mirrorClampRing", "/work/ipp/w7x/cad/aem21/mirrorRing-simple.stl");	
+	public STLMesh mirrorBlock = new STLMesh("mirrorBlock", "/work/ipp/w7x/cad/aem21/mirrorBlockSimpleOpen-LC3.stl");	
+	public STLMesh mirrorClampRing = new STLMesh("mirrorClampRing", "/work/ipp/w7x/cad/aem21/mirrorRing-simple-LC3.stl");	
 	public STLMesh blockPlate = new STLMesh("blockPlate", "/work/ipp/w7x/cad/aem21/blockPlate-grooved.stl");
 	
 
-	
 	public double opticAxis[] = portNormal;
 	
 	/***** Entry Window *****/
@@ -572,10 +573,6 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 					{ -0.35536503, 0.14530594, -0.92336444 },
 					{ -0.35536503, 0.14530594, -0.92336444 },
 				}	};
-//*/
-
-
-
 	
 	public double[][] fibreFocus = null;
 	
@@ -701,7 +698,7 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 		}
 	}
 	
-	public BeamEmissSpecAEM21_postDesign() {
+	public BeamEmissSpecAEM21_LC3_tilt3() {
 		super("beamSpec-aem21");
 		
 		for(Surface s : blockPlate.getSurfaces())
@@ -750,7 +747,7 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 		System.out.print("Window centre posXYZ = "); OneLiners.dumpArray(entryWindowFront.getCentre());		
 	}
 
-	public String getDesignName() { return "aem21";	}
+	public String getDesignName() { return "aem21-lc3";	}
 
 	public List<Element> makeSimpleModel() {
 		return new ArrayList<Element>();

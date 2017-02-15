@@ -267,7 +267,7 @@ public class BeamEmissSpecAET21_postDesign extends Optic {
 	
 	/** Fibres, Observation volumes etc */
 	public double fibreNA = 0.22; // As AUG	
-	public double fibreEndDiameter = 0.000480; // as AUG, with polymide jacket
+	public double fibreEndDiameter = 0.000470; // from ceramOptec offer, with polymide jacket (470µm), without Tefzel (550µm)
 		
 	//public double[] channelR = OneLiners.linSpace(5.38, 5.88, nFibres);
 	public double[][] channelR = {{ 5.486, 5.509, 5.535, 5.559, 5.584, 
