@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fusionOptics</groupId>
+	<artifactId>FusionOptics-w7x</artifactId>
+
+	<parent>
+		<groupId>seed.maven</groupId>
+		<artifactId>common-pom</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<scm>
+		<connection>scm:svn:https://svn.seed-escience.org/public/FusionOptics</connection>
+		<developerConnection>scm:svn:https://svn.seed-escience.org/public/FusionOptics</developerConnection>
+		<url>https://svn.seed-escience.org</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>minerva-central</id>
+			<url>https://nexus.seed-escience.org/repository/maven-releases/</url>
+		</repository>
+	</distributionManagement>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>algorithmrepository</groupId>
+			<artifactId>AlgorithmRepository</artifactId>
+			<version>1.0.15</version>
+		</dependency>
+		<dependency>
+			<groupId>fusionOptics</groupId>
+			<artifactId>FusionOptics</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
+</project>
