@@ -37,7 +37,12 @@
 		<dependency>
 			<groupId>fusionOptics</groupId>
 			<artifactId>FusionOptics</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>oliford</groupId>
+			<artifactId>FusionGeomDefs</artifactId>
+			<version>1.0.2</version>
 		</dependency>
 	</dependencies>
 </project>

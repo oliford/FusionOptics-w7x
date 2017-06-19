@@ -1,6 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
-import ipp.neutralBeams.SimpleBeamGeometry;
+import fusionDefs.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.fusionOptics.w7x.cxrs.LightAssessmentW7X.FibreInfo;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;

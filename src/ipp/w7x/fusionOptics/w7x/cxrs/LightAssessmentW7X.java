@@ -1,6 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
-import ipp.neutralBeams.SimpleBeamGeometry;
+import fusionDefs.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;

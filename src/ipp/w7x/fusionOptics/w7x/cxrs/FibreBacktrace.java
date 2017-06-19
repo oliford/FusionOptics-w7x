@@ -1,6 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
-import ipp.neutralBeams.SimpleBeamGeometry;
+
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
@@ -16,6 +16,7 @@ import java.util.List;
 import oneLiners.OneLiners;
 import algorithmrepository.Algorithms;
 import binaryMatrixFile.BinaryMatrixWriter;
+import fusionDefs.neutralBeams.SimpleBeamGeometry;
 import otherSupport.ColorMaps;
 import otherSupport.RandomManager;
 import fusionOptics.MinervaOpticsSettings;
