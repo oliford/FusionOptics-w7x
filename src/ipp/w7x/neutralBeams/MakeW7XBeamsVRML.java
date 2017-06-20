@@ -3,7 +3,6 @@ package ipp.w7x.neutralBeams;
 
 import algorithmrepository.Algorithms;
 import oneLiners.OneLiners;
-import ipp.neutralBeams.MakeBeamsVRML;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.drawing.VRMLDrawer;
