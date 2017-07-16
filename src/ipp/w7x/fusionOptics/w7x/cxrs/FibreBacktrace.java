@@ -1,6 +1,7 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
 
+import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
@@ -38,21 +39,21 @@ import fusionOptics.types.Surface;
 public class FibreBacktrace {
 	
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
 	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
-	//public static SimpleBeamGeometry beams = W7xNBI.def();
+	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
-	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	public static SimpleBeamGeometry beams = W7XRudix.def();
+	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
 	public final static int nAttempts = 500;
 
-	public static String writeWRLForDesigner = "20170622";
+	public static String writeWRLForDesigner = "20170716";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/650nm/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models

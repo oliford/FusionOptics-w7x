@@ -53,7 +53,7 @@ public class LightAssessmentW7X {
 	
 	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	public static Surface mustHitToDraw = sys.fibrePlane;
-	public static boolean forcePerpFibres = false;
+	public static boolean forcePerpFibres = true; //telecentric-ish
 	
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
@@ -69,7 +69,8 @@ public class LightAssessmentW7X {
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static Surface mustHitToDraw = sys.entryWindowFront;
 	//public static SimpleBeamGeometry beams = W7XRudix.def();
-	//public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076 
+	//public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076
+	//public static boolean forcePerpFibres = false; //AEM41 has only one lens, so is not at all telecentric
 	
 	
 	public static List<Surface> interestedSurfaces = new ArrayList<Surface>();
