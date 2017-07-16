@@ -41,17 +41,19 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
 	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
 	public final static int nAttempts = 500;
 
+	public static String writeWRLForDesigner = "20170622";
+	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/650nm/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
@@ -59,8 +61,12 @@ public class FibreBacktrace {
 	public static void main(String[] args) {
 		makeFibreCyldSTL();// System.exit(0);
 		
-		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+".vrml", 5.005);
-		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
+	
+		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 5.005);
+		if((writeWRLForDesigner == null)){
+			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});			
+		}
+		
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
 		int totalFibres = sys.channelR.length*sys.channelR[0].length;
 		vrmlOut.setSkipRays(nAttempts*totalFibres / 5000);

@@ -6,7 +6,9 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
+import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEW21;
+import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import jafama.FastMath;
 
@@ -49,48 +51,51 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class LightAssessmentW7X {
 	
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	//public static Surface mustHitToDraw = sys.fibrePlane;
-	//public static boolean forcePerpFibres = false;
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static Surface mustHitToDraw = sys.fibrePlane;
+	public static boolean forcePerpFibres = false;
 	
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
 	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
-	public static Surface mustHitToDraw = sys.fibrePlane;
-	public static boolean forcePerpFibres = true;
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
+	//public static Surface mustHitToDraw = sys.fibrePlane;
+	//public static boolean forcePerpFibres = false;
 	
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
-	public static List<Surface> interestedSurfaces = new ArrayList<Surface>();
-	
-	public static Surface fibrePlane = sys.fibrePlane;
-
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static Surface mustHitToDraw = sys.entryWindowFront;
 	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	//public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076 
 	
+	
+	public static List<Surface> interestedSurfaces = new ArrayList<Surface>();
+	
+	public static Surface fibrePlane = sys.fibrePlane;
+
 	//public static int beamSelection[] = { beams.BEAM_Q5, beams.BEAM_Q6, beams.BEAM_Q7, beams.BEAM_Q8 };  
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q8 }; //for AEM21, 6 and 8 are the extremes	
-	public static int beamSelection[] = { beams.BEAM_Q7, beams.BEAM_Q8 }; // OP1.2 beams (lower in plasma)
+	//public static int beamSelection[] = { beams.BEAM_Q7, beams.BEAM_Q8 }; // OP1.2 beams (lower in plasma)
 	//public static int beamSelection[] = { beams.BEAM_Q7 }; // just Q7
-	//public static int beamSelection[] = { -2 }; // Box axis for K21
+	public static int beamSelection[] = { -2 }; // Box axis for K21
+	//public static int beamSelection[] = { 0 }; // RuDIX
 	
 	// For fast drawing/debugging
 	//public static double pointR[] = { 5.50, 5.70, 5.90 };
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
 	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x
 		
-	public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
+	//public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
+	public static double pointR[] = OneLiners.linSpace(5.20, 6.05, 10); // for AEM41
 	
 	//public final static int nAttempts = 5000;
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 1000;
 	//*/
 	
 	public static double wavelength = 530e-9;
@@ -186,14 +191,14 @@ public class LightAssessmentW7X {
 					if(hits.size() > 0){
 						Intersection fibrePlaneHit = hits.get(0);
 						
-						Intersection mirrorHit = fibrePlaneHit.incidentRay.findFirstEarlierIntersection(sys.mirror);						
-						if(mirrorHit == null){
-							System.err.println("WTF: Hit fibre plane without hitting mirror");
-						}else{
+						//Intersection mirrorHit = fibrePlaneHit.incidentRay.findFirstEarlierIntersection(sys.mirror);						
+						//if(mirrorHit == null){
+							//System.err.println("WTF: Hit fibre plane without hitting mirror");
+						//}else{
 							fibre[iB][iP].viewPos[0] += ray.endHit.pos[0];
 							fibre[iB][iP].viewPos[1] += ray.endHit.pos[1];
 							fibre[iB][iP].viewPos[2] += ray.endHit.pos[2];
-						}						
+						//}						
 						nHit++;
 					}
 					
@@ -453,7 +458,7 @@ public class LightAssessmentW7X {
 		stlDrawer.drawOptic(sys);
 		stlDrawer.destroy();*/
 		
-		for(Element elem : sys.makeSimpleModel()){
+		/*for(Element elem : sys.makeSimpleModel()){
 			elem.setApproxDrawQuality(50);
 			stlDrawer = new STLDrawer(outPath + "/simpleModel/" + elem.getName() + ".stl");			
 			stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
@@ -461,6 +466,6 @@ public class LightAssessmentW7X {
 			stlDrawer.ignoreElementType(STLMesh.class);
 			stlDrawer.drawElement(elem);
 			stlDrawer.destroy();
-		}
+		}*/
 	}
 }
