@@ -9,6 +9,8 @@ import fusionOptics.interfaces.Absorber;
 import fusionOptics.interfaces.IsoIsoInterface;
 import fusionOptics.interfaces.NullInterface;
 import fusionOptics.interfaces.Reflector;
+import fusionOptics.lenses.EdmundOptics50mmAspheric;
+import fusionOptics.lenses.ThorLabs100mmAspheric;
 import fusionOptics.materials.BK7;
 import fusionOptics.materials.Sapphire;
 import fusionOptics.optics.STLMesh;
@@ -32,7 +34,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	
 	/***** Observation target ****/
 	//public int targetBeamIdx = 6; // 6 = Q7 = K21 lower radial   
-	public double targetBeamR = 5.75;
+	public double targetBeamR = 5.65;
 	//public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	public double targetObsPos[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
 	public double sourceNormal[] =  Util.reNorm(Util.minus(targetObsPos, portEntryPos));
@@ -47,7 +49,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double opticAxis[] = Util.reNorm(Algorithms.matrixMul(Algorithms.rotationMatrix(portSourcePlane, opticsTiltInPortSideways), opticAxisA));
 	
 	/**** Mirror *****/
-	public double mirrorDistIntoPort = 0.020;
+	public double mirrorDistIntoPort = 0.010;
 	public double mirrorDistAwayFromSource = 0.000; //~toroidally in vessel
 	public double mirrorDistSidewaysInPort = 0.000; //up/down in vessel
 	public double mirrorPos0[] = Util.plus(portEntryPos, Util.mul(opticAxis, mirrorDistIntoPort)); 
@@ -56,8 +58,8 @@ public class BeamEmissSpecAEA21 extends Optic {
 													Util.mul(portSourcePerp, mirrorDistSidewaysInPort));
 	
 	public double mirrorRotationInPlane = 0 * Math.PI / 180;
-	public double mirrorWidth = 0.160; // [Made up ]
-	public double mirrorHeight = 0.110;
+	public double mirrorWidth = 0.130; // [Made up ]
+	public double mirrorHeight = 0.070;
 					
 	public double mirrorNormal[] = Util.reNorm(Util.plus(sourceNormal, opticAxis));
 
@@ -71,9 +73,9 @@ public class BeamEmissSpecAEA21 extends Optic {
 	//public NodesAndElementsMesh shieldTiles = new2 NodesAndElementsMesh("shield", "/work/ipp/w7x/cad/shield-m2", mirrorPos, 0.150);
 	
 	/***** Entry Window *****/
-	public double windowDistBehindMirror = 0.080;
-	public double entryWindowDiameter = 0.098; // DN100CF=98mm, DN63CF=68mm
-	public double entryWindowThickness = 0.010; // [Made up]
+	public double windowDistBehindMirror = 0.090;
+	public double entryWindowDiameter = 0.068; // DN100CF=98mm, DN63CF=68mm
+	public double entryWindowThickness = 0.005; // [Made up]
 	
 	public double entryWindowFrontPos[] = Util.plus(mirrorPos, Util.mul(opticAxis, windowDistBehindMirror));
 	public double entryWindowIrisPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness / 2));
@@ -86,7 +88,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	
 	/**** Main Lens *****/
 	public double lensDistBehindWindow = 0.040;
-	public double lensDiameter = 0.120 + 0.001;
+	public double lensDiameter = 0.095 + 0.001;
 	
 	public double lensCentrePos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, lensDistBehindWindow));
 	
@@ -94,7 +96,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double focalLength = 0.200; // Would be better, NA~0.33, much better focus
 	
 	public Medium lensMedium = new Medium(new BK7());  // [J.Balzhuhn's eBANF for the lens]
-	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
+	/*public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
 											"lens1",
 											lensCentrePos,
 											opticAxis,
@@ -103,7 +105,10 @@ public class BeamEmissSpecAEA21 extends Optic {
 											0.020, // centreThickness [ fromDesigner CAD for glass - although it's curvature doesn't match Jurgen's eBANF's focal length] 
 											lensMedium, 
 											IsoIsoInterface.ideal(),
-											designWavelenth);
+											designWavelenth);//*/
+	
+	public ThorLabs100mmAspheric lens1 = new ThorLabs100mmAspheric(lensCentrePos, opticAxis, 2.0);
+	
 	
 	
 	public double lensIrisPos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, -0.002));
@@ -111,15 +116,15 @@ public class BeamEmissSpecAEA21 extends Optic {
 	
 	
 	/**** Lens2 *****/
-	public double lens2DistBehindLens1 = 0.100;
-	public double lens2Diameter = 0.120 + 0.001;
+	public double lens2DistBehindLens1 = 0.060;
+	public double lens2Diameter = 0.095 + 0.001;
 	
 	public double lens2CentrePos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, lens2DistBehindLens1));
 	
 	public double focalLength2 = 0.200; // Would be better, NA~0.33, much better focus
 	
 	public Medium lens2Medium = new Medium(new BK7());  // [J.Balzhuhn's eBANF for the lens]
-	public SimplePlanarConvexLens lens2 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
+	/*public SimplePlanarConvexLens lens2 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
 											"lens2",
 											lens2CentrePos,
 											opticAxis,
@@ -128,32 +133,45 @@ public class BeamEmissSpecAEA21 extends Optic {
 											0.020, // centreThickness [ fromDesigner CAD for glass - although it's curvature doesn't match Jurgen's eBANF's focal length] 
 											lens2Medium, 
 											IsoIsoInterface.ideal(),
-											designWavelenth);
+											designWavelenth); //*/
+	public ThorLabs100mmAspheric lens2 = new ThorLabs100mmAspheric(lens2CentrePos, opticAxis, 2.0);
 	
 	public double lens2IrisPos[] = Util.plus(lens2CentrePos, Util.mul(opticAxis, -0.002));
 	public Iris lens2Iris = new Iris("lens2Iris", lens2IrisPos, opticAxis, lens2Diameter, lens2Diameter*0.48, null, null, Absorber.ideal());
 	
 
 	/*** Fibres ****/
-	public int beamIdx[] = { W7xNBI.BEAM_Q8 };
+	public int beamIdx[] = {  W7xNBI.BEAM_Q6, W7xNBI.BEAM_Q7  };
 	
 	public double fibre1EndPos[] = { -2.89649, -4.54998, 1.44268 }; // core channel, [fromDesigner-20151106] 
 	public double fibre10EndPos[] = { -2.85912, -4.50896, 1.43616 }; // edge channel,  [fromDesigner-20151106]
 	
 	public double[][] channelR = { 
 			{ 5.2, 5.294, 5.389, 5.483, 5.578, 5.672, 5.767, 5.861, 5.956, 6.05, }, 
+			{ 5.2, 5.294, 5.389, 5.483, 5.578, 5.672, 5.767, 5.861, 5.956, 6.05, }, 
 		}; 
 		public double[][][] fibreEndPos = { { 
-					{ 2.212450505867738, 6.360123375539141, 0.3791953857130034 },
-					{ 2.209172032119978, 6.363621127936311, 0.3789338304501974 },
-					{ 2.205546709501264, 6.36703398041381, 0.3787691762517194 },
-					{ 2.201314513860204, 6.369652799926165, 0.37855543132609754 },
-					{ 2.1971487716213063, 6.373172962425379, 0.37828072005694663 },
-					{ 2.1922700619865645, 6.375652617277898, 0.3780266999493186 },
-					{ 2.186786331927945, 6.376982917246934, 0.3777314073576372 },
-					{ 2.181156448565602, 6.378378541994496, 0.3774733527295074 },
-					{ 2.1754702567383712, 6.379920944802096, 0.37719177200884213 },
-					{ 2.169371725198904, 6.380500779046577, 0.376888084720784 },
+					{ 2.2006107967738746, 6.343357799723149, 0.37471859527625023 },
+					{ 2.197091155370875, 6.345630028407684, 0.3748037993037601 },
+					{ 2.1932367473199323, 6.347868995378173, 0.37490203808939 },
+					{ 2.189053645958922, 6.350036145486106, 0.3750208241704687 },
+					{ 2.184565391334356, 6.352113598465898, 0.37515642921288933 },
+					{ 2.1797720096419475, 6.353968120866029, 0.3753118942008155 },
+					{ 2.174726159838292, 6.355590607088339, 0.3754834068931586 },
+					{ 2.169438213361066, 6.356811983860418, 0.3756699790595796 },
+					{ 2.1639780280202965, 6.357631555236631, 0.37586878182126415 },
+					{ 2.158439702609498, 6.358090015309993, 0.37607651574392864 },
+				}, { 
+					{ 2.200024318075998, 6.3435866575249324, 0.38349641966658965 },
+					{ 2.196544780448723, 6.345816138869111, 0.38301622264114815 },
+					{ 2.192737178863849, 6.348013161498174, 0.3824676033212219 },
+					{ 2.1886175037969613, 6.350194570110142, 0.3818867394853621 },
+					{ 2.184178058229816, 6.3522213102277, 0.3812552605855109 },
+					{ 2.1794444116045493, 6.3540559937498795, 0.3805826266997282 },
+					{ 2.174450377282398, 6.35561992772527, 0.37987634528576286 },
+					{ 2.169225881336825, 6.35683789057045, 0.3791402358967788 },
+					{ 2.163844641509873, 6.3576910173698336, 0.37838808799490636 },
+					{ 2.158362353574962, 6.3581198547797495, 0.37762353828470424 },
 				}, 	}; 
 		public double[][][] fibreEndNorm = { { 
 				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
@@ -166,16 +184,26 @@ public class BeamEmissSpecAEA21 extends Optic {
 				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
 				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
 				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
+				}, { 
+				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
+				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
+				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
+				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
+				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
+				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
+				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
+				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
+				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
+				{ -0.3090170281652762, -0.9510565053160096, -6.10351585339942E-9 },
 				}, 	};
-
 
 	public double[] channelZ;
 	
 	//public double fibreEndPos[][];
-	public double fibreNA = 0.28; // [ written on the fibre bundle packing reel ]
+	public double fibreNA = 0.22; // [ written on the fibre bundle packing reel ]
 	
-	public double fibreEndDiameter = 0.001; // roughly 1mm diameter [ looking at the fibres, and it agrees with 540x total / 10 = 54x per bundle. 54x * jacket size = ~1mm area ]
-	public double fibrePlaneBehindLens2 = 0.240;
+	public double fibreEndDiameter = 0.0004; // 400um AUG-like fibres
+	public double fibrePlaneBehindLens2 = 0.100;
 	
 	//public double fibresXVec[] = Util.reNorm(Util.minus(fibre10EndPos, fibre1EndPos));
 	//public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, portNormal));
@@ -187,7 +215,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double fibresXVec[] = Util.reNorm(Util.cross(Util.cross(beamAxis, opticAxis),opticAxis));
 	public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, opticAxis));	
 	
-	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, opticAxis, fibresYVec, 0.300, 0.300, NullInterface.ideal());
+	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, opticAxis, fibresYVec, 0.100, 0.100, NullInterface.ideal());
 	public Square fibrePlanes[][];
 	
 	public Square catchPlane = new Square("catchPlane", Util.plus(fibrePlanePos, Util.mul(opticAxis, 0.050)), 

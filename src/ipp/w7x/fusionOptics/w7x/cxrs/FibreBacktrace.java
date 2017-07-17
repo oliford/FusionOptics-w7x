@@ -51,9 +51,9 @@ public class FibreBacktrace {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 500;
+	public final static int nAttempts = 5000;
 
-	public static String writeWRLForDesigner = "20170716";
+	public static String writeWRLForDesigner = "20170717";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/650nm/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -180,7 +180,7 @@ public class FibreBacktrace {
 				fibreInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], R, fwhmR, (double)nHit / nAttempts, (double)nStray / nAttempts, R, sumDistToBeam);
 				
 				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
-				System.out.println("P=" + iB + "." + iP + "(R=" + R + ", fwhmR = " + fwhmR + "):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
+				System.out.println("P=" + iB + "." + iP + "(R=" + R + ", fwhmR = " + (fwhmR*1e3) + " mm):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 
 				System.out.println("Part.show(Part.makeSphere("+(fwhmR*1e3)+", FreeCAD.Vector("+sumP[0]*1e3+","+sumP[1]*1e3+","+sumP[2]*1e3 + "));");

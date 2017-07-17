@@ -77,11 +77,11 @@ public class LightAssessmentW7X {
 	
 	public static Surface fibrePlane = sys.fibrePlane;
 
-	//public static int beamSelection[] = { beams.BEAM_Q5, beams.BEAM_Q6, beams.BEAM_Q7, beams.BEAM_Q8 };  
+	public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q7 };  
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q8 }; //for AEM21, 6 and 8 are the extremes	
 	//public static int beamSelection[] = { beams.BEAM_Q7, beams.BEAM_Q8 }; // OP1.2 beams (lower in plasma)
 	//public static int beamSelection[] = { beams.BEAM_Q7 }; // just Q7
-	public static int beamSelection[] = { -2 }; // Box axis for K21
+	//public static int beamSelection[] = { -2 }; // Box axis for K21
 	//public static int beamSelection[] = { 0 }; // RuDIX
 	
 	// For fast drawing/debugging
@@ -96,7 +96,7 @@ public class LightAssessmentW7X {
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 1000;
+	public final static int nAttempts = 10000;
 	//*/
 	
 	public static double wavelength = 530e-9;
