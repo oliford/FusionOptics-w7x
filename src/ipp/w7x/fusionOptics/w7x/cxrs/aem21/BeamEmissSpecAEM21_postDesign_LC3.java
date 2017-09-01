@@ -64,6 +64,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public double mirrorDiameter = 0.120;
 	
 	public double mirrorAngleAdjust = +3 * Math.PI / 180; // Adjust of shutter open angle. 0 is default open, -60 is closed, +3deg gives best throughput and direct light mitigation
+	//public double mirrorAngleAdjust = +0.72 * Math.PI / 180; // Furthest we could get due to shutter housing 
 	
 	public double mirrorRingRotate = 0 * Math.PI / 180; //Adjustment of mirror mount ring
 	
@@ -609,13 +610,9 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 					{ -0.3499074607007624, 0.14383845361539127, -0.9256755739499004 },
 					{ -0.3499074607007624, 0.14383845361539127, -0.9256755739499004 },
 				}
-				};
+			};
 
-//*/
-
-
-
-	
+//*/	
 	public double[][] fibreFocus = null;
 	
 	public double[][] channelZ;

@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>fusionOptics</groupId>
 			<artifactId>FusionOptics</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>oliford</groupId>
@@ -45,5 +45,5 @@
 			<version>1.0.3</version>
 		</dependency>
 	</dependencies>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 </project>

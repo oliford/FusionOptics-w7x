@@ -25,7 +25,7 @@ import fusionOptics.types.Optic;
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAEA21 extends Optic {
 	public double globalUp[] = {0,0,1};
-	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
+	public double designWavelenth = 500e-9; // [ He_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
 	public double portNormal[] = { 0.7725425415039062, 2.3776411743164063, 1.52587890625e-08 };	// roughly , from CAD
 	public double portEntryPos[] = new double[] { 2.0940919189453124, 6.0920563964843755, 0.3777649383544922 };  //point roughly in middle of end of immersion tube
@@ -73,9 +73,9 @@ public class BeamEmissSpecAEA21 extends Optic {
 	//public NodesAndElementsMesh shieldTiles = new2 NodesAndElementsMesh("shield", "/work/ipp/w7x/cad/shield-m2", mirrorPos, 0.150);
 	
 	/***** Entry Window *****/
-	public double windowDistBehindMirror = 0.090;
+	public double windowDistBehindMirror = 0.068;
 	public double entryWindowDiameter = 0.068; // DN100CF=98mm, DN63CF=68mm
-	public double entryWindowThickness = 0.005; // [Made up]
+	public double entryWindowThickness = 0.003; // [Made up]
 	
 	public double entryWindowFrontPos[] = Util.plus(mirrorPos, Util.mul(opticAxis, windowDistBehindMirror));
 	public double entryWindowIrisPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness / 2));
@@ -87,7 +87,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public Iris entryWindowIris = new Iris("entryWindowIris", entryWindowIrisPos, opticAxis, entryWindowDiameter*2, entryWindowDiameter*0.49, null, null, Absorber.ideal());
 	
 	/**** Main Lens *****/
-	public double lensDistBehindWindow = 0.040;
+	public double lensDistBehindWindow = 0.062;
 	public double lensDiameter = 0.095 + 0.001;
 	
 	public double lensCentrePos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, lensDistBehindWindow));

@@ -1,10 +1,17 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import fusionDefs.neutralBeams.SimpleBeamGeometry;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeUV;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeVIS;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsK41;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsL41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
+import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
+import ipp.w7x.neutralBeams.W7XPelletsK41;
+import ipp.w7x.neutralBeams.W7XPelletsL41;
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import jafama.FastMath;
@@ -38,11 +45,24 @@ public class BackgroundTargetting {
 	
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	
+	public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
+	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();	
+	
+	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
+	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();	
+	
+	//public static BeamEmissSpecAEK21_pelletsK41 sys = new BeamEmissSpecAEK21_pelletsK41();
+	//public static SimpleBeamGeometry beams = W7XPelletsK41.def();
+	
+	//public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41(); //need baffels and a panel
+	//public static SimpleBeamGeometry beams = W7XPelletsL41.def();
+	
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
@@ -124,7 +144,7 @@ public class BackgroundTargetting {
 					ray.dir = Util.plus(Util.plus(Util.mul(aV, a), Util.mul(bV, b)), Util.mul(nV, c));
 							
 					//ray.dir = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget);
-					ray.wavelength = sys.designWavelenth;
+					ray.wavelength = 530e-9; //sys.designWavelenth;
 					ray.E0 = new double[][]{{1,0,0,0}};
 					ray.up = Util.createPerp(ray.dir);
 							
@@ -173,8 +193,8 @@ public class BackgroundTargetting {
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 				{
 					double b[] = { hitPoints[iB][iP][0], hitPoints[iB][iP][1], hitPoints[iB][iP][2] };
-					double rad = hitPoints[iB][iP][3] / 2;
-					System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+iB+"_"+iP+"\"); "+
+					double rad = fwhm / 4;
+					System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
 								"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "));");
 					
 				}
@@ -189,9 +209,9 @@ public class BackgroundTargetting {
 					continue;
 				
 				double p[] = { hitPoints[iB][iP][0], hitPoints[iB][iP][1], hitPoints[iB][iP][2] };
-				double rad = hitPoints[iB][iP][3] / 2;
+				double rad = hitPoints[iB][iP][3] / 4;
 				 		
-				System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+iB+"_"+iP+"\"); "+
+				System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
 							"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 + "));");
 			}
 		}
