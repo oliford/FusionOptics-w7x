@@ -20,6 +20,9 @@ public class BeamEmissSpecAEK21_pelletsL41 extends BeamEmissSpecAEK21_base {
 	public static double axisAngleToUp = 49.0 * Math.PI / 180; 
 	
 	public static double focusAdjust = -0.012;
+	
+	public String lightPathsSystemName = "AEK41_PelletsL";
+	
 	@Override
 	protected void setupFibrePositions() {
 		

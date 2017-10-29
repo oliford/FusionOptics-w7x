@@ -12,6 +12,8 @@ public class BeamEmissSpecAEK21_edgeUV extends BeamEmissSpecAEK21_base {
 	public double designWavelenth = 250e-9; // [ Jürgen wants to use primarily 220nm and 280nm I think ]
 	
 	public double fibreEndDiameter = 0.003000; // Bundle end in square case, plugged in 5.5mm round hole
+
+	public String lightPathsSystemName = "AEK41_EdgeUV";
 	
 	/** Set fibre positions equal spacing in holder */
 	protected void setupFibrePositions() {

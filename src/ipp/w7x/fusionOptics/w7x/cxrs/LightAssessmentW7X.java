@@ -51,18 +51,18 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class LightAssessmentW7X {
 	
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	//public static Surface mustHitToDraw = sys.fibrePlane;
-	//public static boolean forcePerpFibres = true; //telecentric-ish
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static Surface mustHitToDraw = sys.fibrePlane;
+	public static boolean forcePerpFibres = true; //telecentric-ish
 	
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
 	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
-	public static Surface mustHitToDraw = sys.fibrePlane;
-	public static boolean forcePerpFibres = true;
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
+	//public static Surface mustHitToDraw = sys.fibrePlane;
+	//public static boolean forcePerpFibres = true;
 	
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -89,8 +89,8 @@ public class LightAssessmentW7X {
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
 	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x
 		
-	public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
-	//public static double pointR[] = OneLiners.linSpace(5.20, 6.05, 10); // for AEM41
+	//public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
+	public static double pointR[] = OneLiners.linSpace(5.20, 6.10, 20); // for AEA41
 	
 	//public final static int nAttempts = 5000;
 	
@@ -99,7 +99,10 @@ public class LightAssessmentW7X {
 	public final static int nAttempts = 5000;
 	//*/
 	
-	public static double wavelength = 530e-9;
+	public static double wavelength = sys.designWavelenth;
+	//public static double wavelength = 468e-9; //HeII
+	//public static double wavelength = 530e-9; //C_VI
+	//public static double wavelength = 656e-9; //HAlpha
 	
 	public static int nRaysToDraw = 10000;
 	// For calc

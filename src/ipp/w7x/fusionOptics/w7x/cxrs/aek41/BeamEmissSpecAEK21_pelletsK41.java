@@ -16,7 +16,8 @@ public class BeamEmissSpecAEK21_pelletsK41 extends BeamEmissSpecAEK21_base {
 	public static double fibre0R = -0.0013;
 	public static double fibre0U = 0.0185;
 	public static double axisAngleToUp = 0;// 1.625 * Math.PI / 180; 
-	
+
+	public String lightPathsSystemName = "AEK41_PelletsK";
 	
 	@Override
 	protected void setupFibrePositions() {

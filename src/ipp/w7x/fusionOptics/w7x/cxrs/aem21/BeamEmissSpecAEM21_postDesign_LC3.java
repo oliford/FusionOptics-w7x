@@ -39,6 +39,8 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
+	public String lightPathsSystemName = "AEM21_???";
+	
 	// CAD from designer
 		
 	//public double rotateLC3[][] = {	{ 1.009,  0.044,  0.004}, {0.061,  1.588, -0.001}, { -0.077, -0.759,  0.996} };

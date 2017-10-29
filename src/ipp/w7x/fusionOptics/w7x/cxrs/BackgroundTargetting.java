@@ -1,6 +1,7 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import fusionDefs.neutralBeams.SimpleBeamGeometry;
+import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsK41;
@@ -44,15 +45,16 @@ import fusionOptics.types.Surface;
 public class BackgroundTargetting {
 	
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();	
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
-	//public static SimpleBeamGeometry beams = W7xNBI.def();
+	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
-	public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
-	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();	
+	//public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
+	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
 	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();	
@@ -63,7 +65,6 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41(); //need baffels and a panel
 	//public static SimpleBeamGeometry beams = W7XPelletsL41.def();
 	
-	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
 	public final static int nAttempts = 100;
@@ -73,7 +74,6 @@ public class BackgroundTargetting {
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
 	public static void main(String[] args) {
-		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+".vrml", 5.005);
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
@@ -86,8 +86,9 @@ public class BackgroundTargetting {
 		Optic background = new Optic("background");
 		for(String fileName : sys.backgroundSTLFiles){			
 			String parts[] = fileName.split("/");
-					
-			background.addElement(new STLMesh("bg_"+parts[parts.length-1], fileName));			
+			System.out.print("Loading BG mesh " + fileName + "... ");
+			background.addElement(new STLMesh("bg_"+parts[parts.length-1], fileName));
+			System.out.println("OK");
 		}
 		Optic all = new Optic("all", new Element[]{ sys, background });
 		//sys.addElement(background);		
@@ -194,9 +195,10 @@ public class BackgroundTargetting {
 				{
 					double b[] = { hitPoints[iB][iP][0], hitPoints[iB][iP][1], hitPoints[iB][iP][2] };
 					double rad = fwhm / 4;
-					System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
-								"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "));");
-					
+					//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
+					//			"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "));");
+					System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\";");
+							
 				}
 			}
 		}
@@ -211,8 +213,25 @@ public class BackgroundTargetting {
 				double p[] = { hitPoints[iB][iP][0], hitPoints[iB][iP][1], hitPoints[iB][iP][2] };
 				double rad = hitPoints[iB][iP][3] / 4;
 				 		
-				System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
-							"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 + "));");
+				//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 + "));");
+				System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 
+								+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\";");
+			}
+		}
+		
+		//spit out LOS definitions
+		for(int iB=0; iB < sys.channelR.length; iB++){
+			for(int iP=0; iP < sys.channelR[iB].length; iP++){
+				double start[] = sys.lens1.getBackSurface().getCentre();
+				double uVec[] = Util.reNorm(Util.minus(hitPoints[iB][iP], start));
+				String chanName = ((sys.channelR.length > 1) ? ("S"+(iB+1)+ "-") : "") + String.format("%02d", iP+1);
+				System.out.println(sys.lightPathsSystemName + ":" + chanName
+						+ " start={ " + String.format("%7.5g", start[0]) + ", " + String.format("%7.5g", start[1]) + ", " + String.format("%7.5g", start[2]) + "}"
+						+ " uVec={ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "}"
+						+ " wall={ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
+									+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
+									+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "}"
+						);
 			}
 		}
 		

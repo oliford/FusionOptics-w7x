@@ -24,6 +24,9 @@ import fusionOptics.types.Optic;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAEA21 extends Optic {
+	
+	public String lightPathsSystemName = "AEA21_???";
+	
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ He_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
@@ -70,6 +73,13 @@ public class BeamEmissSpecAEA21 extends Optic {
 	
 	public Square mirror = new Square("mirror", mirrorPos, mirrorNormal, mirrorX, mirrorHeight, mirrorWidth, Reflector.ideal());
 	
+	public final String backgroundSTLFiles[] = {
+			"/work/ipp/w7x/cad/aea21/bg-targetting/baffle-m3.off-aea21-cut.stl",
+			"/work/ipp/w7x/cad/aea21/bg-targetting/panel-m21.off-aea21-cut.stl",
+			"/work/ipp/w7x/cad/aea21/bg-targetting/panel-m30.off-aea21-cut.stl",
+			"/work/ipp/w7x/cad/aea21/bg-targetting/shield-m3.off-aea21-cut.stl",
+	};
+		
 	//public NodesAndElementsMesh shieldTiles = new2 NodesAndElementsMesh("shield", "/work/ipp/w7x/cad/shield-m2", mirrorPos, 0.150);
 	
 	/***** Entry Window *****/

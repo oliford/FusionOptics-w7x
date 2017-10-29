@@ -47,7 +47,7 @@ public abstract class BeamEmissSpecAEK21_base extends Optic {
 	public double windowCentre[] = Util.plus(flangeCentre, Util.mul(portNormal, +0.008));
 	
 	
-	/** Optic axis tilt to match spatial calibration images */
+	/** Optic axis tilt to match spatial calibration images (18.08.2017)*/
 	public double tiltVertical = 0.20 * Math.PI / 180;
 	public double tiltHorizontal = -0.22 * Math.PI / 180;
 	
