@@ -135,8 +135,13 @@ public class MakeBeamsVRML {
 	}
 	
 	public static Optic makeAllBeamCylds(SimpleBeamGeometry beamGeom, double dL, double fwhm){
-		double l0 = beamGeom.getLOfBeamAxisAtR(0+0, beamGeom.plasmaR0());
+		double l0 = beamGeom.getLOfBeamAxisAtR(0, beamGeom.plasmaR0());
 		double l1 = beamGeom.getLOfBeamAxisAtR(0, beamGeom.plasmaR1());		
+		if(l1 < l0){
+			double ll = l0;
+			l0 = l1;
+			l1 = ll;
+		}
 		return makeAllBeamCylds(beamGeom, dL, fwhm, l0, l1);
 	}
 		
