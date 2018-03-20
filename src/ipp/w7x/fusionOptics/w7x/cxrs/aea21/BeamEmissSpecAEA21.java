@@ -21,6 +21,7 @@ import fusionOptics.surfaces.Square;
 import fusionOptics.types.Element;
 import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
+import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAEA21 extends Optic {
@@ -33,7 +34,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double portNormal[] = Util.reNorm(new double[]{ 0.7725425415039062, 2.3776411743164063, 1.52587890625e-08 });	// roughly , from CAD
 	public double portEntryPos[] = new double[] { 2.0940919189453124, 6.0920563964843755, 0.3777649383544922 };  //point roughly in middle of end of immersion tube
 	
-	public double virtualObsPos[] = { -0.9556435146926046,	6.200182024233047,	-0.16812844867308413 }; //closest approach of all LOSs, from lightAssesment (not yet known)
+	public double virtualObsPos[] = { 2.1224104306465854,	6.106432410473533,	0.3768450856770087 }; //closest approach of all LOSs, from lightAssesment (not yet known)
 	
 	/***** Observation target ****/
 	//public int targetBeamIdx = 6; // 6 = Q7 = K21 lower radial   
@@ -470,7 +471,8 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 0.500, 1.600, NullInterface.ideal());
 
 	public Element tracingTarget = mirror;
-		
+	public Surface checkSurface = mirror;
+			
 	public BeamEmissSpecAEA21() {
 		super("beamSpec-aea21");
 		

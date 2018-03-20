@@ -39,6 +39,8 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
+	public String lightPathsSystemName = "AEM21_???";
+	
 	// CAD from designer
 	
 	
@@ -619,6 +621,7 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 	public Disc strayPlane = new Disc("strayPlane", strayPos, portNormal, 0.200, Absorber.ideal());
 
 	public Element tracingTarget = mirror;
+	public Surface checkSurface = mirror;
 	
 	public final String backgroundSTLFiles[] = {
 			"/work/ipp/w7x/cad/aem21/bg-targetting/baffles-cut.stl",
@@ -755,7 +758,15 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 	public String getDesignName() { return "aem21";	}
 
 	public List<Element> makeSimpleModel() {
-		return new ArrayList<Element>();
+		ArrayList<Element> elements = new ArrayList<Element>();
+		
+		elements.add(mirror);
+		elements.add(entryWindowFront);	
+		elements.add(entryWindowBack);		
+		elements.add(lens1);
+		elements.add(lens2);
+		
+		return elements;
 	}
 	
 	

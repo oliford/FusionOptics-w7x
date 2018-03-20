@@ -189,37 +189,12 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public double lens2IrisPos[] = Util.plus(lens2CentrePos, Util.mul(opticAxis, -0.005));
 	public Iris lens2Iris = new Iris("lens2Iris", lens2IrisPos, opticAxis, lens2Diameter*2, lens2ClearAperture/2, null, null, Absorber.ideal());
 
-	/**** Petzval *****/
-	public double lensPVDistBehindLens1 = 0.110;
-	public double lensPVDiameter = 0.100;
-	
-	public double lensPVCentrePos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, lensPVDistBehindLens1));
-	
-	public double focalLengthPV = -0.200; 
-	
-	public Medium lensPVMedium = new Medium(new BK7());  
-	public SimplePlanarConvexLens lensPV = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
-											"lensPV",
-											lensPVCentrePos,
-											opticAxis,
-											lensPVDiameter/2, // radius
-											focalLengthPV, // focal length
-											0.005, // centreThickness [ fromDesigner CAD for glass - although it's curvature doesn't match Jurgen's eBANF's focal length] 
-											lensPVMedium, 
-											IsoIsoInterface.ideal(),
-											designWavelenth);
-	
-	public double lensPVIrisPos[] = Util.plus(lensPVCentrePos, Util.mul(opticAxis, -0.005));
-	public Iris lensPVIris = new Iris("lensPVIris", lensPVIrisPos, opticAxis, lensPVDiameter*2, lensPVDiameter*0.48, null, null, Absorber.ideal());
- 	
-
 	/*** Fibres ****/
-	/*public int beamIdx[] = { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
+	/*public int beamIdx[] = null;
 	public double[][] channelR = null;
 	public double[][][] fibreEndPos = null;
 	public double[][][] fibreEndNorm = null;
 	//*/
-	
 	public int beamIdx[] = { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
 	public double[][] channelR = { 
 			{ 5.450, 5.461, 5.473, 5.484, 5.495, 5.507, 5.518, 5.529, 5.541, 5.552, 5.563, 5.575, 5.586, 5.597, 5.608, 5.620, 5.631, 5.642, 5.654, 5.665, 5.676, 5.688, 5.699, 5.710, 5.722, 5.733, 5.744, 5.756, 5.767, 5.778, 5.790, 5.801, 5.812, 5.824, 5.835, 5.846, 5.858, 5.869, 5.880, 5.892, 5.903, 5.914, 5.925, 5.937, 5.948, 5.959, 5.971, 5.982, 5.993, 6.005, 6.016, 6.027, 6.039, 6.050,  },
@@ -657,6 +632,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public Disc strayPlane = new Disc("strayPlane", strayPos, portNormal, 0.200, Absorber.ideal());
 
 	public Element tracingTarget = mirror;
+	public Surface checkSurface = mirror;
 	
 	public final String backgroundSTLFiles[] = {
 			"/work/ipp/w7x/cad/aem21/bg-targetting/baffles-cut.stl",
@@ -833,7 +809,15 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public String getDesignName() { return "aem21-lc3";	}
 
 	public List<Element> makeSimpleModel() {
-		return new ArrayList<Element>();
+		ArrayList<Element> elements = new ArrayList<Element>();
+		
+		elements.add(mirror);
+		elements.add(entryWindowFront);	
+		elements.add(entryWindowBack);		
+		elements.add(lens1);
+		elements.add(lens2);
+		
+		return elements;
 	}
 	
 	

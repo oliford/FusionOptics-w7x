@@ -2,6 +2,9 @@ package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import fusionDefs.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeUV;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsK41;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsL41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
@@ -60,10 +63,7 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
-	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
-	//public static Surface mustHitToDraw = sys.fibrePlane;
-	//public static boolean forcePerpFibres = true;
-	
+	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
 	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
 	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
 	public static Surface mustHitToDraw = sys.fibrePlane;
@@ -86,7 +86,7 @@ public class LightAssessmentW7X {
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q8 }; //for AEM21, 6 and 8 are the extremes	
 	//public static int beamSelection[] = { beams.BEAM_Q7, beams.BEAM_Q8 }; // OP1.2 beams (lower in plasma)
 	//public static int beamSelection[] = { beams.BEAM_Q7 }; // OP1.2 beams (lower in plasma)
-	//public static int beamSelection[] = { beams.BEAM_Q7 }; // just Q7
+	//public static int beamSelection[] = { beams.BEAM_Q8 }; // just Q7
 	//public static int beamSelection[] = { -2 }; // Box axis for K21
 	//public static int beamSelection[] = { 0 }; // RuDIX
 	public static int beamSelection[] = { beams.BEAM_Q4 }; // for T20
@@ -469,7 +469,7 @@ public class LightAssessmentW7X {
 		stlDrawer.ignoreElementType(Iris.class);
 		stlDrawer.ignoreElementType(STLMesh.class);
 		stlDrawer.drawOptic(sys);
-		stlDrawer.destroy();*/
+		stlDrawer.destroy(); //*/
 		
 		/*for(Element elem : sys.makeSimpleModel()){
 			elem.setApproxDrawQuality(50);

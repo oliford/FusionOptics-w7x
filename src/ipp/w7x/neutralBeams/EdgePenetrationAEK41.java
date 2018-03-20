@@ -1,6 +1,5 @@
 package ipp.w7x.neutralBeams;
 
-
 import algorithmrepository.Algorithms;
 import fusionDefs.neutralBeams.SimpleBeamGeometry;
 import fusionOptics.Util;

@@ -6,6 +6,10 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsK41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsL41;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeUV;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeVIS;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsK41;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsL41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
@@ -47,14 +51,24 @@ import fusionOptics.types.Surface;
 public class FibreBacktrace {
 	
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
-	public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
+	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
-	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
+	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
 	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
+	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
+	//public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
+	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
+	
+	//public static BeamEmissSpecAEK21_pelletsK41 sys = new BeamEmissSpecAEK21_pelletsK41();
+	//public static SimpleBeamGeometry beams = W7XPelletsK41.def();
+	
+	//public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41();
+	//public static SimpleBeamGeometry beams = W7XPelletsL41.def();
+		
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
@@ -101,6 +115,7 @@ public class FibreBacktrace {
 		double col[][] = ColorMaps.jet(maxChans);
 		
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
+
 		BinaryMatrixWriter fibreInfoOut = new BinaryMatrixWriter(outPath + "/fibreInfo.bin", 15); 
 				
 		//Need to get through the fibre plane
@@ -108,8 +123,8 @@ public class FibreBacktrace {
 		sys.addElement(sys.beamPlane);
 		
 		for(int iB=0; iB < sys.channelR.length; iB++){
-			double beamStart[] = W7xNBI.def().start(sys.beamIdx[iB]);
-			double beamVec[] =  W7xNBI.def().uVec(sys.beamIdx[iB]);
+			double beamStart[] = beams.start(sys.beamIdx[iB]);
+			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
 			
 			for(int iP=0; iP < sys.channelR[iB].length; iP+=1){
 							

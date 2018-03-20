@@ -47,14 +47,14 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();	
 	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
-	//public static SimpleBeamGeometry beams = W7xNBI.def();
+	public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
+	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
-	public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
-	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
+	//public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
+	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
 	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();	

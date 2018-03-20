@@ -134,9 +134,10 @@ public class BeamEmissSpecAET21_postDesign extends Optic {
 	public double mirrorBuildPosB[] = Util.plus(mirrorBuildPosA, Util.mul(portUp, mirrorCentreUpFromWindow));	
 	public double mirrorCentrePos[] = Util.plus(mirrorBuildPosB, Util.mul(portRight, mirrorCentreRightFromWindow));
 	
-	public double mirrorToPortAngle = 19.2 * Math.PI / 180;
+	//public double mirrorToPortAngle = 19.2 * Math.PI / 180;
+	public double mirrorToPortAngle = 17.8 * Math.PI / 180;
 	//public double mirrorTipAngle = -6.5 * Math.PI / 180; //aimed at Q7
-	public double mirrorTipAngle = -8.5 * Math.PI / 180; // Q7 and Q8, also nearer core  
+	public double mirrorTipAngle = -7.5 * Math.PI / 180; // Q7 and Q8, also nearer core  
 
 	//public double mirrorToPortAngle = 14 * Math.PI / 180;	
 	//public double mirrorTipAngle = -3.0 * Math.PI / 180; //tip to counter the effect of the prism rotation, shiften lens
@@ -257,6 +258,7 @@ public class BeamEmissSpecAET21_postDesign extends Optic {
 	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, fibrePlaneNormal, fibresYVec, 0.080, 0.080, Absorber.ideal());
 	
 	public Element tracingTarget = entryWindowFront;
+	public Surface checkSurface = mirror;
 	
 	public double beamAxis[] = W7xNBI.def().uVec(targetBeamIdx);
 	public double beamObsPerp[] = Util.reNorm(Util.cross(Util.minus(lensCentrePos, targetObsPos), beamAxis));
@@ -267,10 +269,11 @@ public class BeamEmissSpecAET21_postDesign extends Optic {
 	
 	/** Fibres, Observation volumes etc */
 	public double fibreNA = 0.22; // As AUG	
-	public double fibreEndDiameter = 0.000470; // from ceramOptec offer, with polymide jacket (470µm), without Tefzel (550µm)
-
-	public int beamIdx[] = { W7xNBI.BEAM_Q8 };
-
+	public double fibreCoreDiameter = 0.000440; // from ceramOptec offer, with polymide jacket (470µm), without Tefzel (550µm)
+	public double fibreJacketDiameter = 0.000550; // from ceramOptec offer, with polymide jacket (470µm), without Tefzel (550µm)
+	public double fibreEndDiameter = fibreCoreDiameter;
+	
+	public int beamIdx[] = { W7xNBI.BEAM_Q7 };
 	//public double[] channelR = OneLiners.linSpace(5.38, 5.88, nFibres);
 	public double[][] channelR = {{ 5.486, 5.509, 5.535, 5.559, 5.584, 
 			              5.608, 5.632, 5.654, 5.679, 5.702, 
@@ -330,8 +333,8 @@ public double[][] fibreFocus = {{
 			fibreEndPos[iB] = new double[nFibres][];
 			fibreEndNorm[iB] = new double[nFibres][];
 			
-			double dX = -fibreEndDiameter;
-			double x0 = -(nFibres-1)/2 * dX; 
+			double dX = -fibreJacketDiameter;
+			double x0 = -(nFibres)/2 * dX; 
 			for(int iF=0; iF < nFibres; iF++){
 				fibreEndPos[iB][iF] = Util.plus(fibrePlanePos, Util.mul(fibresXVec, x0 + iF * dX));	
 						
