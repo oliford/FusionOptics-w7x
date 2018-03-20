@@ -10,6 +10,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
@@ -45,13 +46,14 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class FibreBacktrace {
 	
-	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
+	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
+	public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
 	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
-	//public static SimpleBeamGeometry beams = W7xNBI.def();
+	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static SimpleBeamGeometry beams = W7XRudix.def();
@@ -64,18 +66,18 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEK21_pelletsK41 sys = new BeamEmissSpecAEK21_pelletsK41();
 	//public static SimpleBeamGeometry beams = W7XPelletsK41.def();
 	
-	public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41();
-	public static SimpleBeamGeometry beams = W7XPelletsL41.def();
+	//public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41();
+	//public static SimpleBeamGeometry beams = W7XPelletsL41.def();
 	
 	public final static double traceWavelength = sys.designWavelenth;
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 1000;
 
 	public static String writeWRLForDesigner = null;//20170717";
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm/";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm/q8";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
@@ -91,15 +93,15 @@ public class FibreBacktrace {
 		
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
 		int totalFibres = sys.channelR.length*sys.channelR[0].length;
-		vrmlOut.setSkipRays(nAttempts*totalFibres / 5000);
+		vrmlOut.setSkipRays(nAttempts*totalFibres / 10000);
 		int maxChans=-1;
 		for(int iB=0; iB < sys.channelR.length; iB++)
 			if(sys.channelR[iB].length > maxChans)
-				maxChans = sys.channelR[iB].length;			
+				maxChans = sys.channelR[iB].length;
 		double col[][] = ColorMaps.jet(maxChans);
 		
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
-		BinaryMatrixWriter fibreInfoOut = new BinaryMatrixWriter(outPath + "/fibreInfo.bin", 9); 
+		BinaryMatrixWriter fibreInfoOut = new BinaryMatrixWriter(outPath + "/fibreInfo.bin", 15); 
 				
 		//Need to get through the fibre plane
 		sys.fibrePlane.setInterface(NullInterface.ideal());		
@@ -115,7 +117,8 @@ public class FibreBacktrace {
 				
 				double startPos[] = sys.fibreEndPos[iB][iP];
 				
-				double sumI=0, sumIR=0, sumIR2 = 0, sumP[] = new double[3], sumDistToBeam=0;
+				double sumI=0, sumIR=0, sumIR2 = 0, beamPlanePos[] = new double[3], sumDistToBeam=0;
+				double closestApproachPos[] = new double[3];
 				for(int i=0; i < nAttempts; i++){
 					double x, y, rMax = sys.fibreEndDiameter / 2;
 					do{
@@ -168,7 +171,7 @@ public class FibreBacktrace {
 						sumI += 1;
 						sumIR += R * 1;
 						sumIR2 += R * R * 1;
-						sumP[0] += p[0]; sumP[1] += p[1]; sumP[2] += p[2];
+						
 						
 						RaySegment hitRay = hits.get(0).incidentRay;
 						double aL = Algorithms.pointOnLineNearestAnotherLine(hitRay.startPos, hitRay.dir, beamStart, beamVec);
@@ -176,6 +179,11 @@ public class FibreBacktrace {
 						
 						aL = Algorithms.pointOnLineNearestAnotherLine(beamStart, beamVec, hitRay.startPos, hitRay.dir);
 						double p2[] = OneLiners.plus(beamStart, OneLiners.mul(beamVec, aL));
+						
+						for(int j=0; j<3; j++){
+							beamPlanePos[j] += p[j];
+							closestApproachPos[j] += p1[j];
+						}
 						
 						sumDistToBeam += OneLiners.length(OneLiners.minus(p2, p1));
 						nHit++;
@@ -195,16 +203,19 @@ public class FibreBacktrace {
 				
 				double var = 1.0/sumI*(sumIR2 - sumIR*sumIR/sumI);
 				double fwhmR = 2.35 * FastMath.sqrt(var);
-				sumP[0] /= nHit; sumP[1] /= nHit; sumP[2] /= nHit;
+				for(int j=0; j<3; j++){
+					beamPlanePos[j] /= nHit;
+					closestApproachPos[j] /= nHit;
+				}
 				sumDistToBeam /= nHit;  
 				
-				fibreInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], R, fwhmR, (double)nHit / nAttempts, (double)nStray / nAttempts, R, sumDistToBeam);
+				fibreInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], R, fwhmR, (double)nHit / nAttempts, (double)nStray / nAttempts, R, sumDistToBeam, beamPlanePos, closestApproachPos);
 				
 				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
 				System.out.println("P=" + iB + "." + iP + "(R=" + R + ", fwhmR = " + (fwhmR*1e3) + " mm):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 
-				System.out.println("Part.show(Part.makeSphere("+(fwhmR*1e3)+", FreeCAD.Vector("+sumP[0]*1e3+","+sumP[1]*1e3+","+sumP[2]*1e3 + "));");
+				System.out.println("Part.show(Part.makeSphere("+(fwhmR*1e3)+", FreeCAD.Vector("+beamPlanePos[0]*1e3+","+beamPlanePos[1]*1e3+","+beamPlanePos[2]*1e3 + "));");
 				
 				intensityInfo.reset();
 			}
