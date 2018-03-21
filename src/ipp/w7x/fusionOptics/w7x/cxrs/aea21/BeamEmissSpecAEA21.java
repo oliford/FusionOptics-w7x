@@ -109,12 +109,12 @@ public class BeamEmissSpecAEA21 extends Optic {
 	*/
 	
 	/* ** OptoSigma SLB-80-200PM ** */
-	/*public double lens1Diameter = 0.080 + 0.001;	
+	public double lens1Diameter = 0.080 + 0.001;	
 	public double lens1CentreThickness = 0.01100;
 	//public double lens1FocalLength = 0.200;
 	public double lens1CurvatureRadius = 0.1038;
 	public double lens1ClearAperture = 0.079;
-	*/
+	//*/
 	
 	/* Edmund Optics modified 27-501 */
 	/*public double lens1Diameter = 0.090 + 0.001;	
@@ -125,12 +125,12 @@ public class BeamEmissSpecAEA21 extends Optic {
 	*/
 	
 	/* Edmund Optics modified 27-501 */
-	public double lens1Diameter = 0.080 + 0.001;	
+	/*public double lens1Diameter = 0.080 + 0.001;	
 	public double lens1CentreThickness = 0.01100;
 	//public double lens1FocalLength = 0.200;
 	public double lens1CurvatureRadius = 0.1038;
 	public double lens1ClearAperture = 0.079;
-	
+	//*/
 	public double lens1CentrePos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, lens1DistBehindWindow));
 	
 	
