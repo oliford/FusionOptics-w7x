@@ -6,10 +6,12 @@ import java.util.List;
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
+import otherSupport.SettingsManager;
 import seed.matrix.DenseMatrix;
 import algorithmrepository.Algorithms;
 import algorithmrepository.exceptions.NotImplementedException;
 import jafama.FastMath;
+import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.interfaces.Absorber;
 import fusionOptics.interfaces.IsoIsoInterface;
@@ -91,10 +93,10 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	
 	public Disc mirror = new Disc("mirror", mirrorCentrePos, mirrorNormal, mirrorDiameter/2, Reflector.ideal());
 	
-	public STLMesh panelEdge = new STLMesh("panel", "/work/ipp/w7x/cad/aem21/panel-cutting-edge-channels-cut.stl");
-	public STLMesh mirrorBlock = new STLMesh("mirrorBlock", "/work/ipp/w7x/cad/aem21/mirrorBlockSimpleOpen.stl");	
-	public STLMesh mirrorClampRing = new STLMesh("mirrorClampRing", "/work/ipp/w7x/cad/aem21/mirrorRing-simple.stl");	
-	public STLMesh blockPlate = new STLMesh("blockPlate", "/work/ipp/w7x/cad/aem21/blockPlate-grooved.stl");
+	public STLMesh panelEdge = new STLMesh("panel", "/home/oliford/rzg/w7x/cad/aem21/panel-cutting-edge-channels-cut.stl");
+	public STLMesh mirrorBlock = new STLMesh("mirrorBlock", "/home/oliford/rzg/w7x/cad/aem21/mirrorBlockSimpleOpen.stl");	
+	public STLMesh mirrorClampRing = new STLMesh("mirrorClampRing", "/home/oliford/rzg/w7x/cad/aem21/mirrorRing-simple.stl");	
+	public STLMesh blockPlate = new STLMesh("blockPlate", "/home/oliford/rzg/w7x/cad/aem21/blockPlate-grooved.stl");
 	
 
 	
@@ -635,14 +637,14 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public Surface checkSurface = mirror;
 	
 	public final String backgroundSTLFiles[] = {
-			"/work/ipp/w7x/cad/aem21/bg-targetting/baffles-cut.stl",
-			"/work/ipp/w7x/cad/aem21/bg-targetting/panel1.stl",
-			"/work/ipp/w7x/cad/aem21/bg-targetting/panel2.stl",
-			"/work/ipp/w7x/cad/aem21/bg-targetting/panel3.stl",
-			"/work/ipp/w7x/cad/aem21/bg-targetting/panel4.stl",
-			"/work/ipp/w7x/cad/aem21/bg-targetting/panel5.stl",
-			"/work/ipp/w7x/cad/aem21/bg-targetting/shield-cut.stl",
-			"/work/ipp/w7x/cad/aem21/bg-targetting/target-cut.stl",
+			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/baffles-cut.stl",
+			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/panel1.stl",
+			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/panel2.stl",
+			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/panel3.stl",
+			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/panel4.stl",
+			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/panel5.stl",
+			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/shield-cut.stl",
+			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/target-cut.stl",
 	};
 			
 	/** Set fibre positions according to design sent to Ceramoptec.
@@ -657,12 +659,12 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	private final double ferruleCurvatureCenterToRod[] = { 0.16373, 0.15115 };
 	
 	private double rodAxis[] = opticAxis;
-	private double rodEndPos[] = Util.plus(entryWindowBackPos, Util.mul(opticAxis, 0.288500));
+	private double rodEndPos[] = Util.plus(entryWindowBackPos, Util.mul(opticAxis, 0.289500));
 	private double rodLength = 1.000;
 	private double rodCentre[] = Util.plus(rodEndPos, Util.mul(rodAxis, rodLength/2));
 	public Cylinder rod = new Cylinder("rod", rodCentre, rodAxis, 0.005, rodLength, NullInterface.ideal());
 	
-	private double ferruleAngleToUp = 57 * Math.PI / 180;
+	private double ferruleAngleToUp = 56.5 * Math.PI / 180;
 	private double ferruleRight0[] = Util.reNorm(Util.cross(globalUp, rodAxis));
 	private double ferruleUp0[] = Util.reNorm(Util.cross(rodAxis, ferruleRight0));
 	
@@ -673,8 +675,10 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	private double ferruleFibreSpacing = 0.001;
 	
 	/* Adjustment to cope with other changes... */
-	private double ferruleAdjustUp = 0.0077;
-	private double ferruleAdjustRight = 0.000;
+	//private double ferruleAdjustUp = 0.000;
+	//private double ferruleAdjustRight = 0.000;
+	private double ferruleAdjustUp = 0.0075;
+	private double ferruleAdjustRight = 0.0025;
 	
 	private void setupFibrePositions() {
 		int nBeams = ferruleRowNFibres.length;

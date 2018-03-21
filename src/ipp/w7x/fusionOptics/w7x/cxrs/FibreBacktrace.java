@@ -126,7 +126,7 @@ public class FibreBacktrace {
 			double beamStart[] = beams.start(sys.beamIdx[iB]);
 			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
 			
-			for(int iP=0; iP < sys.channelR[iB].length; iP+=5){
+			for(int iP=0; iP < sys.channelR[iB].length; iP+=1){
 							
 				int nHit = 0, nStray = 0;
 				
@@ -204,9 +204,9 @@ public class FibreBacktrace {
 						nHit++;
 					}
 					
-					//if(ray.getIntersections(sys.strayPlane).size() > 0){
-					//	nStray++;
-					//}
+					if(ray.getIntersections(sys.strayPlane).size() > 0){
+						nStray++;
+					}
 					
 					//if(ray.getIntersections(sys.strayPlane).size() > 0){					
 						vrmlOut.drawRay(ray, col[iP]); //stray light						
