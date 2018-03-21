@@ -91,12 +91,12 @@ public class FibreBacktrace {
 
 	public static String writeWRLForDesigner = null;//20170717";
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm/q8";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
 	public static void main(String[] args) {
-		makeFibreCyldSTL();// System.exit(0);
+		makeFibreCyldSTL(); //		System.exit(0);
 		
 		System.out.println(outPath);
 		
@@ -126,7 +126,7 @@ public class FibreBacktrace {
 			double beamStart[] = beams.start(sys.beamIdx[iB]);
 			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
 			
-			for(int iP=0; iP < sys.channelR[iB].length; iP+=1){
+			for(int iP=0; iP < sys.channelR[iB].length; iP+=5){
 							
 				int nHit = 0, nStray = 0;
 				
@@ -275,6 +275,11 @@ public class FibreBacktrace {
 		STLDrawer stlDrawer = new STLDrawer(outPath + "/fibreCylds-"+sys.getDesignName()+".stl");		
 		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
 		stlDrawer.drawOptic(fibreCylds);
+		stlDrawer.destroy();
+		
+		stlDrawer = new STLDrawer(outPath + "/rodCyld-"+sys.getDesignName()+".stl");		
+		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
+		stlDrawer.drawOptic(new Optic("rodOptic", new Element[]{ sys.rod }));
 		stlDrawer.destroy();
 	}
 }

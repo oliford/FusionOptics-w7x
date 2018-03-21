@@ -50,7 +50,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		{ 0.0058604423, -0.0016915735, 0.9999811728 } };
 
 	
-    public double offsetLC3[] = { 0.0060746567, 0.0049538344, 0.0025080040 };
+    public double offsetLC3[] = { 0.0063746567, 0.0039538344, 0.0025080040 };
    	
 	public double portNormal[] = { 0.35536503, -0.14530594,  0.92336444 };
 	//should transform to 0.34990725,  -0.14383813, 0.9256757
@@ -65,8 +65,8 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	
 	public double mirrorDiameter = 0.120;
 	
-	public double mirrorAngleAdjust = +3 * Math.PI / 180; // Adjust of shutter open angle. 0 is default open, -60 is closed, +3deg gives best throughput and direct light mitigation
-	//public double mirrorAngleAdjust = +0.72 * Math.PI / 180; // Furthest we could get due to shutter housing 
+	//public double mirrorAngleAdjust = +3 * Math.PI / 180; // Adjust of shutter open angle. 0 is default open, -60 is closed, +3deg gives best throughput and direct light mitigation
+	public double mirrorAngleAdjust = +0.72 * Math.PI / 180; // Furthest we could get due to shutter housing 
 	
 	public double mirrorRingRotate = 0 * Math.PI / 180; //Adjustment of mirror mount ring
 	
@@ -190,12 +190,12 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public Iris lens2Iris = new Iris("lens2Iris", lens2IrisPos, opticAxis, lens2Diameter*2, lens2ClearAperture/2, null, null, Absorber.ideal());
 
 	/*** Fibres ****/
-	/*public int beamIdx[] = null;
-	public double[][] channelR = null;
+	public int beamIdx[] = null;
+	public double[][] channelR = null;	
 	public double[][][] fibreEndPos = null;
 	public double[][][] fibreEndNorm = null;
 	//*/
-	public int beamIdx[] = { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
+	/*public int beamIdx[] = { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
 	public double[][] channelR = { 
 			{ 5.450, 5.461, 5.473, 5.484, 5.495, 5.507, 5.518, 5.529, 5.541, 5.552, 5.563, 5.575, 5.586, 5.597, 5.608, 5.620, 5.631, 5.642, 5.654, 5.665, 5.676, 5.688, 5.699, 5.710, 5.722, 5.733, 5.744, 5.756, 5.767, 5.778, 5.790, 5.801, 5.812, 5.824, 5.835, 5.846, 5.858, 5.869, 5.880, 5.892, 5.903, 5.914, 5.925, 5.937, 5.948, 5.959, 5.971, 5.982, 5.993, 6.005, 6.016, 6.027, 6.039, 6.050,  },
 			{ 5.450, 5.461, 5.473, 5.484, 5.495, 5.507, 5.518, 5.529, 5.541, 5.552, 5.563, 5.575, 5.586, 5.597, 5.608, 5.620, 5.631, 5.642, 5.654, 5.665, 5.676, 5.688, 5.699, 5.710, 5.722, 5.733, 5.744, 5.756, 5.767, 5.778, 5.790, 5.801, 5.812, 5.824, 5.835, 5.846, 5.858, 5.869, 5.880, 5.892, 5.903, 5.914, 5.925, 5.937, 5.948, 5.959, 5.971, 5.982, 5.993, 6.005, 6.016, 6.027, 6.039, 6.050,  }, 
@@ -644,43 +644,73 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 			"/work/ipp/w7x/cad/aem21/bg-targetting/shield-cut.stl",
 			"/work/ipp/w7x/cad/aem21/bg-targetting/target-cut.stl",
 	};
-		
-	/** Set fibre positions according to design sent to Ceramoptec */
+			
+	/** Set fibre positions according to design sent to Ceramoptec.
+	 * The design was set to match Q7 and Q8 in LC3 with the mirror at +3' (and does)
+	 */
+	private final int ferruleRowNFibres[] = { 54, 54 }; 
 	private final double ferruleRowSidewaysOffset[] = { 0.00225, 0.00326, 0.080, -0.040 };
-	private final double ferruleRowUpwardsOffset[] = { 0.002, 0.0122, 0.080, -0.040 };
-	private final double ferruleRowAngle[] = { 9.22*Math.PI/180, 0, Math.PI, Math.PI /2};
+	private final double ferruleRowUpwardsOffset[] = { -0.0122, -0.002, -0.080, 0.040 };
+	private final double ferruleRowAngle[] = { -9.22*Math.PI/180, 0, Math.PI, Math.PI /2};
 	private final double ferruleRowCurvatureRadius[] = { 0.06896,  0.05826 };
 	private final double ferruleCurvatureSidewaysOffset[] = { -0.00127, -0.00056 };
 	private final double ferruleCurvatureCenterToRod[] = { 0.16373, 0.15115 };
 	
 	private double rodAxis[] = opticAxis;
-	private double rodEndPos[] = Util.plus(entryWindowBackPos, Util.mul(opticAxis, 0.294000));
+	private double rodEndPos[] = Util.plus(entryWindowBackPos, Util.mul(opticAxis, 0.288500));
 	private double rodLength = 1.000;
 	private double rodCentre[] = Util.plus(rodEndPos, Util.mul(rodAxis, rodLength/2));
-	private Cylinder rod = new Cylinder("rod", rodCentre, rodAxis, 0.005, rodLength, NullInterface.ideal());
+	public Cylinder rod = new Cylinder("rod", rodCentre, rodAxis, 0.005, rodLength, NullInterface.ideal());
 	
+	private double ferruleAngleToUp = 57 * Math.PI / 180;
+	private double ferruleRight0[] = Util.reNorm(Util.cross(globalUp, rodAxis));
+	private double ferruleUp0[] = Util.reNorm(Util.cross(rodAxis, ferruleRight0));
+	
+	private double ferruleUp[] = Util.reNorm(Util.plus(Util.mul(ferruleUp0, FastMath.cos(ferruleAngleToUp)), Util.mul(ferruleRight0, -FastMath.sin(ferruleAngleToUp))));
+	private double ferruleRight[] = Util.reNorm(Util.plus(Util.mul(ferruleUp0, FastMath.sin(ferruleAngleToUp)), Util.mul(ferruleRight0, FastMath.cos(ferruleAngleToUp))));
 	//private double rodUp[] 
 	
+	private double ferruleFibreSpacing = 0.001;
+	
+	/* Adjustment to cope with other changes... */
+	private double ferruleAdjustUp = 0.0077;
+	private double ferruleAdjustRight = 0.000;
+	
 	private void setupFibrePositions() {
-		int nBeams = channelR.length;
+		int nBeams = ferruleRowNFibres.length;
+		channelR = new double[nBeams][];
+		beamIdx = new int[] { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
 		fibreEndPos = new double[nBeams][][];
 		fibreEndNorm = new double[nBeams][][];
 		
 		for(int iB=0; iB < nBeams; iB++){
-			int nFibres = channelR[iB].length;
+			int nFibres = 54;
 			fibreEndPos[iB] = new double[nFibres][];
 			fibreEndNorm[iB] = new double[nFibres][];
+			channelR[iB] = new double[nFibres];
+		
 			
 			//find row origin (green/blue dots in diagram)
-			//double origin[] = Util.plus(rodEndPos, Util.plus(rodAxis, -ferruleCurvatureCenterToRod[iB]));
-			//origin = Util.plus(origin, Util.plus());
-					
-			double dX = -fibreEndDiameter;
-			double x0 = -(nFibres-1)/2 * dX; 
+			double origin[] = rodEndPos.clone();
+			origin = Util.plus(origin, Util.mul(ferruleUp, ferruleRowUpwardsOffset[iB] + ferruleAdjustUp));
+			origin = Util.plus(origin, Util.mul(ferruleRight, ferruleRowSidewaysOffset[iB] + ferruleAdjustRight));			
+			origin = Util.plus(origin, Util.mul(rodAxis, -ferruleCurvatureCenterToRod[iB]));
+			
+			double rowAxis[] = Util.reNorm(Util.plus(Util.mul(ferruleUp, FastMath.sin(ferruleRowAngle[iB])), Util.mul(ferruleRight, FastMath.cos(ferruleRowAngle[iB]))));
+											
+			double dX = ferruleFibreSpacing;
+			double x0 = -(nFibres-1.0)/2 * dX; 
 			for(int iF=0; iF < nFibres; iF++){
-				fibreEndPos[iB][iF] = Util.plus(fibrePlanePos, Util.mul(fibresXVec, x0 + iF * dX));	
+				double posAlongRow = x0 + iF * dX;
+				
+				channelR[iB][iF] = 5.4 + iF/100;
+				fibreEndPos[iB][iF] = Util.plus(origin, Util.mul(rowAxis, posAlongRow));
+				
+				double depthFromCurvCentre = FastMath.sqrt(FastMath.pow2(ferruleRowCurvatureRadius[iB]) - posAlongRow*posAlongRow);
+				
+				fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(rodAxis, depthFromCurvCentre));
 						
-				fibreEndNorm[iB][iF] = fibrePlane.getNormal().clone();
+				fibreEndNorm[iB][iF] = Util.mul(fibrePlane.getNormal(), -1.0);
 			}
 			if(fibreFocus != null){
 				for(int iF=0; iF < nFibres; iF++){
@@ -769,9 +799,9 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		addElement(catchPlane);
 		
 		addElement(strayPlane);
-		//addElement(rod);
+		addElement(rod);
 		
-		//setupFibrePositions();
+		setupFibrePositions();
 		adjustFibres();
 		setupFibrePlanes();
 		
@@ -801,9 +831,11 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 					newVec2[j] += offsetLC3[j];
 				}
 				fibreEndNorm[iB][iF] = newVec1;
-				//fibreEndPos[iB][iF] = newVec2;
+				fibreEndPos[iB][iF] = newVec2;
 			}			
 		}
+		
+		
 	}
 
 	public String getDesignName() { return "aem21-lc3";	}
