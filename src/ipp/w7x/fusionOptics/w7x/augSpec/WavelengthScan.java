@@ -20,9 +20,9 @@ import otherSupport.RandomManager;
 public class WavelengthScan {
 	public static AugSpec4 sys = new AugSpec4();
 	public static Surface mustHitToDraw = sys.ccd;
-	public static int nAttempts = 5000;
+	public static int nAttempts = 1000;
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/augSpec/";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/augSpec-1800-33deg/";
 	
 	public static double slitWidth = 100e-6;
 	

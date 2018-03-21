@@ -22,8 +22,8 @@ import jafama.FastMath;
 public class AugSpec4 extends Optic {
 	public double designWavelenth = 656e-9;
 	
-	public double inputAngle = 15 * Math.PI / 180; 
-	public double outputAngle = 15 * Math.PI / 180;
+	public double inputAngle = 33 * Math.PI / 180; 
+	public double outputAngle = inputAngle;
 	
 	public double axisHeight = 0.200;
 	
@@ -32,7 +32,7 @@ public class AugSpec4 extends Optic {
 	
 	public double gratingHeight = 0.110;
 	public double gratingWidth = 0.110;
-	public double gratingDensity = 2400e3;
+	public double gratingDensity = 1800e3;
 	
 	public int nFibres = 45;
 	public double fibreDiameter = 400e-6;
@@ -124,7 +124,7 @@ public class AugSpec4 extends Optic {
 	//public Nikon50mmF11 outputLens = new Nikon50mmF11(outputLensPos, outputLensFocalLength / 0.050);		
 	//public Nikon135mmF28 outputLens = new Nikon135mmF28(outputLensPos, outputLensFocalLength / 0.135);
 	public ThorLabs100mmAspheric outputLens = new ThorLabs100mmAspheric(outputLensPos.clone(), new double[]{ 1,0,0 }, outputLensFocalLength / 0.0917);
-	public Iris outputLensIris = new Iris("outputLensIris", outputLensPos, outputAxis, 0.7 * outputLensDiameter, 0.070/2, Absorber.ideal());
+	public Iris outputLensIris = new Iris("outputLensIris", outputLensPos, outputAxis, 1.0 * outputLensDiameter, outputLensDiameter/2, Absorber.ideal());
 	
 	public double[] blockingStripPos = Util.plus(ccdCentrePos, Util.mul(outputAxis, -ccdBlockingStripDistance));
 	public Square blockingStrip = new Square("blockingStrip", blockingStripPos, outputAxis, globalUp, 0.050, blockingStripWidth, Absorber.ideal());
