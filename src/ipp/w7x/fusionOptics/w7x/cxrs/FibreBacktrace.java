@@ -126,7 +126,7 @@ public class FibreBacktrace {
 			double beamStart[] = beams.start(sys.beamIdx[iB]);
 			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
 			
-			for(int iP=0; iP < sys.channelR[iB].length; iP+=1){
+			for(int iP=0; iP < sys.channelR[iB].length; iP+=5){
 							
 				int nHit = 0, nStray = 0;
 				

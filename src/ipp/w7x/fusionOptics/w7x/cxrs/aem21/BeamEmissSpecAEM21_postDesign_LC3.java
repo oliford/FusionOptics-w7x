@@ -157,7 +157,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public Iris lensIris = new Iris("lensIris", lensIrisPos, opticAxis, lens1Diameter, lens1ClearAperture/2, null, null, Absorber.ideal());
 	
 	/**** Lens2 *****/
-	public double lens2DistBehindLens1 = 0.040;
+	public double lens2DistBehindLens1 = 0.030;
 	
 	//public double lens2Diameter = 0.100;
 	//public double lens2FocalLength = 0.200; // Would be better, NA~0.33, much better focus
@@ -677,8 +677,17 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	/* Adjustment to cope with other changes... */
 	//private double ferruleAdjustUp = 0.000;
 	//private double ferruleAdjustRight = 0.000;
-	private double ferruleAdjustUp = 0.0075;
-	private double ferruleAdjustRight = 0.0025;
+	//private double ferruleAdjustFocus = 0.000;
+	
+	// //adjusted because mirror at 0.72deg instead of 3 
+	//private double ferruleAdjustUp = 0.0075; 
+	//private double ferruleAdjustRight = -0.0025;
+	//private double ferruleAdjustFocus = 0.000;
+	
+	// adjusted focus for 30mm l1-l2 distance instead of nominal 40mm
+	private double ferruleAdjustUp = 0.0082; 
+	private double ferruleAdjustRight = -0.0025;
+	private double ferruleAdjustFocus = -0.008;
 	
 	private void setupFibrePositions() {
 		int nBeams = ferruleRowNFibres.length;
@@ -698,7 +707,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 			double origin[] = rodEndPos.clone();
 			origin = Util.plus(origin, Util.mul(ferruleUp, ferruleRowUpwardsOffset[iB] + ferruleAdjustUp));
 			origin = Util.plus(origin, Util.mul(ferruleRight, ferruleRowSidewaysOffset[iB] + ferruleAdjustRight));			
-			origin = Util.plus(origin, Util.mul(rodAxis, -ferruleCurvatureCenterToRod[iB]));
+			origin = Util.plus(origin, Util.mul(rodAxis, -ferruleCurvatureCenterToRod[iB] + ferruleAdjustFocus));
 			
 			double rowAxis[] = Util.reNorm(Util.plus(Util.mul(ferruleUp, FastMath.sin(ferruleRowAngle[iB])), Util.mul(ferruleRight, FastMath.cos(ferruleRowAngle[iB]))));
 											
