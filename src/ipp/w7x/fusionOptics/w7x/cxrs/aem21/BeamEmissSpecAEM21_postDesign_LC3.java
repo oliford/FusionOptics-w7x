@@ -650,13 +650,21 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	/** Set fibre positions according to design sent to Ceramoptec.
 	 * The design was set to match Q7 and Q8 in LC3 with the mirror at +3' (and does)
 	 */
-	private final int ferruleRowNFibres[] = { 54, 54 }; 
+	private final int ferruleRowNFibres[] = { 54, 54, 8, 9 }; 
 	private final double ferruleRowSidewaysOffset[] = { 0.00225, 0.00326, 0.080, -0.040 };
 	private final double ferruleRowUpwardsOffset[] = { -0.0122, -0.002, -0.080, 0.040 };
 	private final double ferruleRowAngle[] = { -9.22*Math.PI/180, 0, Math.PI, Math.PI /2};
 	private final double ferruleRowCurvatureRadius[] = { 0.06896,  0.05826 };
 	private final double ferruleCurvatureSidewaysOffset[] = { -0.00127, -0.00056 };
 	private final double ferruleCurvatureCenterToRod[] = { 0.16373, 0.15115 };
+	private int ferruleCrossFibreCrossSelect[][] = { { 16-1, 15-1 }, { 41-1, 41-1 } };
+	private double ferruleCrossFibreSpacing[] = { 0.0028, 0.00311 };
+	private double ferruleCrossFibreRelDists[][] = { 
+				{ -4.5, -3.5, -2.5,    -0.5, 0.5,        2.5, 3.5, 4.5 },
+				{ -5.0, -4.0, -3.0,    -1.0, 0.0, 1.0,   3.0, 4.0, 5.0 }
+			};	
+				
+	
 	
 	private double rodAxis[] = opticAxis;
 	private double rodEndPos[] = Util.plus(entryWindowBackPos, Util.mul(opticAxis, 0.289500));
@@ -671,6 +679,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	private double ferruleUp[] = Util.reNorm(Util.plus(Util.mul(ferruleUp0, FastMath.cos(ferruleAngleToUp)), Util.mul(ferruleRight0, -FastMath.sin(ferruleAngleToUp))));
 	private double ferruleRight[] = Util.reNorm(Util.plus(Util.mul(ferruleUp0, FastMath.sin(ferruleAngleToUp)), Util.mul(ferruleRight0, FastMath.cos(ferruleAngleToUp))));
 	//private double rodUp[] 
+	
 	
 	private double ferruleFibreSpacing = 0.001;
 	
@@ -692,12 +701,12 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	private void setupFibrePositions() {
 		int nBeams = ferruleRowNFibres.length;
 		channelR = new double[nBeams][];
-		beamIdx = new int[] { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
+		beamIdx = new int[] { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 , W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
 		fibreEndPos = new double[nBeams][][];
 		fibreEndNorm = new double[nBeams][][];
 		
-		for(int iB=0; iB < nBeams; iB++){
-			int nFibres = 54;
+		for(int iB=0; iB < 2; iB++){
+			int nFibres = ferruleRowNFibres[iB];
 			fibreEndPos[iB] = new double[nFibres][];
 			fibreEndNorm[iB] = new double[nFibres][];
 			channelR[iB] = new double[nFibres];
@@ -714,12 +723,13 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 			double dX = ferruleFibreSpacing;
 			double x0 = -(nFibres-1.0)/2 * dX; 
 			for(int iF=0; iF < nFibres; iF++){
-				double posAlongRow = x0 + iF * dX;
+				double distFromRowOrigin = x0 + iF * dX;
 				
 				channelR[iB][iF] = 5.4 + iF/100;
-				fibreEndPos[iB][iF] = Util.plus(origin, Util.mul(rowAxis, posAlongRow));
+				fibreEndPos[iB][iF] = Util.plus(origin, Util.mul(rowAxis, distFromRowOrigin));
 				
-				double depthFromCurvCentre = FastMath.sqrt(FastMath.pow2(ferruleRowCurvatureRadius[iB]) - posAlongRow*posAlongRow);
+				double distFromCurvOrigin = distFromRowOrigin - ferruleCurvatureSidewaysOffset[iB];
+				double depthFromCurvCentre = FastMath.sqrt(FastMath.pow2(ferruleRowCurvatureRadius[iB]) - distFromCurvOrigin*distFromCurvOrigin);
 				
 				fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(rodAxis, depthFromCurvCentre));
 						
@@ -730,6 +740,28 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 					fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(fibrePlane.getNormal(), fibreFocus[iB][iF]));
 				}	
 			}
+		}
+		
+		for(int iX=0; iX < 2; iX++){
+			int nFibres = ferruleRowNFibres[2+iX];
+			fibreEndPos[2+iX] = new double[nFibres][];
+			fibreEndNorm[2+iX] = new double[nFibres][];
+			channelR[2+iX] = new double[nFibres];
+		
+			int iXR1 = ferruleCrossFibreCrossSelect[iX][0], iXR2 = ferruleCrossFibreCrossSelect[iX][1];
+			double columnOrigin[] = Util.mul(Util.plus(fibreEndPos[1][iXR2], fibreEndPos[0][iXR1]), 0.5);
+			double columnVector[] = Util.reNorm(Util.minus(fibreEndPos[1][iXR2], fibreEndPos[0][iXR1]));
+			
+			for(int iF=0; iF < nFibres; iF++){
+				channelR[2+iX][iF] = 5.4 + iF/100;
+				
+				double distFromColOrigin = ferruleCrossFibreRelDists[iX][iF] * ferruleCrossFibreSpacing[iX];
+				
+				fibreEndPos[2+iX][iF] = Util.plus(columnOrigin, Util.mul(columnVector, distFromColOrigin));	
+
+				fibreEndNorm[2+iX][iF] = Util.mul(fibrePlane.getNormal(), -1.0);
+			}
+	
 		}
 	}
 	
