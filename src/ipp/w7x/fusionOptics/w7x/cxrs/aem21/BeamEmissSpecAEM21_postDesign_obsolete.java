@@ -35,7 +35,7 @@ import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public class BeamEmissSpecAEM21_postDesign extends Optic {
+public class BeamEmissSpecAEM21_postDesign_obsolete extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
@@ -706,7 +706,7 @@ public class BeamEmissSpecAEM21_postDesign extends Optic {
 		}
 	}
 	
-	public BeamEmissSpecAEM21_postDesign() {
+	public BeamEmissSpecAEM21_postDesign_obsolete() {
 		super("beamSpec-aem21");
 		
 		for(Surface s : blockPlate.getSurfaces())
