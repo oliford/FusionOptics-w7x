@@ -44,6 +44,8 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public String lightPathsSystemName = "AEM21_???";
 	
 	// CAD from designer
+	
+	private boolean adjustedToLC3 = false;
 		
 	//public double rotateLC3[][] = {	{ 1.009,  0.044,  0.004}, {0.061,  1.588, -0.001}, { -0.077, -0.759,  0.996} };
 	public double rotateLC3[][] = {	
@@ -651,7 +653,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	 * The design was set to match Q7 and Q8 in LC3 with the mirror at +3' (and does)
 	 */
 	private final int ferruleRowNFibres[] = { 54, 54, 8, 9 }; 
-	private final double ferruleRowSidewaysOffset[] = { 0.00225, 0.00326, 0.080, -0.040 };
+	private final double ferruleRowSidewaysOffset[] = { 0.00225, 0.00326 };
 	private final double ferruleRowUpwardsOffset[] = { -0.0122, -0.002, -0.080, 0.040 };
 	private final double ferruleRowAngle[] = { -9.22*Math.PI/180, 0, Math.PI, Math.PI /2};
 	private final double ferruleRowCurvatureRadius[] = { 0.06896,  0.05826 };
@@ -811,8 +813,9 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		}
 	}
 	
-	public BeamEmissSpecAEM21_postDesign_LC3() {
+	public BeamEmissSpecAEM21_postDesign_LC3(boolean adjustForLC3) {
 		super("beamSpec-aem21");
+		this.adjustedToLC3 = adjustForLC3;
 		
 		for(Surface s : blockPlate.getSurfaces())
 			s.setInterface(Reflector.ideal());
@@ -859,31 +862,33 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		}
 		
 		System.out.print("Window centre posXYZ = "); OneLiners.dumpArray(entryWindowFront.getCentre());
-		rotate(new double[3], rotateLC3);
 		
-		shift(offsetLC3);
-		
-		for(int iB=0;iB<fibreEndPos.length;iB++){
-			for(int iF=0; iF < fibreEndPos[iB].length; iF++){
+		if(adjustForLC3){
+			rotate(new double[3], rotateLC3);
+			shift(offsetLC3);
 			
-				double newVec1[] = new double[3], newVec2[] = new double[3];
-				for(int j=0; j < 3; j++){
-					for(int k=0; k < 3; k++){
-						newVec1[j] += rotateLC3[j][k] * fibreEndNorm[iB][iF][k];
-						newVec2[j] += rotateLC3[j][k] * fibreEndPos[iB][iF][k];
+			
+			for(int iB=0;iB<fibreEndPos.length;iB++){
+				for(int iF=0; iF < fibreEndPos[iB].length; iF++){
+				
+					double newVec1[] = new double[3], newVec2[] = new double[3];
+					for(int j=0; j < 3; j++){
+						for(int k=0; k < 3; k++){
+							newVec1[j] += rotateLC3[j][k] * fibreEndNorm[iB][iF][k];
+							newVec2[j] += rotateLC3[j][k] * fibreEndPos[iB][iF][k];
+						}
+						
+						newVec2[j] += offsetLC3[j];
 					}
-					
-					newVec2[j] += offsetLC3[j];
-				}
-				fibreEndNorm[iB][iF] = newVec1;
-				fibreEndPos[iB][iF] = newVec2;
-			}			
+					fibreEndNorm[iB][iF] = newVec1;
+					fibreEndPos[iB][iF] = newVec2;
+				}			
+			}
 		}
-		
 		
 	}
 
-	public String getDesignName() { return "aem21-lc3";	}
+	public String getDesignName() { return "aem21" + (adjustedToLC3 ? "-lc3" : "");	}
 
 	public List<Element> makeSimpleModel() {
 		ArrayList<Element> elements = new ArrayList<Element>();

@@ -6,7 +6,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsK41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsL41;
-import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolete;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
@@ -47,8 +47,8 @@ public class BackgroundTargetting {
 	
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();	
 	
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3();
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
@@ -74,6 +74,9 @@ public class BackgroundTargetting {
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
+	public static double losCyldRadius = 0.005;
+	public static Surface startSurface = sys.mirror;
+		
 	public static void main(String[] args) {
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+".vrml", 5.005);
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
@@ -82,7 +85,7 @@ public class BackgroundTargetting {
 		vrmlOut.setSkipRays(nAttempts*totalFibres / 5000);
 		double col[][] = ColorMaps.jet(sys.channelR[0].length);
 		
-		BinaryMatrixWriter hitInfoOut = new BinaryMatrixWriter(outPath + "/hitInfo.bin", 9);
+		BinaryMatrixWriter hitInfoOut = new BinaryMatrixWriter(outPath + "/hitInfo.bin", 12);
 		
 		Optic background = new Optic("background");
 		for(String fileName : sys.backgroundSTLFiles){			
@@ -99,9 +102,11 @@ public class BackgroundTargetting {
 		sys.addElement(sys.beamPlane);
 		
 		double hitPoints[][][] = new double[sys.channelR.length][][];
+		double startPoints[][][] = new double[sys.channelR.length][][];
 		
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			hitPoints[iB] = new double[sys.channelR[iB].length][];
+			startPoints[iB] = new double[sys.channelR[iB].length][];
 			
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){
 							
@@ -110,6 +115,7 @@ public class BackgroundTargetting {
 				double startPos[] = sys.fibreEndPos[iB][iP];
 				
 				double sumI=0, sumIX[]={0,0,0}, sumIX2[] = {0,0,0};
+				double sumIXsp[]={0,0,0};
 				for(int i=0; i < nAttempts; i++){
 					double x, y, rMax = sys.fibreEndDiameter / 2;
 					do{
@@ -163,6 +169,11 @@ public class BackgroundTargetting {
 							sumIX2[j] += p[j]*p[j];
 						}
 						
+						Intersection startSurfaceHit = hits.get(0).incidentRay.findFirstEarlierIntersection(startSurface);						
+						for(int j=0; j < 3; j++){
+							sumIXsp[j] += startSurfaceHit.pos[j];						
+						}
+						
 						nHit++;
 					}
 					
@@ -186,20 +197,33 @@ public class BackgroundTargetting {
 				
 				//sys.addElement(new Sphere("hitPoint_"+iB+"_"+iP, p, fwhm/2, NullInterface.ideal()));
 				hitPoints[iB][iP] = new double[]{ p[0], p[1], p[2], fwhm };
-
 				
-				hitInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], p[0], p[1], p[2], fwhm, (double)nHit / nAttempts, (double)nStray / nAttempts);
+				double sp[] = new double[3];
+				for(int j=0; j < 3; j++){
+					sp[j] = sumIXsp[j] / sumI;					
+				}				
+				startPoints[iB][iP] = new double[]{ sp[0], sp[1], sp[2]};
+				
+				hitInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], p[0], p[1], p[2], fwhm, (double)nHit / nAttempts, (double)nStray / nAttempts, sp[0], sp[1], sp[2]);
 				
 				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
 				System.out.println("P=" + iB + "." + iP + "(fwhm = " + fwhm + "):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
+				
 				{
+					double a[] = { startPoints[iB][iP][0], startPoints[iB][iP][1], startPoints[iB][iP][2] };
 					double b[] = { hitPoints[iB][iP][0], hitPoints[iB][iP][1], hitPoints[iB][iP][2] };
 					double rad = fwhm / 4;
 					//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
 					//			"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "));");
 					System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\";");
-							
+					
+					double u[] = Util.reNorm(Util.minus(b, a));
+					double losLen = Util.length(Util.minus(b, a));
+					System.out.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+losLen*1e3 +","										
+									+"FreeCAD.Vector("+a[0]*1e3+","+a[1]*1e3+","+a[2]*1e3+"), "
+									+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+iB+"_"+iP+"\";");
+					
 				}
 			}
 		}
@@ -212,18 +236,28 @@ public class BackgroundTargetting {
 					continue;
 				
 				double p[] = { hitPoints[iB][iP][0], hitPoints[iB][iP][1], hitPoints[iB][iP][2] };
+				double sp[] = { startPoints[iB][iP][0], startPoints[iB][iP][1], startPoints[iB][iP][2] };
 				double rad = hitPoints[iB][iP][3] / 4;
 				 		
 				//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 + "));");
 				System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 
 								+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\";");
+				
+				double c[] = Util.mul(Util.plus(sp, p), 0.5);
+				double u[] = Util.reNorm(Util.minus(p, sp));
+				double losLen = Util.length(Util.minus(p, sp));
+				System.out.println("Part.show(Part.makeCylinder("+rad*1e3+",FreeCAD.Vector("+losCyldRadius*1e3+","+losLen*1e3+","
+									+ c[0]*1e3+","+c[1]*1e3+","+c[2]*1e3
+									+ u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\";");
+				
 			}
 		}
 		
 		//spit out LOS definitions
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){
-				double start[] = sys.lens1.getBackSurface().getCentre();
+				//double start[] = sys.lens1.getBackSurface().getCentre();
+				double start[] = startPoints[iB][iP];
 				double uVec[] = Util.reNorm(Util.minus(hitPoints[iB][iP], start));
 				String chanName = ((sys.channelR.length > 1) ? ("S"+(iB+1)+ "-") : "") + String.format("%02d", iP+1);
 				System.out.println(sys.lightPathsSystemName + ":" + chanName
