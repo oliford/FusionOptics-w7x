@@ -39,6 +39,9 @@ public class BeamEmissSpecAET21_postDesign extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9;
 	
+	public String lightPathsSystemName = "AET21";
+	
+	
 	public double virtualObsPos[] = { -1.0091035596642224,	6.301330112617632,	-0.1153786852687704 }; //closest approach of all LOSs, from lightAssesment
 	
 	/**** Shutter ****/
@@ -106,7 +109,7 @@ public class BeamEmissSpecAET21_postDesign extends Optic {
 	public Iris entryWindowFrontIris = new Iris("entryWindowIris", entryWindowIrisPos, shutterNormal, 0.060, entryWindowIrisDiameter/2, null, null, Absorber.ideal());
 	public Cylinder entryWindowCyld = new Cylinder("entryWindowCyld", entryWindowCyldPos, shutterNormal, entryWindowDiameter/2, entryWindowCyldLength, Absorber.ideal());
 	
-	//public STLMesh shutterPlate = new STLMesh("shutterPlate", "/work/ipp/w7x/cad/aet21/shutterFrontPlate-topWindow.stl");
+	//public STLMesh shutterPlate = new STLMesh("shutterPlate", "/home/oliford/rzg/w7x/cad/aet21/shutterFrontPlate-topWindow.stl");
 	
 	/***** Observation target ****/
 	public int targetBeamIdx = 7; //Q8
@@ -116,7 +119,7 @@ public class BeamEmissSpecAET21_postDesign extends Optic {
 	public double observationVec[] = Util.reNorm(Util.minus(targetObsPos, entryWindowPos));
 	public double observationUp[] = Util.reNorm(Util.cross(W7xNBI.def().uVec(targetBeamIdx), observationVec));
 	
-	public STLMesh panelEdge = new STLMesh("panel", "/work/ipp/w7x/cad/aet21/conflicting-panel-aet21.stl");
+	public STLMesh panelEdge = new STLMesh("panel", "/home/oliford/rzg/w7x/cad/aet21/conflicting-panel-aet21.stl");
 	
 		
 	/**** Mirror ****/
@@ -265,7 +268,7 @@ public class BeamEmissSpecAET21_postDesign extends Optic {
 	public double beamObsPlaneNormal[] = Util.reNorm(Util.cross(beamAxis, beamObsPerp));
 	
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 0.500, 1.200, NullInterface.ideal());
-
+	public Square strayPlane = null; 
 	
 	/** Fibres, Observation volumes etc */
 	public double fibreNA = 0.22; // As AUG	
@@ -283,6 +286,7 @@ public class BeamEmissSpecAET21_postDesign extends Optic {
 	/** Fibre positions from autofocus */
 	//public double[] fibreFocus = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
+	public Cylinder rod = null;
 
 public double[][] fibreFocus = {{ 
 		 5.981521606445736E-4 ,
@@ -308,9 +312,9 @@ public double[][] fibreFocus = {{
 	}};
 	
 	public final String backgroundSTLFiles[] = {
-			"/work/ipp/w7x/cad/aet21/bg-targetting/baffles-m2-aet21-cut.stl",
-			"/work/ipp/w7x/cad/aet21/bg-targetting/shield-m2-aet21-cut.stl",
-			"/work/ipp/w7x/cad/aet21/bg-targetting/target-m2-aet21-cut.stl",
+			"/home/oliford/rzg/w7x/cad/aet21/bg-targetting/baffles-m2-aet21-cut.stl",
+			"/home/oliford/rzg/w7x/cad/aet21/bg-targetting/shield-m2-aet21-cut.stl",
+			"/home/oliford/rzg/w7x/cad/aet21/bg-targetting/target-m2-aet21-cut.stl",
 	};
 		
 
@@ -321,7 +325,7 @@ public double[][] fibreFocus = {{
 			
 	}};
 	
-	
+		
 	
 	private void setupFibrePositions() {
 		int nBeams = channelR.length;

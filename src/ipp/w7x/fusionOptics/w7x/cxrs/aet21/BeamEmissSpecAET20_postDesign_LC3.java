@@ -38,6 +38,8 @@ import fusionOptics.types.Surface;
 public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9;
+
+	public String lightPathsSystemName = "AET20";
 	
 	public double virtualObsPos[] = { 4.513118025944995, 4.508287555102773,	0.1029682717161218 }; //closest approach of all LOSs, from lightAssesment
 	
@@ -106,7 +108,7 @@ public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
 	public Iris entryWindowFrontIris = new Iris("entryWindowIris", entryWindowIrisPos, shutterNormal, 0.060, entryWindowIrisDiameter/2, null, null, Absorber.ideal());
 	public Cylinder entryWindowCyld = new Cylinder("entryWindowCyld", entryWindowCyldPos, shutterNormal, entryWindowDiameter/2, entryWindowCyldLength, Absorber.ideal());
 	
-	//public STLMesh shutterPlate = new STLMesh("shutterPlate", "/work/ipp/w7x/cad/aet21/shutterFrontPlate-topWindow.stl");
+	//public STLMesh shutterPlate = new STLMesh("shutterPlate", "/home/oliford/rzg/w7x/cad/aet21/shutterFrontPlate-topWindow.stl");
 	
 	
 	/***** Observation target ****/
@@ -123,7 +125,7 @@ public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
 	public double observationVec[] = Util.reNorm(Util.minus(targetObsPos, entryWindowPos));
 	public double observationUp[] = Util.reNorm(Util.cross(beamAxis, observationVec));
 	
-	public STLMesh panelEdge = new STLMesh("panel", "/work/ipp/w7x/cad/aet21/panel-20-aet20-cut.stl");
+	public STLMesh panelEdge = new STLMesh("panel", "/home/oliford/rzg/w7x/cad/aet21/panel-20-aet20-cut.stl");
 			
 	/**** Mirror ****/
 	//public double mirrorWidth = 0.126;
@@ -268,7 +270,8 @@ public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
 	public double beamObsPlaneNormal[] = Util.reNorm(Util.cross(beamAxis, beamObsPerp));
 	
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 0.500, 1.200, NullInterface.ideal());
-
+	public Square strayPlane = null;
+	public Cylinder rod = null;
 	
 	/** Fibres, Observation volumes etc */
 	public double fibreNA = 0.22; // As AUG	
@@ -309,9 +312,9 @@ public double[][] fibreFocus = {{
 	}};
 	
 	public final String backgroundSTLFiles[] = {
-			"/work/ipp/w7x/cad/aet21/bg-targetting/baffles-m2-aet21-cut.stl",
-			"/work/ipp/w7x/cad/aet21/bg-targetting/shield-m2-aet21-cut.stl",
-			"/work/ipp/w7x/cad/aet21/bg-targetting/target-m2-aet21-cut.stl",
+			"/home/oliford/rzg/w7x/cad/aet21/bg-targetting/baffles-m2-aet21-cut.stl",
+			"/home/oliford/rzg/w7x/cad/aet21/bg-targetting/shield-m2-aet21-cut.stl",
+			"/home/oliford/rzg/w7x/cad/aet21/bg-targetting/target-m2-aet21-cut.stl",
 	};
 		
 

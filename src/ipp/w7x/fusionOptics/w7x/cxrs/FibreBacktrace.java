@@ -50,9 +50,9 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class FibreBacktrace {
 	
-	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
+	public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
@@ -204,7 +204,7 @@ public class FibreBacktrace {
 						nHit++;
 					}
 					
-					if(ray.getIntersections(sys.strayPlane).size() > 0){
+					if(sys.strayPlane != null && ray.getIntersections(sys.strayPlane).size() > 0){
 						nStray++;
 					}
 					
@@ -278,8 +278,9 @@ public class FibreBacktrace {
 		stlDrawer.destroy();
 		
 		stlDrawer = new STLDrawer(outPath + "/rodCyld-"+sys.getDesignName()+".stl");		
-		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
-		stlDrawer.drawOptic(new Optic("rodOptic", new Element[]{ sys.rod }));
+		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
+		if(sys.rod != null)
+			stlDrawer.drawOptic(new Optic("rodOptic", new Element[]{ sys.rod }));
 		stlDrawer.destroy();
 	}
 }
