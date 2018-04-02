@@ -276,12 +276,15 @@ public class BeamEmissSpecAET21_postDesign extends Optic {
 	public double fibreJacketDiameter = 0.000550; // from ceramOptec offer, with polymide jacket (470µm), without Tefzel (550µm)
 	public double fibreEndDiameter = fibreCoreDiameter;
 	
+	
 	public int beamIdx[] = { W7xNBI.BEAM_Q7 };
+	public String[] lightPathRowName = null;
 	//public double[] channelR = OneLiners.linSpace(5.38, 5.88, nFibres);
 	public double[][] channelR = {{ 5.486, 5.509, 5.535, 5.559, 5.584, 
 			              5.608, 5.632, 5.654, 5.679, 5.702, 
 			              5.725, 5.747, 5.771, 5.794, 5.816, 
 			              5.838, 5.86, 5.881, 5.903, 5.925, }};
+	
 	
 	/** Fibre positions from autofocus */
 	//public double[] fibreFocus = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };

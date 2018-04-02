@@ -27,7 +27,7 @@ import fusionOptics.types.Surface;
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAEA21 extends Optic {
 	
-	public String lightPathsSystemName = "AEA21_???";
+	public String lightPathsSystemName = "AEA21";
 	
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ He_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
@@ -57,8 +57,8 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double mirrorDistIntoPort = 0.010;
 	public double mirrorDistAwayFromSource = 0.000; //~toroidally in vessel
 	public double mirrorDistSidewaysInPort = 0.000; //up/down in vessel
-	public double mirrorPos0[] = Util.plus(portEntryPos, Util.mul(opticAxis, mirrorDistIntoPort)); 
-	public double mirrorPos[] = Util.plus(Util.plus(mirrorPos0, 
+	public double mirrorCentrePos0[] = Util.plus(portEntryPos, Util.mul(opticAxis, mirrorDistIntoPort)); 
+	public double mirrorCentrePos[] = Util.plus(Util.plus(mirrorCentrePos0, 
 													Util.mul(portSourcePlane, -mirrorDistAwayFromSource)),
 													Util.mul(portSourcePerp, mirrorDistSidewaysInPort));
 	
@@ -73,7 +73,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double mirrorX[] = Util.reNorm(Util.plus(Util.mul(mirrorA, FastMath.cos(mirrorRotationInPlane)), Util.mul(mirrorB, FastMath.sin(mirrorRotationInPlane))));
 	public double mirrorY[] = Util.reNorm(Util.plus(Util.mul(mirrorA, -FastMath.sin(mirrorRotationInPlane)), Util.mul(mirrorB, FastMath.cos(mirrorRotationInPlane))));
 	
-	public Square mirror = new Square("mirror", mirrorPos, mirrorNormal, mirrorX, mirrorHeight, mirrorWidth, Reflector.ideal());
+	public Square mirror = new Square("mirror", mirrorCentrePos, mirrorNormal, mirrorX, mirrorHeight, mirrorWidth, Reflector.ideal());
 	
 	public final String backgroundSTLFiles[] = {
 			"/home/oliford/rzg/w7x/cad/aea21/bg-targetting/baffle-m3.off-aea21-cut.stl",
@@ -89,7 +89,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double entryWindowDiameter = 0.068; // DN100CF=98mm, DN63CF=68mm
 	public double entryWindowThickness = 0.003; // [Made up]
 	
-	public double entryWindowFrontPos[] = Util.plus(mirrorPos, Util.mul(opticAxis, windowDistBehindMirror));
+	public double entryWindowFrontPos[] = Util.plus(mirrorCentrePos, Util.mul(opticAxis, windowDistBehindMirror));
 	public double entryWindowIrisPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness / 2));
 	private double entryWindowBackPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness));
 	
@@ -160,7 +160,8 @@ public class BeamEmissSpecAEA21 extends Optic {
 	
 	
 	/**** Lens2 *****/
-	public double lens2DistBehindLens1 = 0.060;
+	public double lens2DistBehindLens1 = 0.075; //as far as we get on the bolts in the CAD
+	//public double lens2DistBehindLens1 = 0.060;
 	
 	/*public double lens2Diameter = 0.095 + 0.001;
 	public double lens2CentreThickness = 0.00874;
@@ -208,6 +209,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double[][] channelR = null;
 	public double[][][] fibreEndPos = null;
 	public double[][][] fibreEndNorm = null;
+	public String lightPathRowName[] = null;
 	
 	/*
 	public int beamIdx[] = {  W7xNBI.BEAM_Q8 ,  W7xNBI.BEAM_Q8 ,  W7xNBI.BEAM_Q8  };
@@ -594,15 +596,30 @@ public class BeamEmissSpecAEA21 extends Optic {
 	//private double ferruleAdjustRight = 0.000;
 	//private double ferruleAdjustFocus = 0.000;
 	
-	// adjusted to match, not sure whats different thant he generation, but ... meh
-	private double ferruleAdjustUp = -0.0001; 
+	// adjusted to match for original L1-L2 of 60mm, not sure whats different than the generation, but ... meh
+	/*private double ferruleAdjustUp = -0.0001; 
 	private double ferruleAdjustRight = -0.00017;
 	private double ferruleAdjustFocus = -0.0055;
+	//*/
 	
+	// for L1-L2 of 75mm
+	private double ferruleAdjustUp = -0.0003; 
+	private double ferruleAdjustRight = -0.00017;
+	private double ferruleAdjustFocus = 0.0053;
+	//*/
+
+	// for L1-L2 of 120mm, just to see how far we can go
+	// works, spot size is still mostly below 10mm, but then we lose the HFS measurements
+	/*private double ferruleAdjustUp = -0.0001; 
+	private double ferruleAdjustRight = -0.00017;
+	private double ferruleAdjustFocus = 0.034;
+	//*/
+
 	private void setupFibrePositions() {
 		int nBeams = ferruleRowNFibres.length;
 		channelR = new double[nBeams][];
-		beamIdx = new int[] { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 , W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
+		beamIdx = new int[] { W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q8 , W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q8 };
+		lightPathRowName = new String[]{ "A", "B", "X1", "X2" };
 		fibreEndPos = new double[nBeams][][];
 		fibreEndNorm = new double[nBeams][][];
 		

@@ -15,6 +15,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolet
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_asMeasuredOP12b;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
@@ -50,13 +51,12 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class FibreBacktrace {
 	
-	public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
+	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
+	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	//public static BeamEmissSpecAEB20 sys = new BeamEmissSpecAEB20();
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
-	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
+	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -99,6 +99,8 @@ public class FibreBacktrace {
 		makeFibreCyldSTL(); //		System.exit(0);
 		
 		System.out.println(outPath);
+		OneLiners.dumpArray(sys.mirrorCentrePos);
+		OneLiners.dumpArray(sys.mirrorNormal);
 		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 5.005);
 		if((writeWRLForDesigner == null)){
@@ -187,11 +189,12 @@ public class FibreBacktrace {
 						sumIR += R * 1;
 						sumIR2 += R * R * 1;
 						
-						
+						//point on ray closest to beam axis
 						RaySegment hitRay = hits.get(0).incidentRay;
 						double aL = Algorithms.pointOnLineNearestAnotherLine(hitRay.startPos, hitRay.dir, beamStart, beamVec);
 						double p1[] = OneLiners.plus(hitRay.startPos, OneLiners.mul(hitRay.dir, aL));
 						
+						//point on beam axis closest to ray
 						aL = Algorithms.pointOnLineNearestAnotherLine(beamStart, beamVec, hitRay.startPos, hitRay.dir);
 						double p2[] = OneLiners.plus(beamStart, OneLiners.mul(beamVec, aL));
 						

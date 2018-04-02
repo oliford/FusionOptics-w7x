@@ -34,24 +34,25 @@ import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
 
-/** Beam Emission Spectroscopy / CXRS on AET20 looking at AEK20 beams */
-public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
+/** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
+public class BeamEmissSpecAET21_asMeasuredOP12b extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9;
-
-	public String lightPathsSystemName = "AET20";
 	
-	public double virtualObsPos[] = { 4.513118025944995, 4.508287555102773,	0.1029682717161218 }; //closest approach of all LOSs, from lightAssesment
+	public String lightPathsSystemName = "AET21";
+	
+	
+	public double virtualObsPos[] = { -1.0091035596642224,	6.301330112617632,	-0.1153786852687704 }; //closest approach of all LOSs, from lightAssesment
 	
 	/**** Shutter ****/
-	public double shutterPivotCentreA[] = { 4.39998046875, 4.517441650390625, 0.13232817459106447 };
+	public double shutterPivotCentreA[] = { -0.9081088256835937, 6.23119873046875, -0.13847615051269532 };
 	public double shutterPoints[][] = { //as in original cad, sticking out a bit
-		{ 4.35521533203125, 4.58010205078125, 0.17339279174804687 },
-		{ 4.44325830078125, 4.5084472656250005, 0.047050987243652344 },		
-		{ 4.4179873046875, 4.4605712890625, 0.20753802490234374 },
+		{ -0.0993520263671875, 0.620496484375, -0.013595979309082032 },
+		{ -0.08465389404296876, 0.624318310546875, -0.020437840270996096 },
+		{ -0.08607802124023438, 0.627997900390625, -0.0068935592651367195 },
 	};
-	public double portNormal[] = Util.reNorm(new double[]{ 0.6152945555432773, 0.7233992259083248, 0.3132190445583368 });
-	public double portRightish[] = Util.reNorm(new double[]{ 0.508210807194099, -0.8593602637191334, -0.056760132062073185 });
+	public double portNormal[] = Util.reNorm(new double[]{ -0.07340324, 0.94686172,  -0.31315308 });
+	public double portRightish[] = Util.reNorm(new double[]{ -0.9312751 , -0.3297411 ,  0.15491124 });
 	public double portUp[] = Util.reNorm(Util.cross(portNormal, portRightish));
 	public double portRight[] = Util.reNorm(Util.cross(portUp, portNormal));
 		
@@ -59,7 +60,7 @@ public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
 	
 	public double shutterNormal[] = Util.reNorm(Util.cross(Util.minus(shutterPoints[0], shutterPoints[1]), Util.minus(shutterPoints[2], shutterPoints[1])));
 
-	public double shutterPivotCentre[] = Util.plus(shutterPivotCentreA, Util.mul(shutterNormal, 0.008));
+	public double shutterPivotCentre[] = Util.plus(shutterPivotCentreA, Util.mul(shutterNormal, 0.017));
 	
 	public Disc shutter = new Disc("shutterDisc", shutterPivotCentre, shutterNormal, shutterDiameter/2, NullInterface.ideal());
 	
@@ -77,13 +78,13 @@ public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
 	
 
 	/**** Entry Window ****/
-	public double entryWindowRadiusOnShutter = 0.058;
+	public double entryWindowRadiusOnShutter = 0.057;
 	public double entryWindowIrisDiameter = 0.065;
 	public double entryWindowDiameter = 0.050;
 	//public double entryWindowAngularPosition = 116 * Math.PI / 180;//near window
 	//public double entryWindowAngularPosition = -4 * Math.PI / 180; //top window 
 	//public double entryWindowAngularPosition = -124 * Math.PI / 180; // bottom window
-	public double entryWindowAngularPosition = (180-22) * Math.PI / 180; //top window, with 18deg rotated tube
+	public double entryWindowAngularPosition = -19 * Math.PI / 180; //top window, with 18deg rotated tube
 	public double entryWindowMoveIn = 0.007;
 	public double entryWindowThickness = 0.0025;
 	public double entryWindowCyldLength = 0.015;
@@ -110,41 +111,36 @@ public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
 	
 	//public STLMesh shutterPlate = new STLMesh("shutterPlate", "/home/oliford/rzg/w7x/cad/aet21/shutterFrontPlate-topWindow.stl");
 	
-	
 	/***** Observation target ****/
-	//public int targetBeamIdx = 3; //Q8
+	public int targetBeamIdx = 7; //Q8
 	public double targetBeamR = 5.8;
-	public double targetObsPos[] = Util.mul(Util.plus(
-				W7xNBI.def().getPosOfBeamAxisAtR(W7xNBI.BEAM_Q3, targetBeamR),
-				W7xNBI.def().getPosOfBeamAxisAtR(W7xNBI.BEAM_Q4, targetBeamR)), 0.5);
+	public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	
-	public double beamAxis[] = Util.reNorm(Util.plus( 
-			W7xNBI.def().uVec(W7xNBI.BEAM_Q3),
-			W7xNBI.def().uVec(W7xNBI.BEAM_Q4)));
-		
 	public double observationVec[] = Util.reNorm(Util.minus(targetObsPos, entryWindowPos));
-	public double observationUp[] = Util.reNorm(Util.cross(beamAxis, observationVec));
+	public double observationUp[] = Util.reNorm(Util.cross(W7xNBI.def().uVec(targetBeamIdx), observationVec));
 	
-	public STLMesh panelEdge = new STLMesh("panel", "/home/oliford/rzg/w7x/cad/aet21/panel-20-aet20-cut.stl");
-			
+	public STLMesh panelEdge = new STLMesh("panel", "/home/oliford/rzg/w7x/cad/aet21/conflicting-panel-aet21.stl");
+	
+		
 	/**** Mirror ****/
 	//public double mirrorWidth = 0.126;
-	public double mirrorWidth = 0.046;
-	public double mirrorHeight = 0.025;
+	public double mirrorWidth = 0.0510;
+	public double mirrorHeight = 0.038;
 	
 	//public double mirrorCentreBackFromWindow = 0.055;	 //with prism
 	//public double mirrorCentreRightFromWindow = 0.047; 
-	public double mirrorCentreBackFromWindow = 0.035;
-	public double mirrorCentreUpFromWindow = 0.001;	
-	public double mirrorCentreRightFromWindow = 0.046;
+	public double mirrorCentreBackFromWindow = 0.038;
+	public double mirrorCentreUpFromWindow = -0.005;	
+	public double mirrorCentreRightFromWindow = 0.045;
 	
 	public double mirrorBuildPosA[] = Util.plus(entryWindowFrontPos, Util.mul(portNormal, mirrorCentreBackFromWindow));	
 	public double mirrorBuildPosB[] = Util.plus(mirrorBuildPosA, Util.mul(portUp, mirrorCentreUpFromWindow));	
 	public double mirrorCentrePos[] = Util.plus(mirrorBuildPosB, Util.mul(portRight, mirrorCentreRightFromWindow));
 	
-	public double mirrorToPortAngle = 19.2 * Math.PI / 180;
+	//public double mirrorToPortAngle = 19.2 * Math.PI / 180;
+	public double mirrorToPortAngle = 17.8 * Math.PI / 180;
 	//public double mirrorTipAngle = -6.5 * Math.PI / 180; //aimed at Q7
-	public double mirrorTipAngle = -1.0 * Math.PI / 180; // Q7 and Q8, also nearer core  
+	public double mirrorTipAngle = -7.5 * Math.PI / 180; // Q7 and Q8, also nearer core  
 
 	//public double mirrorToPortAngle = 14 * Math.PI / 180;	
 	//public double mirrorTipAngle = -3.0 * Math.PI / 180; //tip to counter the effect of the prism rotation, shiften lens
@@ -165,8 +161,8 @@ public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
 	//public double lensCentreUpFromWindow = -0.005;	
 	//public double lensCentreRightFromWindow = 0.038;
 
-	public double lensCentreBackFromWindow = 0.0805;	
-	public double lensCentreUpFromWindow = 0.000;	
+	public double lensCentreBackFromWindow = 0.080;	
+	public double lensCentreUpFromWindow = -0.005;	
 	public double lensCentreRightFromWindow = 0.033;
 
 	public double lensBuildPosA[] = Util.plus(entryWindowFrontPos, Util.mul(portNormal, lensCentreBackFromWindow));	
@@ -265,19 +261,22 @@ public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
 	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, fibrePlaneNormal, fibresYVec, 0.080, 0.080, Absorber.ideal());
 	
 	public Element tracingTarget = entryWindowFront;
+	public Surface checkSurface = mirror;
 	
+	public double beamAxis[] = W7xNBI.def().uVec(targetBeamIdx);
 	public double beamObsPerp[] = Util.reNorm(Util.cross(Util.minus(lensCentrePos, targetObsPos), beamAxis));
 	public double beamObsPlaneNormal[] = Util.reNorm(Util.cross(beamAxis, beamObsPerp));
 	
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 0.500, 1.200, NullInterface.ideal());
-	public Square strayPlane = null;
-	public Cylinder rod = null;
+	public Square strayPlane = null; 
 	
 	/** Fibres, Observation volumes etc */
 	public double fibreNA = 0.22; // As AUG	
-	public double fibreEndDiameter = 0.000470; // from ceramOptec offer, with polymide jacket (470µm), without Tefzel (550µm)
-		
-	public int beamIdx[] = { W7xNBI.BEAM_Q4 };
+	public double fibreCoreDiameter = 0.000440; // from ceramOptec offer, with polymide jacket (470µm), without Tefzel (550µm)
+	public double fibreJacketDiameter = 0.000550; // from ceramOptec offer, with polymide jacket (470µm), without Tefzel (550µm)
+	public double fibreEndDiameter = fibreCoreDiameter;
+	
+	public int beamIdx[] = { W7xNBI.BEAM_Q7 };
 	//public double[] channelR = OneLiners.linSpace(5.38, 5.88, nFibres);
 	public String[] lightPathRowName = null;
 	public double[][] channelR = {{ 5.486, 5.509, 5.535, 5.559, 5.584, 
@@ -288,6 +287,7 @@ public class BeamEmissSpecAET20_postDesign_LC3 extends Optic {
 	/** Fibre positions from autofocus */
 	//public double[] fibreFocus = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
+	public Cylinder rod = null;
 
 public double[][] fibreFocus = {{ 
 		 5.981521606445736E-4 ,
@@ -326,20 +326,22 @@ public double[][] fibreFocus = {{
 			
 	}};
 	
-	
+		
 	
 	private void setupFibrePositions() {
 		int nBeams = channelR.length;
 		fibreEndPos = new double[nBeams][][];
 		fibreEndNorm = new double[nBeams][][];
 		
+		if(true)throw new RuntimeException("Not matched yet");
+		
 		for(int iB=0; iB < nBeams; iB++){
 			int nFibres = channelR[iB].length;
 			fibreEndPos[iB] = new double[nFibres][];
 			fibreEndNorm[iB] = new double[nFibres][];
 			
-			double dX = -fibreEndDiameter;
-			double x0 = -(nFibres-1)/2 * dX; 
+			double dX = -fibreJacketDiameter;
+			double x0 = -(nFibres)/2 * dX; 
 			for(int iF=0; iF < nFibres; iF++){
 				fibreEndPos[iB][iF] = Util.plus(fibrePlanePos, Util.mul(fibresXVec, x0 + iF * dX));	
 						
@@ -372,7 +374,7 @@ public double[][] fibreFocus = {{
 		}
 	}
 	
-	public BeamEmissSpecAET20_postDesign_LC3() {
+	public BeamEmissSpecAET21_asMeasuredOP12b() {
 		super("beamSpec-aet21");
 		
 		//make the window a prism
@@ -402,7 +404,7 @@ public double[][] fibreFocus = {{
 		
 	}
 
-	public String getDesignName() { return "aet20";	}
+	public String getDesignName() { return "aet21";	}
 	
 	//manual simplified model for STL
 	public ArrayList<Element> makeSimpleModel(){

@@ -41,7 +41,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
-	public String lightPathsSystemName = "AEM21_???";
+	public String lightPathsSystemName = "AEM21";	
 	
 	// CAD from designer
 	
@@ -195,6 +195,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 
 	/*** Fibres ****/
 	public int beamIdx[] = null;
+	public String lightPathRowName[] = null;
 	public double[][] channelR = null;	
 	public double[][][] fibreEndPos = null;
 	public double[][][] fibreEndNorm = null;
@@ -703,7 +704,8 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	private void setupFibrePositions() {
 		int nBeams = ferruleRowNFibres.length;
 		channelR = new double[nBeams][];
-		beamIdx = new int[] { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 , W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
+		lightPathRowName = new String[]{ "S7", "S8", "X1", "X2" };
+		beamIdx = new int[] { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 , W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q7 };
 		fibreEndPos = new double[nBeams][][];
 		fibreEndNorm = new double[nBeams][][];
 		

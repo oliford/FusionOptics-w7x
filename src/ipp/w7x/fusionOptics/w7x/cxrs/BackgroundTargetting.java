@@ -10,6 +10,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolet
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_asMeasuredOP12b;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
@@ -47,7 +48,8 @@ import fusionOptics.types.Surface;
 public class BackgroundTargetting {
 	
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();	
-	public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
+	public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
+	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
@@ -70,7 +72,7 @@ public class BackgroundTargetting {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 100;
+	public final static int nAttempts = 500;
 
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/background/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -212,63 +214,21 @@ public class BackgroundTargetting {
 				System.out.println("P=" + iB + "." + iP + "(fwhm = " + fwhm + "):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 				
-				{
-					double a[] = { startPoints[iB][iP][0], startPoints[iB][iP][1], startPoints[iB][iP][2] };
-					double b[] = { hitPoints[iB][iP][0], hitPoints[iB][iP][1], hitPoints[iB][iP][2] };
-					double rad = fwhm / 4;
-					//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
-					//			"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "));");
-					System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\";");
-					
-					double u[] = Util.reNorm(Util.minus(b, a));
-					double losLen = Util.length(Util.minus(b, a));
-					System.out.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+losLen*1e3 +","										
-									+"FreeCAD.Vector("+a[0]*1e3+","+a[1]*1e3+","+a[2]*1e3+"), "
-									+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+iB+"_"+iP+"\";");
+				for(int j=0;j < 3; j++){				
+					outputInfo(startPoints, hitPoints, iB, iP, j);
+				}
+				
+				System.out.println();	
+			}
+		}
+		
+		//spit out build commands and LOS definitions in blocks
+		for(int j=0;j < 3; j++){
+			for(int iB=0; iB < sys.channelR.length; iB++){
+				for(int iP=0; iP < sys.channelR[iB].length; iP++){					
+					outputInfo(startPoints, hitPoints, iB, iP, j);
 					
 				}
-			}
-		}
-		
-		//spit out FreeCAD instructions to create fibre end block cylinders
-		
-		for(int iB=0; iB < sys.channelR.length; iB++){
-			for(int iP=0; iP < sys.channelR[iB].length; iP++){
-				if(hitPoints[iB][iP] == null)
-					continue;
-				
-				double p[] = { hitPoints[iB][iP][0], hitPoints[iB][iP][1], hitPoints[iB][iP][2] };
-				double sp[] = { startPoints[iB][iP][0], startPoints[iB][iP][1], startPoints[iB][iP][2] };
-				double rad = hitPoints[iB][iP][3] / 4;
-				 		
-				//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 + "));");
-				System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 
-								+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\";");
-				
-				double c[] = Util.mul(Util.plus(sp, p), 0.5);
-				double u[] = Util.reNorm(Util.minus(p, sp));
-				double losLen = Util.length(Util.minus(p, sp));
-				System.out.println("Part.show(Part.makeCylinder("+rad*1e3+",FreeCAD.Vector("+losCyldRadius*1e3+","+losLen*1e3+","
-									+ c[0]*1e3+","+c[1]*1e3+","+c[2]*1e3
-									+ u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\";");
-				
-			}
-		}
-		
-		//spit out LOS definitions
-		for(int iB=0; iB < sys.channelR.length; iB++){
-			for(int iP=0; iP < sys.channelR[iB].length; iP++){
-				//double start[] = sys.lens1.getBackSurface().getCentre();
-				double start[] = startPoints[iB][iP];
-				double uVec[] = Util.reNorm(Util.minus(hitPoints[iB][iP], start));
-				String chanName = ((sys.channelR.length > 1) ? ("S"+(iB+1)+ "-") : "") + String.format("%02d", iP+1);
-				System.out.println(sys.lightPathsSystemName + ":" + chanName
-						+ " start={ " + String.format("%7.5g", start[0]) + ", " + String.format("%7.5g", start[1]) + ", " + String.format("%7.5g", start[2]) + "}"
-						+ " uVec={ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "}"
-						+ " wall={ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
-									+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
-									+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "}"
-						);
 			}
 		}
 		
@@ -279,6 +239,66 @@ public class BackgroundTargetting {
 		
 		//vrmlOut.addVRML("}");
 		vrmlOut.destroy();
+	}
+	
+	private static void outputInfo(double startPoints[][][], double hitPoints[][][], int iB, int iP, int thing){
+	
+
+		double rad = hitPoints[iB][iP][3] / 4;
+		
+		//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
+		//			"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "));");
+		double u[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+		double losLen = Util.length(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+		
+		//point on ray closest to beam axes
+		double approach[][] = new double[8][];
+		for(int jB=6; jB < 8; jB++){
+			
+			double beamStart[] = beams.start(sys.beamIdx[iB]);
+			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
+			
+			double aL = Algorithms.pointOnLineNearestAnotherLine(startPoints[iB][iP], u, beamStart, beamVec);
+			approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(u, aL));
+		}
+		
+		//double start[] = sys.lens1.getBackSurface().getCentre();
+		double uVec[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+		String chanName = sys.lightPathsSystemName 
+				+ (sys.lightPathRowName != null ? ("_"+sys.lightPathRowName[iB]) : "")
+				+ ":" + String.format("%02d", iP+1);
+	
+		switch(thing){
+			case 0:		
+				System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iB][iP][0]*1e3+","+hitPoints[iB][iP][1]*1e3+","+hitPoints[iB][iP][2]*1e3 + ")));"
+						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+chanName+"\";");
+				break;
+				
+			case 1:
+				System.out.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+losLen*1e3 +","										
+						+"FreeCAD.Vector("+startPoints[iB][iP][0]*1e3+","+startPoints[iB][iP][1]*1e3+","+startPoints[iB][iP][2]*1e3+"), "
+						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+chanName+"\";");
+				break;
+				
+			case 2:
+				System.out.print(chanName
+						+ ", start={ " + String.format("%7.5g", startPoints[iB][iP][0]) + ", " + String.format("%7.5g", startPoints[iB][iP][1]) + ", " + String.format("%7.5g", startPoints[iB][iP][2]) + "}"
+						+ ", uVec={ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "}");
+				for(int jB=0; jB < approach.length; jB++){
+					if(approach[jB] != null)
+						System.out.print(", approachQ"+(jB+1)+"={ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "}");
+				}
+						
+				System.out.println(", wall={ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
+									+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
+									+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "}"
+						);
+				break;
+		}
+		
+		
+		
+		
 	}
 	
 }
