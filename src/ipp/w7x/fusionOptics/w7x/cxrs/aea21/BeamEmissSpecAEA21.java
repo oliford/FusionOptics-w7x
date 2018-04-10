@@ -540,7 +540,30 @@ public class BeamEmissSpecAEA21 extends Optic {
 			channelZ[i] = W7xNBI.def().getPosOfBoxAxisAtR(0, channelR[0][i])[2];
 		}
 		
-		System.out.print("Window centre posXYZ = "); OneLiners.dumpArray(entryWindowFront.getCentre());		
+		System.out.print("Window centre posXYZ = "); OneLiners.dumpArray(entryWindowFront.getCentre());
+		
+		double cyldLen = 3.000;
+		double cyldRadius = 0.0025;
+		
+		double u[] = Util.reNorm(Util.mul(opticAxis, -1));
+		double p[] = Util.plus(mirrorCentrePos, Util.mul(u, -cyldLen));
+		 
+		System.out.println("Part.show(Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
+				",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
+				"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360)); #TubeAxisCylinder");
+		
+		u = Util.reNorm(Util.mul(sourceNormal, -1));
+		p = Util.plus(mirrorCentrePos, Util.mul(u, -cyldLen));
+		
+		System.out.println("Part.show(Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
+				",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
+				"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360)); #SourceAxisCylinder");
+		
+		double adjustedTargetPos[] = Util.plus(targetObsPos, Util.mul(opticAxis, mirrorDistIntoPort));
+		System.out.println("Part.show(Part.makeSphere("+(cyldRadius*1e3)+", FreeCAD.Vector("+adjustedTargetPos[0]*1e3+","+adjustedTargetPos[1]*1e3+","+adjustedTargetPos[2]*1e3 + "))); # adjustedTargetPos");
+		
+		System.out.println("Part.show(Part.makeSphere("+(cyldRadius*1e3)+", FreeCAD.Vector("+mirrorCentrePos[0]*1e3+","+mirrorCentrePos[1]*1e3+","+mirrorCentrePos[2]*1e3 + "))); # mirrorCentrePos");
+		
 	}
 
 	public String getDesignName() { return "aea21";	}
