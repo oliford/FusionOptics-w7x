@@ -44,7 +44,10 @@ import fusionOptics.types.Pol;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
 
-/** Basic pictures for BeamEmissSpecAET21 model */
+/** Backtrace fibres to find point on W7X wall that LOS hits
+ * Produce LOS cylinder and point instructions for FreeCAD
+ * 
+*/
 public class BackgroundTargetting {
 	
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();	
