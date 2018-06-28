@@ -25,6 +25,8 @@ import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import jafama.FastMath;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.List;
 
 import oneLiners.OneLiners;
@@ -50,6 +52,7 @@ import fusionOptics.types.Surface;
 
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class FibreBacktrace {
+	public static double losCyldRadius = 0.005;
 	
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
@@ -87,7 +90,7 @@ public class FibreBacktrace {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 2000;
+	public final static int nAttempts = 10000;
 
 	public static String writeWRLForDesigner = null;//20170717";
 	
@@ -95,12 +98,13 @@ public class FibreBacktrace {
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		makeFibreCyldSTL(); //		System.exit(0);
 		
 		System.out.println(outPath);
 		OneLiners.dumpArray(sys.mirrorCentrePos);
 		OneLiners.dumpArray(sys.mirrorNormal);
+		OneLiners.dumpArray(sys.opticAxis);
 		OneLiners.dumpArray(sys.targetObsPos);
 		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 5.005);
@@ -125,9 +129,15 @@ public class FibreBacktrace {
 		sys.fibrePlane.setInterface(NullInterface.ideal());		
 		sys.addElement(sys.beamPlane);
 		
+		double startPoints[][][] = new double[sys.channelR.length][][];
+		double closestApproachPos[][][] = new double[sys.channelR.length][][];
+		
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			double beamStart[] = beams.start(sys.beamIdx[iB]);
 			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
+			
+			startPoints[iB] = new double[sys.channelR[iB].length][];
+			closestApproachPos[iB] = new double[sys.channelR[iB].length][];
 			
 			for(int iP=0; iP < sys.channelR[iB].length; iP+=1){
 							
@@ -136,7 +146,8 @@ public class FibreBacktrace {
 				double startPos[] = sys.fibreEndPos[iB][iP];
 				
 				double sumI=0, sumIR=0, sumIR2 = 0, beamPlanePos[] = new double[3], sumDistToBeam=0;
-				double closestApproachPos[] = new double[3];
+				closestApproachPos[iB][iP] = new double[4];
+				
 				for(int i=0; i < nAttempts; i++){
 					double x, y, rMax = sys.fibreEndDiameter / 2;
 					do{
@@ -150,6 +161,7 @@ public class FibreBacktrace {
 													Util.mul(sys.fibresXVec, x),
 													Util.mul(sys.fibresYVec, y)
 												));
+					startPoints[iB][iP] = ray.startPos;
 					
 					//generate ray from fibre (using it's direction and NA)
 					double nV[] = sys.fibrePlanes[iB][iP].getNormal();
@@ -199,9 +211,10 @@ public class FibreBacktrace {
 						aL = Algorithms.pointOnLineNearestAnotherLine(beamStart, beamVec, hitRay.startPos, hitRay.dir);
 						double p2[] = OneLiners.plus(beamStart, OneLiners.mul(beamVec, aL));
 						
+						
 						for(int j=0; j<3; j++){
 							beamPlanePos[j] += p[j];
-							closestApproachPos[j] += p1[j];
+							closestApproachPos[iB][iP][j] += p1[j];
 						}
 						
 						sumDistToBeam += OneLiners.length(OneLiners.minus(p2, p1));
@@ -221,24 +234,43 @@ public class FibreBacktrace {
 				double R = sumIR / sumI;
 				
 				double var = 1.0/sumI*(sumIR2 - sumIR*sumIR/sumI);
+				
 				double fwhmR = 2.35 * FastMath.sqrt(var);
+								
 				for(int j=0; j<3; j++){
 					beamPlanePos[j] /= nHit;
-					closestApproachPos[j] /= nHit;
+					closestApproachPos[iB][iP][j] /= nHit;
 				}
 				sumDistToBeam /= nHit;  
+				closestApproachPos[iB][iP][3] = fwhmR;
 				
-				fibreInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], R, fwhmR, (double)nHit / nAttempts, (double)nStray / nAttempts, R, sumDistToBeam, beamPlanePos, closestApproachPos);
+				fibreInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], R, fwhmR, (double)nHit / nAttempts, (double)nStray / nAttempts, R, sumDistToBeam, beamPlanePos, 
+						closestApproachPos[iB][iP][0], closestApproachPos[iB][iP][1], closestApproachPos[iB][iP][2]);
 				
 				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
 				System.out.println("P=" + iB + "." + iP + "(R=" + R + ", fwhmR = " + (fwhmR*1e3) + " mm):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 
-				System.out.println("Part.show(Part.makeSphere("+(fwhmR*1e3)+", FreeCAD.Vector("+beamPlanePos[0]*1e3+","+beamPlanePos[1]*1e3+","+beamPlanePos[2]*1e3 + "));");
+				for(int j=0;j < 3; j++){				
+					outputInfo(System.out, startPoints, closestApproachPos, iB, iP, j);
+				}
 				
 				intensityInfo.reset();
 			}
 		}
+		
+		PrintStream textOut = new PrintStream(outPath + "/info.txt");
+		//spit out build commands and LOS definitions in blocks
+		for(int j=0;j < 3; j++){
+			for(int iB=0; iB < sys.channelR.length; iB++){
+				for(int iP=0; iP < sys.channelR[iB].length; iP++){					
+					outputInfo(System.out, startPoints, closestApproachPos, iB, iP, j);	
+					outputInfo(textOut, startPoints, closestApproachPos, iB, iP, j);
+					
+				}
+			}
+		}
+		textOut.close();
 		
 		//spit out FreeCAD instructions to create fibre end block cylinders
 		double cyldLen = 0.030;
@@ -263,6 +295,64 @@ public class FibreBacktrace {
 		
 		//vrmlOut.addVRML("}");
 		vrmlOut.destroy();
+	}
+	
+	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, int thing){
+		
+
+		double rad = hitPoints[iB][iP][3] / 4;
+		
+		double u[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+		double losLen = Util.length(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+		
+		//point on ray closest to beam axes
+		double approach[][] = new double[8][];
+		for(int jB=6; jB < 8; jB++){
+			
+			double beamStart[] = beams.start(sys.beamIdx[iB]);
+			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
+			
+			double aL = Algorithms.pointOnLineNearestAnotherLine(startPoints[iB][iP], u, beamStart, beamVec);
+			approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(u, aL));
+		}
+		
+		//double start[] = sys.lens1.getBackSurface().getCentre();
+		double uVec[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+		String chanName = sys.lightPathsSystemName 
+				+ (sys.lightPathRowName != null ? ("_"+sys.lightPathRowName[iB]) : "")
+				+ ":" + String.format("%02d", iP+1);
+	
+		switch(thing){
+			case 0:		
+				stream.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iB][iP][0]*1e3+","+hitPoints[iB][iP][1]*1e3+","+hitPoints[iB][iP][2]*1e3 + ")));"
+						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"beamApproach_"+sys.getDesignName()+"_"+chanName+"\";");
+				break;
+				
+			case 1:
+				stream.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+losLen*1e3 +","										
+						+"FreeCAD.Vector("+startPoints[iB][iP][0]*1e3+","+startPoints[iB][iP][1]*1e3+","+startPoints[iB][iP][2]*1e3+"), "
+						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+chanName+"\";");
+				break;
+				
+			case 2:
+				stream.print(chanName
+						+ ", start={ " + String.format("%7.5g", startPoints[iB][iP][0]) + ", " + String.format("%7.5g", startPoints[iB][iP][1]) + ", " + String.format("%7.5g", startPoints[iB][iP][2]) + "}"
+						+ ", uVec={ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "}");
+				for(int jB=0; jB < approach.length; jB++){
+					if(approach[jB] != null)
+						stream.print(", approachQ"+(jB+1)+"={ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "}");
+				}
+						
+				stream.println(", wall={ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
+									+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
+									+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "}"
+						);
+				break;
+		}
+		
+		
+		
+		
 	}
 	
 	private static void makeFibreCyldSTL() {

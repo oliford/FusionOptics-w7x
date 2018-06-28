@@ -20,6 +20,8 @@ import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import jafama.FastMath;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.List;
 
 import oneLiners.OneLiners;
@@ -51,10 +53,10 @@ import fusionOptics.types.Surface;
 public class BackgroundTargetting {
 	
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();	
-	public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
+	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -75,7 +77,7 @@ public class BackgroundTargetting {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 500;
+	public final static int nAttempts = 50;
 
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/background/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -84,7 +86,7 @@ public class BackgroundTargetting {
 	public static double losCyldRadius = 0.005;
 	public static Surface startSurface = sys.mirror;
 		
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+".vrml", 5.005);
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
@@ -218,22 +220,24 @@ public class BackgroundTargetting {
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 				
 				for(int j=0;j < 3; j++){				
-					outputInfo(startPoints, hitPoints, iB, iP, j);
+					outputInfo(System.out, startPoints, hitPoints, iB, iP, j);
 				}
 				
 				System.out.println();	
 			}
 		}
 		
+		PrintStream textOut = new PrintStream(outPath + "/info.txt");
 		//spit out build commands and LOS definitions in blocks
 		for(int j=0;j < 3; j++){
 			for(int iB=0; iB < sys.channelR.length; iB++){
 				for(int iP=0; iP < sys.channelR[iB].length; iP++){					
-					outputInfo(startPoints, hitPoints, iB, iP, j);
-					
+					outputInfo(System.out, startPoints, hitPoints, iB, iP, j);	
+					outputInfo(textOut, startPoints, hitPoints, iB, iP, j);					
 				}
 			}
 		}
+		textOut.close();
 		
 		hitInfoOut.close();
 				
@@ -244,7 +248,7 @@ public class BackgroundTargetting {
 		vrmlOut.destroy();
 	}
 	
-	private static void outputInfo(double startPoints[][][], double hitPoints[][][], int iB, int iP, int thing){
+	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, int thing){
 	
 
 		double rad = hitPoints[iB][iP][3] / 4;
@@ -273,26 +277,26 @@ public class BackgroundTargetting {
 	
 		switch(thing){
 			case 0:		
-				System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iB][iP][0]*1e3+","+hitPoints[iB][iP][1]*1e3+","+hitPoints[iB][iP][2]*1e3 + ")));"
+				stream.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iB][iP][0]*1e3+","+hitPoints[iB][iP][1]*1e3+","+hitPoints[iB][iP][2]*1e3 + ")));"
 						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+chanName+"\";");
 				break;
 				
 			case 1:
-				System.out.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+losLen*1e3 +","										
+				stream.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+losLen*1e3 +","										
 						+"FreeCAD.Vector("+startPoints[iB][iP][0]*1e3+","+startPoints[iB][iP][1]*1e3+","+startPoints[iB][iP][2]*1e3+"), "
 						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+chanName+"\";");
 				break;
 				
 			case 2:
-				System.out.print(chanName
+				stream.print(chanName
 						+ ", start={ " + String.format("%7.5g", startPoints[iB][iP][0]) + ", " + String.format("%7.5g", startPoints[iB][iP][1]) + ", " + String.format("%7.5g", startPoints[iB][iP][2]) + "}"
 						+ ", uVec={ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "}");
 				for(int jB=0; jB < approach.length; jB++){
 					if(approach[jB] != null)
-						System.out.print(", approachQ"+(jB+1)+"={ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "}");
+						stream.print(", approachQ"+(jB+1)+"={ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "}");
 				}
 						
-				System.out.println(", wall={ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
+				stream.println(", wall={ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
 									+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
 									+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "}"
 						);

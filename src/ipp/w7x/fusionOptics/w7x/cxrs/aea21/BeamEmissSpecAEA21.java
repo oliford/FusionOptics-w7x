@@ -588,9 +588,9 @@ public class BeamEmissSpecAEA21 extends Optic {
 	private int ferruleCrossFibreCrossSelect[] = { 11-1, 25-1 };
 	private double ferruleCrossFibreSpacing[] = { 0.002, 0.002 };
 	private double ferruleCrossFibreRelDists[][] = { 
-			{ -1.0, -2.0, -3.0,    1.0, 2.0, 3.0 },
-			{ -1.0, -2.0, -3.0,    1.0, 2.0, 3.0 },
-			};	
+			{ 3.0, 2.0, 1.0,    -1.0, -2.0, -3.0 }, //ordered so that highest in plasma is #1
+			{ 3.0, 2.0, 1.0,    -1.0, -2.0, -3.0 },
+			};		
 				
 	
 	
