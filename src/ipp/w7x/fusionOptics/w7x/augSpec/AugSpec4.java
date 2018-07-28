@@ -22,7 +22,7 @@ import jafama.FastMath;
 public class AugSpec4 extends Optic {
 	public double designWavelenth = 656e-9;
 	
-	public double inputAngle = 33 * Math.PI / 180; 
+	public double inputAngle = 20 * Math.PI / 180; 
 	public double outputAngle = inputAngle;
 	
 	public double axisHeight = 0.200;
@@ -32,7 +32,7 @@ public class AugSpec4 extends Optic {
 	
 	public double gratingHeight = 0.110;
 	public double gratingWidth = 0.110;
-	public double gratingDensity = 1800e3;
+	public double gratingDensity = 2400e3;
 	
 	public int nFibres = 45;
 	public double fibreDiameter = 400e-6;

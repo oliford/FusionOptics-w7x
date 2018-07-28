@@ -22,7 +22,7 @@ public class WavelengthScan {
 	public static Surface mustHitToDraw = sys.ccd;
 	public static int nAttempts = 1000;
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/augSpec-1800-33deg/";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/augSpec-2400-20deg/";
 	
 	public static double slitWidth = 100e-6;
 	

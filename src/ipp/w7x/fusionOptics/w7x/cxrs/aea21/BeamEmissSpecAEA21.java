@@ -473,6 +473,13 @@ public class BeamEmissSpecAEA21 extends Optic {
 
 	public Disc strayPlane = new Disc("strayPlane", Util.plus(entryWindowFrontPos, Util.mul(portNormal, -0.300)),
 									portNormal, 0.200, Absorber.ideal());
+	
+	//plane to cover up ports AEE30 and AEK30 for background targetting
+	public double port30PlanePos[] = { -4.886710693359375, 4.122841796875, -0.09633171272277832 };
+	public double port30PlaneNormal[] = { -0.73000834,  0.67882323, -0.07928962 };
+	public double port30PlaneUp[] = Util.reNorm(Util.cross(Util.cross(port30PlaneNormal, globalUp), port30PlaneNormal));
+	
+	public Square port30Plane = new Square("port30Plane", port30PlanePos, port30PlaneNormal, port30PlaneUp, 1.00, 2.00, Absorber.ideal());
 
 
 	public double beamObsPerp[] = Util.reNorm(Util.cross(Util.minus(lens1CentrePos, targetObsPos), beamAxis));
@@ -534,6 +541,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 			
 		addElement(catchPlane);
 		addElement(strayPlane);
+		addElement(port30Plane);
 		
 		channelZ = new double[ channelR.length];
 		for(int i=0; i < channelR.length; i++){
@@ -582,7 +590,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	private final double ferruleRowAngle[] = { 0, 0, (90-21.8)*Math.PI/180, (90-21.8)*Math.PI/180 };
 	private final double ferruleRowCurvatureRadius[] = { 0.0640,  0.0640 };
 	private final double ferruleCurvatureSidewaysOffset[] = { 
-			-ferruleRowSidewaysOffset[0] -0.0017,  //this diagram was from rod centre, the AEM21 was from row origin (which this code takes) 
+			-ferruleRowSidewaysOffset[0] -0.0017,  //this diagram was from rod centre, the AEA21 was from row origin (which this code takes) 
 			-ferruleRowSidewaysOffset[1] -0.0017 };
 	private final double ferruleCurvatureCenterToRod[] = { 0.1569, 0.1569 };
 	private int ferruleCrossFibreCrossSelect[] = { 11-1, 25-1 };
