@@ -57,9 +57,9 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -147,6 +147,7 @@ public class FibreBacktrace {
 				
 				double sumI=0, sumIR=0, sumIR2 = 0, beamPlanePos[] = new double[3], sumDistToBeam=0;
 				closestApproachPos[iB][iP] = new double[4];
+				startPoints[iB][iP] = new double[3];
 				
 				for(int i=0; i < nAttempts; i++){
 					double x, y, rMax = sys.fibreEndDiameter / 2;
@@ -161,8 +162,7 @@ public class FibreBacktrace {
 													Util.mul(sys.fibresXVec, x),
 													Util.mul(sys.fibresYVec, y)
 												));
-					startPoints[iB][iP] = ray.startPos;
-					
+										
 					//generate ray from fibre (using it's direction and NA)
 					double nV[] = sys.fibrePlanes[iB][iP].getNormal();
 					double aV[] = sys.fibrePlanes[iB][iP].getUp();
@@ -211,10 +211,10 @@ public class FibreBacktrace {
 						aL = Algorithms.pointOnLineNearestAnotherLine(beamStart, beamVec, hitRay.startPos, hitRay.dir);
 						double p2[] = OneLiners.plus(beamStart, OneLiners.mul(beamVec, aL));
 						
-						
 						for(int j=0; j<3; j++){
 							beamPlanePos[j] += p[j];
 							closestApproachPos[iB][iP][j] += p1[j];
+							startPoints[iB][iP][j] += hitRay.startPos[j];
 						}
 						
 						sumDistToBeam += OneLiners.length(OneLiners.minus(p2, p1));
@@ -240,6 +240,7 @@ public class FibreBacktrace {
 				for(int j=0; j<3; j++){
 					beamPlanePos[j] /= nHit;
 					closestApproachPos[iB][iP][j] /= nHit;
+					startPoints[iB][iP][j] /= nHit;
 				}
 				sumDistToBeam /= nHit;  
 				closestApproachPos[iB][iP][3] = fwhmR;
