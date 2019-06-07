@@ -9,7 +9,7 @@ import oneLiners.OneLiners;
 import seed.matrix.DenseMatrix;
 import algorithmrepository.Algorithms;
 import algorithmrepository.exceptions.NotImplementedException;
-import jafama.FastMath;
+import net.jafama.FastMath;
 import fusionOptics.Util;
 import fusionOptics.interfaces.Absorber;
 import fusionOptics.interfaces.IsoIsoInterface;

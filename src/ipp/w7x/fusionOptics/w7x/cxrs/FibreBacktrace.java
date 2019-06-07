@@ -23,10 +23,12 @@ import ipp.w7x.neutralBeams.W7XPelletsK41;
 import ipp.w7x.neutralBeams.W7XPelletsL41;
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
-import jafama.FastMath;
+import net.jafama.FastMath;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import oneLiners.OneLiners;
@@ -57,9 +59,9 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
-	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
+	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -90,9 +92,9 @@ public class FibreBacktrace {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 1000;
 
-	public static String writeWRLForDesigner = null;//20170717";
+	public static String writeWRLForDesigner = null;//"20190402";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -253,7 +255,7 @@ public class FibreBacktrace {
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 
 				for(int j=0;j < 3; j++){				
-					outputInfo(System.out, startPoints, closestApproachPos, iB, iP, j);
+					outputInfo(System.out, startPoints, closestApproachPos, iB, iP, j, false);
 				}
 				
 				intensityInfo.reset();
@@ -265,13 +267,27 @@ public class FibreBacktrace {
 		for(int j=0;j < 3; j++){
 			for(int iB=0; iB < sys.channelR.length; iB++){
 				for(int iP=0; iP < sys.channelR[iB].length; iP++){					
-					outputInfo(System.out, startPoints, closestApproachPos, iB, iP, j);	
-					outputInfo(textOut, startPoints, closestApproachPos, iB, iP, j);
+					outputInfo(System.out, startPoints, closestApproachPos, iB, iP, j, false);	
+					outputInfo(textOut, startPoints, closestApproachPos, iB, iP, j, false);
 					
 				}
 			}
 		}
 		textOut.close();
+		
+		//output JSON LOS info
+		PrintStream jsonOut = new PrintStream(outPath + "/lineOfSightDefs-"+sys.lightPathsSystemName+".json");
+		jsonOut.println("{ \"system\" : \""+sys.lightPathsSystemName+"\", \"info\" : \"From raytracer "+sys.getDesignName()+" on "+
+				((new SimpleDateFormat()).format(new Date()))+" \", \"los\" : [");
+		for(int iB=0; iB < sys.channelR.length; iB++){
+			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
+				boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
+				outputInfo(jsonOut, startPoints, closestApproachPos, iB, iP, 2, isLast);				
+			}
+		}
+		jsonOut.println("]}");
+		
+		
 		
 		//spit out FreeCAD instructions to create fibre end block cylinders
 		double cyldLen = 0.030;
@@ -289,6 +305,8 @@ public class FibreBacktrace {
 			}
 		}
 		
+		
+		
 		fibreInfoOut.close();
 				
 		vrmlOut.drawOptic(sys);
@@ -297,8 +315,8 @@ public class FibreBacktrace {
 		//vrmlOut.addVRML("}");
 		vrmlOut.destroy();
 	}
-	
-	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, int thing){
+		
+	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, int thing, boolean supressComma){
 		
 
 		double rad = hitPoints[iB][iP][3] / 4;
@@ -310,8 +328,10 @@ public class FibreBacktrace {
 		double approach[][] = new double[8][];
 		for(int jB=6; jB < 8; jB++){
 			
-			double beamStart[] = beams.start(sys.beamIdx[iB]);
-			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
+			//double beamStart[] = beams.start(sys.beamIdx[iB]);
+			//double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
+			double beamStart[] = beams.start(jB);
+			double beamVec[] =  beams.uVec(jB);
 			
 			double aL = Algorithms.pointOnLineNearestAnotherLine(startPoints[iB][iP], u, beamStart, beamVec);
 			approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(u, aL));
@@ -336,18 +356,18 @@ public class FibreBacktrace {
 				break;
 				
 			case 2:
-				stream.print("{ \"id\" = \"" + chanName
-						+ "\", \"start\"=[ " + String.format("%7.5g", startPoints[iB][iP][0]) + ", " + String.format("%7.5g", startPoints[iB][iP][1]) + ", " + String.format("%7.5g", startPoints[iB][iP][2]) + "]"
-						+ ", \"uVec\"=[ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "]");
+				stream.print("{ \"id\" : \"" + chanName
+						+ "\", \"start\":[ " + String.format("%7.5g", startPoints[iB][iP][0]) + ", " + String.format("%7.5g", startPoints[iB][iP][1]) + ", " + String.format("%7.5g", startPoints[iB][iP][2]) + "]"
+						+ ", \"uVec\":[ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "]");
 				for(int jB=0; jB < approach.length; jB++){
 					if(approach[jB] != null)
-						stream.print(", \"approachQ"+(jB+1)+"\"=[ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "]");
+						stream.print(", \"approachQ"+(jB+1)+"\":[ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "]");
 				}
 						
-				stream.println(", \"beamPlaneHit\"=[ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
+				stream.println(", \"beamPlaneHit\":[ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
 									+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
 									+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "]"
-								+ "}, "
+								+ "}" + (supressComma ? "" : ", ")
 						);
 				break;
 		}

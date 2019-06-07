@@ -10,7 +10,7 @@ import otherSupport.SettingsManager;
 import seed.matrix.DenseMatrix;
 import algorithmrepository.Algorithms;
 import algorithmrepository.exceptions.NotImplementedException;
-import jafama.FastMath;
+import net.jafama.FastMath;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.interfaces.Absorber;

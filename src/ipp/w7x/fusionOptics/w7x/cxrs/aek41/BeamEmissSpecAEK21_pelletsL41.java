@@ -1,6 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.cxrs.aek41;
 
-import jafama.FastMath;
+import net.jafama.FastMath;
 import oneLiners.OneLiners;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;

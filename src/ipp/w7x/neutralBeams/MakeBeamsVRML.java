@@ -12,7 +12,7 @@ import fusionOptics.surfaces.Cylinder;
 import fusionOptics.types.Element;
 import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
-import jafama.FastMath;
+import net.jafama.FastMath;
 
 /** Erm... Don't expect this to work
  * It used to make the VRML of the optics model of the neutral beams

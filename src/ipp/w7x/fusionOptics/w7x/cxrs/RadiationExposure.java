@@ -1,6 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
-import jafama.FastMath;
+import net.jafama.FastMath;
 
 import java.util.List;
 

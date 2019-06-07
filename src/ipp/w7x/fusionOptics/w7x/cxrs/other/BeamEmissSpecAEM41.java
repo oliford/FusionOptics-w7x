@@ -4,7 +4,7 @@ import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
 import algorithmrepository.Algorithms;
-import jafama.FastMath;
+import net.jafama.FastMath;
 import fusionOptics.Util;
 import fusionOptics.interfaces.Absorber;
 import fusionOptics.interfaces.IsoIsoInterface;

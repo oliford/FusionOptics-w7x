@@ -8,7 +8,7 @@ import fusionOptics.Util;
 import fusionOptics.drawing.VRMLDrawer;
 import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
-import jafama.FastMath;
+import net.jafama.FastMath;
 import otherSupport.ColorMaps;
 
 public class MakeW7XBeamsVRML {

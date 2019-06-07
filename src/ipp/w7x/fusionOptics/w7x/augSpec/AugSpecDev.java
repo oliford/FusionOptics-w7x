@@ -9,7 +9,7 @@ import fusionOptics.tracer.Tracer;
 import fusionOptics.types.Intersection;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
-import jafama.FastMath;
+import net.jafama.FastMath;
 import otherSupport.ColorMaps;
 import otherSupport.RandomManager;
 

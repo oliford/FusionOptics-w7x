@@ -18,7 +18,7 @@ import ipp.w7x.neutralBeams.W7XPelletsK41;
 import ipp.w7x.neutralBeams.W7XPelletsL41;
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
-import jafama.FastMath;
+import net.jafama.FastMath;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;

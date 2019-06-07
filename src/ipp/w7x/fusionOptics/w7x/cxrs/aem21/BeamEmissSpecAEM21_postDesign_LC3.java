@@ -10,7 +10,7 @@ import otherSupport.SettingsManager;
 import seed.matrix.DenseMatrix;
 import algorithmrepository.Algorithms;
 import algorithmrepository.exceptions.NotImplementedException;
-import jafama.FastMath;
+import net.jafama.FastMath;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.interfaces.Absorber;
@@ -45,7 +45,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	
 	// CAD from designer
 	
-	private boolean adjustedToLC3 = false;
+	private boolean adjustedToLC3 = true;
 		
 	//public double rotateLC3[][] = {	{ 1.009,  0.044,  0.004}, {0.061,  1.588, -0.001}, { -0.077, -0.759,  0.996} };
 	public double rotateLC3[][] = {	

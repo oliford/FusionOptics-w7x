@@ -17,7 +17,7 @@ import fusionOptics.surfaces.Iris;
 import fusionOptics.surfaces.Square;
 import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
-import jafama.FastMath;
+import net.jafama.FastMath;
 
 public class AugSpec4 extends Optic {
 	public double designWavelenth = 656e-9;

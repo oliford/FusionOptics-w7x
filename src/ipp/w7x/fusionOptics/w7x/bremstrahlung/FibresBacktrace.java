@@ -1,6 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.bremstrahlung;
 
-import jafama.FastMath;
+import net.jafama.FastMath;
 
 import java.io.BufferedWriter;
 import java.io.File;

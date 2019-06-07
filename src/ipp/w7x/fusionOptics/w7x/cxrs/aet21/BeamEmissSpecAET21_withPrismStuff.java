@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
 import algorithmrepository.Algorithms;
-import jafama.FastMath;
+import net.jafama.FastMath;
 import fusionOptics.Util;
 import fusionOptics.drawing.STLDrawer;
 import fusionOptics.interfaces.Absorber;
