@@ -9,6 +9,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolete;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_OP2;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEW21;
@@ -63,11 +64,16 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
+	public static BeamEmissSpecAET21_OP2 sys = new BeamEmissSpecAET21_OP2();
+	public static Surface mustHitToDraw = sys.fibrePlane;
+	public static boolean forcePerpFibres = false;
+
+	
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
 	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	public static Surface mustHitToDraw = sys.fibrePlane;
-	public static boolean forcePerpFibres = true;
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
+	//public static Surface mustHitToDraw = sys.fibrePlane;
+	//public static boolean forcePerpFibres = true;
 	
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -87,15 +93,16 @@ public class LightAssessmentW7X {
 	//public static int beamSelection[] = { beams.BEAM_Q7, beams.BEAM_Q8 }; // OP1.2 beams (lower in plasma)
 	//public static int beamSelection[] = { beams.BEAM_Q7 }; // OP1.2 beams (lower in plasma)
 	//public static int beamSelection[] = { beams.BEAM_Q8 }; // just Q7
-	//public static int beamSelection[] = { -2 }; // Box axis for K21
+	public static int beamSelection[] = { -2 }; // Box axis for K21
 	//public static int beamSelection[] = { 0 }; // RuDIX
-	public static int beamSelection[] = { beams.BEAM_Q4 }; // for T20
+	//public static int beamSelection[] = { beams.BEAM_Q4 }; // for T20
 	//public static int beamSelection[] = { -1 }; // Box axis for K20
 	
 	// For fast drawing/debugging
 	//public static double pointR[] = { 5.50, 5.70, 5.90 };
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
-	public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x
+	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x OP1.2
+	public static double pointR[] = OneLiners.linSpace(5.3, 6.05, 10); //for AET2x OP2
 		
 	//public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
 	//public static double pointR[] = OneLiners.linSpace(5.24, 6.05, 106); // for AEA21
@@ -272,7 +279,7 @@ public class LightAssessmentW7X {
 		System.out.println("\n------------------------------------------------------------------------------------\n");
 		
 		
-		addLosSolids(fibre);		
+		//addLosSolids(fibre);		
 		//processImaging(fibre);
 		dumpFibreInfo(fibre);
 		
@@ -364,16 +371,16 @@ public class LightAssessmentW7X {
 			double fibrePlaneCentre[] = Util.mul(Util.plus(fibre[iB][iP1].fibrePos, fibre[iB][iP0].fibrePos), 0.5);
 			double magnification = lengthAtBeam/lengthAtFibrePlane;
 			double imageCentre[] = Util.mul(Util.plus(fibre[iB][iP1].fibrePos, fibre[iB][iP0].fibrePos), 0.5);
-			double fibrePlaneLensDist = Util.length(Util.minus(sys.lens1.getBackSurface().getCentre(), imageCentre));
-			double effLensDiameter = 2 * fibreNA * fibrePlaneLensDist;
+			//double fibrePlaneLensDist = Util.length(Util.minus(sys.lens1.getBackSurface().getCentre(), imageCentre));
+			//double effLensDiameter = 2 * fibreNA * fibrePlaneLensDist;
 						
 			System.out.println("Q"+(beamSel+1) 
 					+ ", Lbeam = " + fmt.format(lengthAtBeam) 
 					+ ", Lfibre = " + fmt.format(lengthAtFibrePlane) 
 					+ ", M=" + fmt.format(magnification)
 					+ ", dSpot=" + fmt.format(fibreCoreDiameter * magnification)
-					+ ", a = " +  fmt.format(fibrePlaneLensDist)
-					+ ", dlEff = " +  fmt.format(effLensDiameter)
+			//		+ ", a = " +  fmt.format(fibrePlaneLensDist)
+			//		+ ", dlEff = " +  fmt.format(effLensDiameter)
 					+ ":");
 			
 			for(int iP=0; iP < nPointsPerBeam; iP++){
