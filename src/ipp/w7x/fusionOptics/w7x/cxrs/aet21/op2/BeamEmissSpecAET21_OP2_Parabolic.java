@@ -1,4 +1,4 @@
-package ipp.w7x.fusionOptics.w7x.cxrs.aet21;
+package ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2;
 
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
@@ -27,7 +27,7 @@ import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public class BeamEmissSpecAET21_OP2 extends Optic {
+public class BeamEmissSpecAET21_OP2_Parabolic extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9;
 	
@@ -67,61 +67,82 @@ public class BeamEmissSpecAET21_OP2 extends Optic {
 	public Cylinder portTubeCyld = new Cylinder("portTubeCyld", portTubeCentre, portAxis, portTubeDiameter/2, portTubeLength, Absorber.ideal());
 
 
-	
-	
-	/**** Lens ****/
-	public double lensFocalLength = 0.100;
-	public double lensThickness = 0.020;
-	public double lensFromFront = 0.250;
-	public double lensPortRightShift = 0.080;	
-	public double lensPortUpShift = 0.040;	
-	public double lensCentrePos[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -lensFromFront),
-																		Util.plus(Util.mul(portRight, lensPortRightShift),
-																				  Util.mul(portUp, lensPortUpShift))));
-
+	/*** Entry iris ***/
+	public double entryApertureMirrorDist = 0.080;
+	public double entryApertureDiameter = 0.200;
 	
 	/**** Mirror ****/	
 	
-	//public double mirror1Angle = (90 + 45) * Math.PI / 180;
-	//public double mirror1Normal[] = Util.reNorm(Algorithms.rotateVector(Algorithms.rotationMatrix(portUp, mirror1Angle), portAxis));	
-	
 	public double mirror1FromFront = 0.080;
-	public double mirror1PortRightShift = lensPortRightShift + 0.000;	
-	public double mirror1PortUpShift = lensPortUpShift + 0.000;	
+	public double mirror1PortRightShift = 0.080;	
+	public double mirror1PortUpShift = 0.040;	
 	public double mirrorWidth = 0.100;
-	public double mirrorHeight = 0.050;	
+	public double mirrorHeight = 0.050;
+	public double mirror1FocusDistance = 0.200;
 	public double mirror1CentrePos[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror1FromFront),
 																		Util.plus(Util.mul(portRight, mirror1PortRightShift),
 																				  Util.mul(portUp, mirror1PortUpShift))));
 	
+		/**** Lens ****/
+	public double lens1FocalLength = 0.100;
+	//public double lens1FocalLength = 0.050;
+	public double lens1Thickness = 0.010;
+	public double lens1Diameter = 0.050;
+	public double lens1FromMirror = 0.200;
+	public double lens1PortRightShift = 0.000;	
+	public double lens1PortUpShift = 0.000;	
 	
+	public double lens2FocalLength = 0.050;
+	public double lens2Thickness = 0.010;
+	public double lens2Diameter = 0.050;
+	public double lens2FromLens1 = 0.100;
+		
+	
+	
+	/*** Positions/vectors ****/
+	
+	//public double mirror1Angle = (90 + 45) * Math.PI / 180;
+	//public double mirror1Normal[] = Util.reNorm(Algorithms.rotateVector(Algorithms.rotationMatrix(portUp, mirror1Angle), portAxis));	
+		
 	public double observationVec[] = Util.reNorm(Util.minus(targetObsPos, mirror1CentrePos));
 	public double observationUp[] = Util.reNorm(Util.cross(W7xNBI.def().uVecBox(targetBoxIdx), observationVec));
 	
-	public double lensNormal[] = Util.reNorm(Util.minus(lensCentrePos, mirror1CentrePos));
 	
-		
-	public double lensDiameter = 0.050;
-	
-	//Nikon50mmF11 lens1 = new Nikon50mmF11(lensCentrePos, lensFocalLength / 0.050, lensNormal);
-	public Medium lensMedium = new Medium(new BK7());
-	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness("lens", 
-			lensCentrePos, lensNormal, lensDiameter/2, lensFocalLength, lensThickness, lensMedium, IsoIsoInterface.ideal(), designWavelenth);
-	
+	public double lens1CentrePos[] = Util.plus(mirror1CentrePos, Util.plus(Util.mul(portAxis, -lens1FromMirror),
+			Util.plus(Util.mul(portRight, lens1PortRightShift),
+					  Util.mul(portUp, lens1PortUpShift))));
+
+	public double lensNormal[] = Util.reNorm(Util.minus(lens1CentrePos, mirror1CentrePos));
+	public double lens2CentrePos[] = Util.plus(lens1CentrePos, Util.mul(lensNormal, lens2FromLens1));
+
 	public double mirror1Normal[] = Util.reNorm(Util.mul(Util.plus(lensNormal, observationVec), 0.5));
 	public double mirror1Right[] = Util.reNorm(Util.cross(mirror1Normal, globalUp));
 	public double mirror1Up[] = Util.reNorm(Util.cross(mirror1Right, mirror1Normal));
 	
-	public double mirrorFocusPos[] = Util.plus(mirror1CentrePos, Util.mul(lensNormal, 0.100));
+	public double mirrorFocusPos[] = Util.plus(mirror1CentrePos, Util.mul(lensNormal, mirror1FocusDistance));
+	
+	public double entryAperturePos[] = Util.plus(mirror1CentrePos, Util.mul(observationVec, entryApertureMirrorDist));
+	public Iris entryAperture = new Iris("entryAperture", entryAperturePos, observationVec, 3*entryApertureDiameter/2, entryApertureDiameter*0.495, Absorber.ideal());
+	public Disc entryTarget = new Disc("entryTarget", entryAperturePos, observationVec, 0.505*entryApertureDiameter, NullInterface.ideal());
+	
+	public Medium lens1Medium = new Medium(new BK7());
+	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness("lens", 
+			lens1CentrePos, lensNormal, lens1Diameter/2, lens1FocalLength, lens1Thickness, lens1Medium, IsoIsoInterface.ideal(), designWavelenth);
+	
+	//public Medium lens2Medium = new Medium(new BK7());
+	//public SimplePlanarConvexLens lens2 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness("lens", 
+	//		lens2CentrePos, lensNormal, lens2Diameter/2, lens2FocalLength, lens2Thickness, lens2Medium, IsoIsoInterface.ideal(), designWavelenth);
+	Nikon50mmF11 lens2 = new Nikon50mmF11(lens2CentrePos, lens2FocalLength / 0.050, lensNormal);
+	
 	
 	//public Square mirror1 = new Square("mirror1", mirror1CentrePos, mirror1Normal, mirror1Up, mirrorHeight, mirrorWidth, Reflector.ideal());
 	//public Dish mirror1 = new Dish("mirror1", mirror1CentrePos, mirror1Normal, 1.000, 0.025, Reflector.ideal());
 	public Paraboloid mirror1 = new Paraboloid("mirror1", mirror1CentrePos, mirrorFocusPos, Util.reNorm(Util.mul(observationVec, 1.0)), 0.030, null, null, Reflector.ideal());
 
 	/*** Fibre plane ****/
-	public double fibrePlaneFromLens1 = lensFocalLength + 0.000;
-	public double fibrePlanePos[] = Util.plus(lensCentrePos, Util.mul(lensNormal, fibrePlaneFromLens1));
-	public double fibrePlaneSize = 0.100;
+	public double fibrePlaneFromLens2 = lens2FocalLength + 0.050;
+	public double fibrePlanePos[] = Util.plus(lens2CentrePos, Util.mul(lensNormal, fibrePlaneFromLens2));
+	public double fibrePlaneSize = 0.050;
 	
 	public double fibrePlaneRight[] = Util.reNorm(Util.cross(lensNormal, mirror1Up));
 	public double fibrePlaneUp[] = Util.reNorm(Util.cross(fibrePlaneRight, lensNormal));
@@ -131,22 +152,26 @@ public class BeamEmissSpecAET21_OP2 extends Optic {
 	
 	public STLMesh panelEdge = new STLMesh("panel", "/work/cad/aet21/conflicting-panel-aet21.stl");
 	
-	public Element tracingTarget = mirror1;
+	public Element tracingTarget = entryTarget;
 	
-	public BeamEmissSpecAET21_OP2() {
+	public BeamEmissSpecAET21_OP2_Parabolic() {
 		super("beamSpec-aet21-op2");
 		
 		//addElement(frontDisc);
 		addElement(panelEdge);
 		addElement(targetSphere);
-		addElement(portTubeCyld);
+		addElement(entryTarget);
+		addElement(entryAperture);
+		//addElement(portTubeCyld);
 		addElement(mirror1);
 		addElement(lens1);
+		addElement(lens2);
 		addElement(fibrePlane);
+		//addElement(new Sphere("bSphere", mirror1.getBoundarySphereCentre(), mirror1.getBoundarySphereRadius(), NullInterface.ideal()));
 		
 	}
 
-	public String getDesignName() { return "aet21-op2";	}
+	public String getDesignName() { return "aet21-op2-parabolic";	}
 		
 
 }

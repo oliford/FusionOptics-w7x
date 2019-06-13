@@ -9,8 +9,11 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolete;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
-import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_OP2;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_Parabolic;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_TwoFlatAndLenses;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEW21;
 import ipp.w7x.neutralBeams.W7XRudix;
@@ -64,8 +67,12 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
-	public static BeamEmissSpecAET21_OP2 sys = new BeamEmissSpecAET21_OP2();
-	public static Surface mustHitToDraw = sys.fibrePlane;
+	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
+	
+	//public static BeamEmissSpecAET21_OP2_Parabolic sys = new BeamEmissSpecAET21_OP2_Parabolic();
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
+	//public static BeamEmissSpecAET21_OP2_TwoFlatAndLenses sys = new BeamEmissSpecAET21_OP2_TwoFlatAndLenses();
+	public static Surface mustHitToDraw = sys.entryTarget;
 	public static boolean forcePerpFibres = false;
 
 	
@@ -86,7 +93,7 @@ public class LightAssessmentW7X {
 	
 	public static List<Surface> interestedSurfaces = new ArrayList<Surface>();
 	
-	public static Surface fibrePlane = sys.fibrePlane;
+	public static Surface fibrePlane = sys.lens1.getBackSurface();
 
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q7 };  
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q8 }; //for AEM21, 6 and 8 are the extremes	
@@ -102,17 +109,18 @@ public class LightAssessmentW7X {
 	//public static double pointR[] = { 5.50, 5.70, 5.90 };
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
 	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x OP1.2
-	public static double pointR[] = OneLiners.linSpace(5.3, 6.05, 10); //for AET2x OP2
+	//public static double pointR[] = OneLiners.linSpace(5.50, 5.95, 5); //for AET2x OP2
 		
 	//public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
 	//public static double pointR[] = OneLiners.linSpace(5.24, 6.05, 106); // for AEA21
 	
+	public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 }; 
 	
 	//public final static int nAttempts = 5000;
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 5000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
@@ -160,6 +168,11 @@ public class LightAssessmentW7X {
 	public static void main(String[] args) {
 		int nBeams = beamSelection.length;
 		
+		double u[] = sys.portAxis;
+		double cyldLen = sys.portTubeLength;
+		double p[] = Util.minus(sys.portTubeCentre, Util.mul(u, cyldLen/2));
+		double cyldRadius = sys.portTubeDiameter / 2;
+		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/lightAssess-"+sys.getDesignName()+ ((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 1.005);
 		if((writeWRLForDesigner == null)){
 			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});			
@@ -192,6 +205,8 @@ public class LightAssessmentW7X {
 				fibre[iB][iP].beamPos = (beamSel < 0) ? beams.getPosOfBoxAxisAtR((-beamSel)-1, R) : beams.getPosOfBeamAxisAtR(beamSel, R);
 				R = FastMath.sqrt(fibre[iB][iP].beamPos[0]*fibre[iB][iP].beamPos[0] + fibre[iB][iP].beamPos[1]*fibre[iB][iP].beamPos[1]);
 				int nHit = 0;
+				
+				fibre[iB][iP].beamPos = sys.beamDumps[iP];
 				
 				fibre[iB][iP].viewPos = new double[3];
 				for(int i=0; i < nAttempts; i++){
@@ -239,7 +254,7 @@ public class LightAssessmentW7X {
 				fibre[iB][iP].solidAngleFiring = Util.length(dir);
 				
 				double fillNA = 0;
-				if(nHit > 2){
+				if(lightConeInfo.getRayAngles().length > 2){
 					fibre[iB][iP].fibrePos = lightConeInfo.getApproxFocusPos();
 					fibre[iB][iP].fibreMeanVec = lightConeInfo.getMeanVector();
 					//fibreCylds.addElement(lightConeInfo.makeFibreCylinder(0.010, 0.000250, sys.fibrePlane.getNormal()));
@@ -279,7 +294,7 @@ public class LightAssessmentW7X {
 		System.out.println("\n------------------------------------------------------------------------------------\n");
 		
 		
-		//addLosSolids(fibre);		
+		addLosSolids(fibre);		
 		//processImaging(fibre);
 		dumpFibreInfo(fibre);
 		
@@ -407,6 +422,7 @@ public class LightAssessmentW7X {
 
 	private static void addLosSolids(FibreInfo fibre[][]) {
 		//LOS Cylinders
+		double cyldRadius = 0.01;
 		for(int iB=0; iB < fibre.length; iB++){
 			int beamSel = beamSelection[iB];
 			for(int iP=0; iP < nPointsPerBeam; iP++){
@@ -419,6 +435,17 @@ public class LightAssessmentW7X {
 						0.002, 5.0, NullInterface.ideal());
 				
 				sys.addElement(losCyld);
+				
+				double u[] = Util.minus(fibre[iB][iP].beamPos, fibre[iB][iP].viewPos);
+				double cyldLen = Util.length(u) * 1.2;
+				u = Util.reNorm(u);
+				//double p[] = Util.mul(Util.plus(fibre[iB][iP].beamPos, fibre[iB][iP].viewPos), 0.5);
+				double p[] = Util.plus(fibre[iB][iP].viewPos, Util.mul(u, -0.2));
+				 		
+				System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Cylinder\", \"FibreEnd"+iB+"_"+iP+"\"); "+
+						"o.Shape = Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
+						",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
+						"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
 			}		
 		}
 		
