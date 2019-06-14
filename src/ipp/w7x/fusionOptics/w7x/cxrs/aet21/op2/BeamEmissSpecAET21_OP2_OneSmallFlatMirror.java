@@ -31,8 +31,11 @@ import fusionOptics.types.Optic;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror extends Optic {
+	public String lightPathsSystemName = "AET21";
+	
+	
 	public double globalUp[] = {0,0,1};
-	public double designWavelenth = 500e-9;
+	public double designWavelenth = 500e-9;	
 	
 	/** DIrection of port axis */
 	public double portAxis[] = { 0.07272971344397348, -0.9468079681488022, 0.3134725829036636 };
@@ -45,8 +48,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror extends Optic {
 	
 	/** Point on Baffel on far side of port from beam */
 	public double baffelPoint[] = { -1.0722723388671875, 6.15255517578125, -0.030531103134155273  };
-	
-	
+		
 	public double frontDiscCentre[] = Util.plus(portMidCentre, Util.mul(portAxis, Algorithms.pointOnLineNearestPoint(portMidCentre, portAxis, baffelPoint)));
 	
 	public double frontDiscRadius = Util.length(Util.minus(baffelPoint, frontDiscCentre));
@@ -166,16 +168,108 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror extends Optic {
 	public double fibrePlanePos[] = Util.plus(lens4CentrePos, Util.mul(lensNormal, fibrePlaneFromLens4));
 	public double fibrePlaneSize = 0.040;
 	
-	public double fibrePlaneRight[] = Util.reNorm(Util.cross(lensNormal, mirror1Up));
-	public double fibrePlaneUp[] = Util.reNorm(Util.cross(fibrePlaneRight, lensNormal));
 	
-	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, lensNormal, fibrePlaneUp, fibrePlaneSize, fibrePlaneSize, Absorber.ideal());
+	public double fibrePlaneNormal[] = Util.mul(lensNormal, -1);
+	public double fibresXVec0[] = Util.reNorm(Util.cross(fibrePlaneNormal, globalUp));
+	public double fibresYVec0[] = Util.reNorm(Util.cross(fibresXVec0, fibrePlaneNormal));
+	public double fibreRotation = -5 * Math.PI / 180;
+	public double fibresXVec[] = Algorithms.rotateVector(Algorithms.rotationMatrix(fibrePlaneNormal, fibreRotation), fibresXVec0);
+	public double fibresYVec[] = Algorithms.rotateVector(Algorithms.rotationMatrix(fibrePlaneNormal, fibreRotation), fibresYVec0);
 	
+	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, fibrePlaneNormal, fibresYVec, fibrePlaneSize, fibrePlaneSize, Absorber.ideal());
 	
+	public double beamAxis[] = Util.reNorm(Util.plus( 
+			W7xNBI.def().uVec(W7xNBI.BEAM_Q7),
+			W7xNBI.def().uVec(W7xNBI.BEAM_Q8)));
+	
+	public double beamObsPlaneNormal[] = Util.reNorm(Util.cross(beamAxis, globalUp));
+	public double beamObsPlaneUp[] = Util.reNorm(Util.cross(beamObsPlaneNormal, beamAxis));
+			
+	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPlaneUp, 0.500, 1.200, NullInterface.ideal());
+	
+	public Square strayPlane = null;
+	public Cylinder rod = null;
+		
 	public STLMesh panelEdge = new STLMesh("panel", "/work/cad/aet21/conflicting-panel-aet21.stl");
 	
 	public Element tracingTarget = entryTarget;
 	
+	
+	
+	/** Fibres */
+	
+	public int beamIdx[] = { W7xNBI.BEAM_Q7 };
+	//public double[] channelR = OneLiners.linSpace(5.38, 5.88, nFibres);
+	public String[] lightPathRowName = null;
+	
+	public double fibreNA = 0.22; // As AUG	
+	public double fibreEndDiameter = 0.000470; // from ceramOptec offer, with polymide jacket (470µm), without Tefzel (550µm)
+	public double fibreSpacing = 0.000550; // spacing is a bit worse, all 20 fibres were about 11mm in total
+	
+	public double[][][] fibreEndPos;
+	public double[][][] fibreEndNorm;
+	
+	public Square fibrePlanes[][] = {{
+			
+	}};
+
+	public double[][] fibreFocus = {{ 
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0,		 
+		}};
+	
+	public double[][] channelR = {{ 
+		5.55 , 5.571, 5.592, 5.613, 5.634,
+		5.655, 5.676, 5.697, 5.718, 5.739,
+		5.761, 5.782, 5.803, 5.824, 5.845,
+		5.866, 5.887, 5.908, 5.929, 5.95 }};
+
+	
+	private void setupFibrePositions() {
+		int nBeams = channelR.length;
+		fibreEndPos = new double[nBeams][][];
+		fibreEndNorm = new double[nBeams][][];
+		
+		for(int iB=0; iB < nBeams; iB++){
+			int nFibres = channelR[iB].length;
+			fibreEndPos[iB] = new double[nFibres][];
+			fibreEndNorm[iB] = new double[nFibres][];
+			
+			double dX = -fibreSpacing;
+			double x0 = -(nFibres-1)/2 * dX; 
+			for(int iF=0; iF < nFibres; iF++){
+				fibreEndPos[iB][iF] = Util.plus(fibrePlanePos, Util.mul(fibresXVec, x0 + iF * dX));	
+						
+				fibreEndNorm[iB][iF] = fibrePlane.getNormal().clone();
+			}
+			if(fibreFocus != null){
+				for(int iF=0; iF < nFibres; iF++){
+					fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(fibrePlane.getNormal(), fibreFocus[iB][iF]));
+				}	
+			}
+		}
+	}
+	
+	private void setupFibrePlanes() {
+		int nBeams = channelR.length;
+		fibrePlanes = new Square[nBeams][];
+		
+		for(int iB=0; iB < nBeams; iB++){
+			int nFibres = channelR[iB].length;
+			fibrePlanes[iB] = new Square[nFibres];
+		
+			for(int iF=0; iF < nFibres; iF++){
+	
+				double norm[] = fibreEndNorm[iB][iF];
+				double x[] = Util.reNorm(Util.cross(norm, fibresYVec));
+				double y[] = Util.reNorm(Util.cross(x, norm));
+				fibrePlanes[iB][iF] = new Square("fibrePlane_Q" + (iB+1) + "_" + iF, fibreEndPos[iB][iF].clone(), norm, y, 0.007, 0.007, NullInterface.ideal());
+				//addElement(fibrePlanes[i]);
+			}
+		}
+	}
 	public BeamEmissSpecAET21_OP2_OneSmallFlatMirror() {
 		super("beamSpec-aet21-op2");
 		
@@ -192,6 +286,9 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror extends Optic {
 		addElement(lens4);
 		addElement(fibrePlane);
 		//addElement(new Sphere("bSphere", mirror1.getBoundarySphereCentre(), mirror1.getBoundarySphereRadius(), NullInterface.ideal()));
+
+		setupFibrePositions();
+		setupFibrePlanes();
 		
 	}
 

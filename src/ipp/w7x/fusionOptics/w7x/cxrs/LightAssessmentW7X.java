@@ -68,10 +68,7 @@ public class LightAssessmentW7X {
 	//public static boolean forcePerpFibres = true;
 	
 	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
-	
-	//public static BeamEmissSpecAET21_OP2_Parabolic sys = new BeamEmissSpecAET21_OP2_Parabolic();
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
-	//public static BeamEmissSpecAET21_OP2_TwoFlatAndLenses sys = new BeamEmissSpecAET21_OP2_TwoFlatAndLenses();
 	public static Surface mustHitToDraw = sys.entryTarget;
 	public static boolean forcePerpFibres = false;
 

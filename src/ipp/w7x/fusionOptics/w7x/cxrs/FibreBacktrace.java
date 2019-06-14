@@ -17,6 +17,8 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_asMeasuredOP12b;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
@@ -54,6 +56,8 @@ import fusionOptics.types.Surface;
 
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class FibreBacktrace {
+	public String lightPathsSystemName = "AET20";
+	
 	public static double losCyldRadius = 0.005;
 	
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
@@ -61,7 +65,9 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
+	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -92,9 +98,9 @@ public class FibreBacktrace {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 1000;
+	public final static int nAttempts = 500;
 
-	public static String writeWRLForDesigner = null;//"20190402";
+	public static String writeWRLForDesigner = null; //"20190614";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -104,10 +110,6 @@ public class FibreBacktrace {
 		makeFibreCyldSTL(); //		System.exit(0);
 		
 		System.out.println(outPath);
-		OneLiners.dumpArray(sys.mirrorCentrePos);
-		OneLiners.dumpArray(sys.mirrorNormal);
-		//OneLiners.dumpArray(sys.opticAxis);
-		OneLiners.dumpArray(sys.targetObsPos);
 		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 5.005);
 		if((writeWRLForDesigner == null)){
@@ -317,7 +319,8 @@ public class FibreBacktrace {
 	}
 		
 	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, int thing, boolean supressComma){
-		
+
+		double extendLOSCylds = 0.400; // extend 200mm in each direction
 
 		double rad = hitPoints[iB][iP][3] / 4;
 		
@@ -343,6 +346,8 @@ public class FibreBacktrace {
 				+ (sys.lightPathRowName != null ? ("_"+sys.lightPathRowName[iB]) : "")
 				+ ":" + String.format("%02d", iP+1);
 	
+		double p[] = Util.minus(startPoints[iB][iP], Util.mul(u, extendLOSCylds/2));
+		
 		switch(thing){
 			case 0:		
 				stream.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iB][iP][0]*1e3+","+hitPoints[iB][iP][1]*1e3+","+hitPoints[iB][iP][2]*1e3 + ")));"
@@ -350,8 +355,8 @@ public class FibreBacktrace {
 				break;
 				
 			case 1:
-				stream.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+losLen*1e3 +","										
-						+"FreeCAD.Vector("+startPoints[iB][iP][0]*1e3+","+startPoints[iB][iP][1]*1e3+","+startPoints[iB][iP][2]*1e3+"), "
+				stream.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+(losLen + extendLOSCylds)*1e3 +","										
+						+"FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3+"), "
 						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+chanName+"\";");
 				break;
 				
