@@ -16,11 +16,16 @@ import fusionOptics.surfaces.Disc;
 import fusionOptics.surfaces.Sphere;
 import fusionOptics.surfaces.Square;
 import fusionOptics.tracer.Tracer;
+import fusionOptics.types.Element;
 import fusionOptics.types.Intersection;
+import fusionOptics.types.Optic;
 import fusionOptics.types.Pol;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_AsMeasured;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 
 /** Simple radiation exposure calculation by emitting rays in 4.pi from a plane representing the plasma edge
  * and seeing how many hit a given surface.
@@ -30,59 +35,102 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
  */
 public class RadiationExposure {
 	
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	//AEA21
+	/*public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	
-	
-	
-	
-	public static double[] radSurfaceCentre = { 1.68544196,  5.88435327,  0.43004889 };
-	public static double[] radSurfaceNormal = { -0.2822023 , -0.85883142, -0.42751662 };
-	public static double[] radUp = Util.createPerp(radSurfaceNormal);
-	public static double radSurfWidth = 1.100;
-	public static double radSurfHeight = 0.900;
+	//public static Element testElement = sys.entryWindowFront;
+	public static Element testElement = new STLMesh("mirrorBlockClosed", "/work/ipp/w7x/cad/aea21/radExposure/mirrorBlockClosed.stl");
+		
+	private static int nX = 30, nY= 30;
+	public static String[] thingsInWay = { 
+		//aea21 window = 8W
+		//"/work/ipp/w7x/cad/aea21/radExposure/arms.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/frontPlate.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/mirrorBlock.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/reducePlate.stl",
+					
+		// aea21 closed mirror = 700W
+		"/work/ipp/w7x/cad/aea21/radExposure/frontPlate.stl",
+		"/work/ipp/w7x/cad/aea21/radExposure/panelTL-simplified.stl",
+		"/work/ipp/w7x/cad/aea21/radExposure/panelTR-simplified.stl",
+		"/work/ipp/w7x/cad/aea21/radExposure/capSimple.stl",
+	};
+	//*/
+		
+	//AEM21
+	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	
 	//public static double a[] = Util.plus(radSurfaceCentre, Util.mul(radSurfaceNormal, -0.300)); 
 	//public static Surface testSurface = new Disc("testdisc", a, radSurfaceNormal, 0.050, Absorber.ideal()); 
 	
-	public static Surface testSurface = sys.entryWindowFront;
+	private static int nX = 50, nY= 50;
+	//public static Element testElement = sys.mirror;
+	//public static Element testElement = new STLMesh("mirrorBlockClosed", "/work/cad/aem21/radExposure/mirrorBlockClosed-simplified.stl");
+	//public static Element testElement = new STLMesh("zwickle", "/work/cad/aem21/radExposure/zwickle.stl");
+	//public static Element testElement = new STLMesh("port-AEM21-endOnly", "/work/cad/aem21/radExposure/port-AEM21-endOnly.stl");
+	public static Element testElement = new STLMesh("portLinerTopfSteffen1", "/work/cad/aem21/radExposure/portLinerTopfSteffen1.stl");
 			
-	public static String[] thingsInWay = {		
-		"/work/ipp/w7x/cad/aea21/radExposure/arms.stl",
-		"/work/ipp/w7x/cad/aea21/radExposure/frontPlate.stl",
-		"/work/ipp/w7x/cad/aea21/radExposure/mirrorBlock.stl",
-		"/work/ipp/w7x/cad/aea21/radExposure/reducePlate.stl"
+	public static String[] thingsInWay = { 				
+		// aem21 closed mirror		
+		//"/work/cad/aem21/radExposure/portLinerTopfSimple.stl",
+		//"/work/cad/aem21/radExposure/portLinerTopfSteffen1.stl",
+		//"/work/cad/aem21/radExposure/portLinerTopfSteffen1.stl",	
+			
+		"/work/cad/aem21/radExposure/mirrorBlockClosed-simplified.stl",
+		"/work/cad/aem21/radExposure/panel1.stl",
+		"/work/cad/aem21/radExposure/panel2.stl",
+		"/work/cad/aem21/radExposure/panel3.stl",
+		"/work/cad/aem21/radExposure/port-AEM21-endOnly.stl",
+		"/work/cad/aem21/radExposure/portLiner-AEN21-placeHolder.stl",
+		"/work/cad/aem21/radExposure/zwickle.stl",
+		
 	};
+	//*/
 	
-	public static int nRaysPerPoint = 100;
-	public static int nSkip = 10;
+	public static int nRaysPerPoint = 50;
+	public static int nSkip = 5;
 	
-	public static Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 
 	
 	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure/";
 	
 	/** Power emitted from radiating surface, Watts per square meter per Steradian */
-	public static double powerDensity = 100e3 / 2 / Math.PI;  //100kW/m2
+	public static double powerAngularDensity = 100e3 / 2 / Math.PI;  //100/2.pi kW m^-2 SR^-1
 	
 	public static void main(String[] args) { 
 		System.out.println(outPath);
 		
-		sys.addElement(testSurface);
+		sys.removeElement(sys.mirror);
+		sys.removeElement(sys.beamPlane);
+		sys.removeElement(sys.catchPlane);
+		sys.removeElement(sys.strayPlane);
+		
+		//sys.removeElement(sys.panelEdge);
+		//sys.removeElement(sys.mirrorBlock);
+		//sys.removeElement(sys.mirrorClampRing);
+		
+		//sys.addElement(new Sphere("targSphere", testElement.getBoundarySphereCentre(), testElement.getBoundarySphereRadius(), NullInterface.ideal()));
 		
 		
-		int nX = 30, nY= 30;
-		double dx = radSurfWidth / (nX - 1);
-		double dy = radSurfHeight / (nY - 1);
+		
+		double dx = sys.radSurfWidth / (nX - 1);
+		double dy = sys.radSurfHeight / (nY - 1);
 			
 		double col[][] = ColorMaps.jet(nX*nY);
 		
-		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+".vrml", 5.005);
+		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/radExposure-"+sys.getDesignName() + "-" + testElement.getName() + ".vrml", 5.005);
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		vrmlOut.setSkipRays(nSkip);
 		
-		testSurface.setInterface(Absorber.ideal());
+		//vrmlOut.drawOptic(sys);
 		
-		sys.addElement(radSurface);
-		vrmlOut.drawOptic(sys);
+		sys.addElement(testElement);
+		if(testElement instanceof Surface)
+			((Surface)testElement).setInterface(Absorber.ideal());
+		if(testElement instanceof Optic)
+			for(Surface s : ((Optic)testElement).getSurfacesAll())
+				s.setInterface(Absorber.ideal());
+		
+		sys.addElement(sys.radSurface);
 		
 		for(String fileName : thingsInWay){
 			String parts[] = fileName.split("/");			
@@ -92,15 +140,15 @@ public class RadiationExposure {
 		double totalPower = 0;
 		
 		for(int iY = 0; iY < nY; iY++){
-			double y = -radSurfHeight/2 + iY * dy;
+			double y = -sys.radSurfHeight/2 + iY * dy;
 			
 			for(int iX = 0; iX < nX; iX++){
-				double x = -radSurfWidth/2 + iX * dx;
+				double x = -sys.radSurfWidth/2 + iX * dx;
 				
-				double startPos[] = Util.plus(radSurfaceCentre, 
+				double startPos[] = Util.plus(sys.radSurfaceCentre, 
 										Util.plus(
-												Util.mul(radSurface.getRight(), x),
-												Util.mul(radSurface.getUp(), y) ));
+												Util.mul(sys.radSurface.getRight(), x),
+												Util.mul(sys.radSurface.getUp(), y) ));
 				
 				
 				double solidAngle = Double.NaN;				
@@ -111,7 +159,7 @@ public class RadiationExposure {
 					RaySegment ray = new RaySegment();
 					ray.startPos = startPos;
 					
-					ray.dir = Tracer.generateRandomRayTowardSurface(startPos, testSurface, true);
+					ray.dir = Tracer.generateRandomRayTowardSurface(startPos, testElement, true);
 					solidAngle = Util.length(ray.dir);
 					ray.dir = Util.reNorm(ray.dir);
 							
@@ -122,7 +170,7 @@ public class RadiationExposure {
 							
 					Tracer.trace(sys, ray, 100, 0, false);
 						
-					List<Intersection> hits = ray.getIntersections(testSurface);
+					List<Intersection> hits = ray.getIntersections(testElement);
 					if(hits.size() > 0){
 						nHit++;
 						vrmlOut.drawRay(ray, col[iY*nX+iX]);
@@ -131,7 +179,8 @@ public class RadiationExposure {
 					Pol.recoverAll();
 				}
 				
-				double power = powerDensity * dx * dy * solidAngle * ((double)nHit / nRaysPerPoint); 
+				double power = powerAngularDensity * dx * dy * solidAngle //power emitted into ray generation cone 
+								* ((double)nHit / nRaysPerPoint);  //fraction of that power captured by target
 				totalPower += power;
 				System.out.println(iY + ", "+ iX+": " + nHit + " / " + nRaysPerPoint + " = " + power + "W, SR = " + solidAngle);
 					
@@ -142,9 +191,13 @@ public class RadiationExposure {
 			
 		}
 
+		System.out.println(sys.getDesignName() + " " + testElement.getName());
 		System.out.println("dx*dy = " + (dx*dy));
-		double targetArea = Math.PI * FastMath.pow2(((Disc)testSurface).getRadius());
-		System.out.println("Total = " + totalPower + " W --> " + (totalPower / targetArea) + " W/m2");
+		System.out.println("Total = " + totalPower + " W");
+		if(testElement instanceof Disc) {
+			double targetArea = Math.PI * FastMath.pow2(((Disc)testElement).getRadius());
+			System.out.println("Power/area = " + (totalPower / targetArea) + " W/m2");
+		}
 		
 		
 		vrmlOut.destroy();

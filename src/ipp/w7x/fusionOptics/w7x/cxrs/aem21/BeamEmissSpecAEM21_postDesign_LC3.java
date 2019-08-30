@@ -95,10 +95,10 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	
 	public Disc mirror = new Disc("mirror", mirrorCentrePos, mirrorNormal, mirrorDiameter/2, Reflector.ideal());
 	
-	public STLMesh panelEdge = new STLMesh("panel", "/home/oliford/rzg/w7x/cad/aem21/panel-cutting-edge-channels-cut.stl");
-	public STLMesh mirrorBlock = new STLMesh("mirrorBlock", "/home/oliford/rzg/w7x/cad/aem21/mirrorBlockSimpleOpen.stl");	
-	public STLMesh mirrorClampRing = new STLMesh("mirrorClampRing", "/home/oliford/rzg/w7x/cad/aem21/mirrorRing-simple.stl");	
-	public STLMesh blockPlate = new STLMesh("blockPlate", "/home/oliford/rzg/w7x/cad/aem21/blockPlate-grooved.stl");
+	public STLMesh panelEdge = new STLMesh("panel", "/work/ipp/w7x/cad/aem21/panel-cutting-edge-channels-cut.stl");
+	public STLMesh mirrorBlock = new STLMesh("mirrorBlock", "/work/ipp/w7x/cad/aem21/mirrorBlockSimpleOpen.stl");	
+	public STLMesh mirrorClampRing = new STLMesh("mirrorClampRing", "/work/ipp/w7x/cad/aem21/mirrorRing-simple.stl");	
+	public STLMesh blockPlate = new STLMesh("blockPlate", "/work/ipp/w7x/cad/aem21/blockPlate-grooved.stl");
 	
 
 	
@@ -635,7 +635,19 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	double strayPos[] = Util.plus(mirrorCentrePos, Util.mul(portNormal, -0.250)); 
 	
 	public Disc strayPlane = new Disc("strayPlane", strayPos, portNormal, 0.200, Absorber.ideal());
+	
+	/** Plasma radiating surface for heat-load analysis */
+	public double[] radSurfaceCentre = { -0.3754414978027344, 5.5157724609375, 0.6975476684570312 };	
+	public double[] radSurfaceNormal = { 0.28073852, -0.42956634,  -0.8582882 };
+	public double[] radUp = Util.createPerp(radSurfaceNormal);
+	//public double radSurfWidth = 1.100; //for testing inner parts (window etc)
+	//public double radSurfHeight = 0.900;
 
+	public double radSurfWidth = 1.000; //for testing closed shutter
+	public double radSurfHeight = 1.000;
+
+	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 
+	
 	public Element tracingTarget = mirror;
 	public Surface checkSurface = mirror;
 	

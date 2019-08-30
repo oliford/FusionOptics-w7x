@@ -73,7 +73,6 @@ public class LightAssessmentW7X {
 	public static boolean forcePerpFibres = false;
 
 	
-	//public static BeamEmissSpecAEM21_postDesign sys = new BeamEmissSpecAEM21_postDesign();
 	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	//public static Surface mustHitToDraw = sys.fibrePlane;
@@ -117,7 +116,7 @@ public class LightAssessmentW7X {
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 500000;
+	public final static int nAttempts = 10000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
