@@ -303,7 +303,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 		//*/
 		
 		//rotate fibres and final lens around final lens centre
-		double rot = 1.0 * Math.PI / 180;
+		/*double rot = 1.0 * Math.PI / 180;
 		double rotCentre[] = lens4.getCentre();
 		lens4.rotate(rotCentre, Algorithms.rotationMatrix(portUp, rot));
 		for(int i=0; i < fibreEndPos[0].length; i++) {

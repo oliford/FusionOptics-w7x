@@ -89,28 +89,58 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror extends Optic {
 																		Util.plus(Util.mul(portRight, mirror1PortRightShift),
 																				  Util.mul(portUp, mirror1PortUpShift))));
 	
-	/**** Lens ****/
-	public double lens1FocalLength = 0.300;
-	public double lens1Thickness = 0.010;
+	/**** Lenses ****/
+	//https://www.edmundoptics.com/p/100mm-dia-x-300mm-focal-length-pcx-condenser-lens/1011/
+	//public double lens1FocalLength = 0.300; //291mm
+	public double lens1CurvatureRadius = 0.15500;
+	public double lens1ClearAperture = 0.09700;	
+	public double lens1Thickness = 0.0125;
 	public double lens1Diameter = 0.100;
 	public double lens1FromMirror = 0.080;
 	public double lens1PortRightShift = 0.000;	
 	public double lens1PortUpShift = 0.000;	
+	
+	/*public double lens1FocalLength = 0.300;
+	public double lens1Thickness = 0.010;
+	public double lens1Diameter = 0.100;
+	public double lens1FromMirror = 0.080;
+	public double lens1PortRightShift = 0.000;	
+	public double lens1PortUpShift = 0.000;*/	
 
-	public double lens2FocalLength = 0.300;
-	public double lens2Thickness = 0.010;
+	//public double lens2FocalLength = 0.300;
+	public double lens2CurvatureRadius = 0.15500;
+	public double lens2ClearAperture = 0.09700;	
+	public double lens2Thickness = 0.0125;
 	public double lens2Diameter = 0.100;
 	public double lens2FromLens1 = 0.060;
 	public double lens2PortRightShift = 0.000;	
 	public double lens2PortUpShift = 0.000;	
+	
+	/*public double lens2Thickness = 0.010;
+	public double lens2Diameter = 0.100;
+	public double lens2FromLens1 = 0.060;
+	public double lens2PortRightShift = 0.000;	
+	public double lens2PortUpShift = 0.000;*/	
 
-	public double lens3FocalLength = 0.200;
+	//https://www.edmundoptics.com/p/100mm-dia-x-200mm-focal-length-pcx-condenser-lens/1010/	
+	//public double lens1FocalLength = 0.200; //189mm
+	public double lens3CurvatureRadius = 0.103500;
+	public double lens3ClearAperture = 0.09700;	
+	public double lens3Thickness = 0.017;
+	public double lens3Diameter = 0.100;
+	public double lens3FromLens2 = 0.160;
+	public double lens3PortRightShift = 0.000;	
+	public double lens3PortUpShift = 0.000;	
+	
+
+	/*public double lens3FocalLength = 0.200;
 	public double lens3Thickness = 0.015;
 	public double lens3Diameter = 0.100;
 	public double lens3FromLens2 = 0.160;
 	public double lens3PortRightShift = 0.000;	
 	public double lens3PortUpShift = 0.000;	
-
+	 */
+	
 	public double lens4FocalLength = 0.025;
 	public double lens4FromLens3 = 0.150;
 		
@@ -145,17 +175,20 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror extends Optic {
 	public Disc entryTarget = new Disc("entryTarget", entryAperturePos, observationVec, 0.505*entryApertureDiameter, NullInterface.ideal());
 	
 	public Medium lens1Medium = new Medium(new BK7());
-	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness("lens1", 
-			lens1CentrePos, lensNormal, lens1Diameter/2, lens1FocalLength, lens1Thickness, lens1Medium, IsoIsoInterface.ideal(), designWavelenth);
+	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromRadiusOfCurvAndCentreThickness("lens1", 
+			lens1CentrePos, lensNormal, lens1Diameter/2, lens1CurvatureRadius, lens1Thickness, lens1Medium, IsoIsoInterface.ideal());
+	public Iris lens1Iris = new Iris("lens1Iris", lens1CentrePos, lensNormal, lens1Diameter*0.7, lens1ClearAperture/2, null, null, Absorber.ideal());
 
 	public Medium lens2Medium = new Medium(new BK7());
-	public SimplePlanarConvexLens lens2 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness("lens2", 
-			lens2CentrePos, lensNormal, lens2Diameter/2, lens2FocalLength, lens2Thickness, lens2Medium, IsoIsoInterface.ideal(), designWavelenth);
+	public SimplePlanarConvexLens lens2 = SimplePlanarConvexLens.fromRadiusOfCurvAndCentreThickness("lens2", 
+			lens2CentrePos, lensNormal, lens2Diameter/2, lens2CurvatureRadius, lens2Thickness, lens2Medium, IsoIsoInterface.ideal());
+	public Iris lens2Iris = new Iris("lens2Iris", lens2CentrePos, lensNormal, lens2Diameter*0.7, lens2ClearAperture/2, null, null, Absorber.ideal());
 
 	public Medium lens3Medium = new Medium(new BK7());
-	public SimplePlanarConvexLens lens3 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness("lens3", 
-			lens3CentrePos, lensNormal, lens3Diameter/2, lens3FocalLength, lens3Thickness, lens3Medium, IsoIsoInterface.ideal(), designWavelenth);
-	
+	public SimplePlanarConvexLens lens3 = SimplePlanarConvexLens.fromRadiusOfCurvAndCentreThickness("lens3", 
+			lens3CentrePos, lensNormal, lens3Diameter/2, lens3CurvatureRadius, lens3Thickness, lens3Medium, IsoIsoInterface.ideal());
+	public Iris lens3Iris = new Iris("lens3Iris", lens3CentrePos, lensNormal, lens3Diameter*0.7, lens3ClearAperture/2, null, null, Absorber.ideal());
+
 	Nikon50mmF11 lens4 = new Nikon50mmF11(lens4CentrePos, lens4FocalLength / 0.050, lensNormal);
 	
 	
@@ -280,8 +313,11 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror extends Optic {
 		addElement(entryAperture);
 		//addElement(portTubeCyld);
 		addElement(mirror1);		
+		addElement(lens1Iris);
 		addElement(lens1);
+		addElement(lens2Iris);
 		addElement(lens2);
+		addElement(lens3Iris);
 		addElement(lens3);
 		addElement(lens4);
 		addElement(fibrePlane);

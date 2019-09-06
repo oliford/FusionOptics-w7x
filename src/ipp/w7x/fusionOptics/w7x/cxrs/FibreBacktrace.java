@@ -99,7 +99,7 @@ public class FibreBacktrace {
 	 
 	public final static int nAttempts = 100;
 
-	public static String writeWRLForDesigner = null; //"20190614";
+	public static String writeWRLForDesigner = null;//"20190902";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models

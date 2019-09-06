@@ -67,8 +67,8 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
-	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
-	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
+	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
 	public static Surface mustHitToDraw = sys.entryTarget;
 	public static boolean forcePerpFibres = false;
 
@@ -104,13 +104,13 @@ public class LightAssessmentW7X {
 	// For fast drawing/debugging
 	//public static double pointR[] = { 5.50, 5.70, 5.90 };
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
-	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x OP1.2
+	public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x OP1.2
 	//public static double pointR[] = OneLiners.linSpace(5.50, 5.95, 5); //for AET2x OP2
 		
 	//public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
 	//public static double pointR[] = OneLiners.linSpace(5.24, 6.05, 106); // for AEA21
 	
-	public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 }; 
+	//public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 }; 
 	
 	//public final static int nAttempts = 5000;
 	
@@ -202,7 +202,7 @@ public class LightAssessmentW7X {
 				R = FastMath.sqrt(fibre[iB][iP].beamPos[0]*fibre[iB][iP].beamPos[0] + fibre[iB][iP].beamPos[1]*fibre[iB][iP].beamPos[1]);
 				int nHit = 0;
 				
-				fibre[iB][iP].beamPos = sys.beamDumps[iP];
+				//fibre[iB][iP].beamPos = sys.beamDumps[iP];
 				
 				fibre[iB][iP].viewPos = new double[3];
 				for(int i=0; i < nAttempts; i++){

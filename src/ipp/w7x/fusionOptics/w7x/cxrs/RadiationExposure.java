@@ -36,10 +36,16 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 public class RadiationExposure {
 	
 	//AEA21
-	/*public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	
 	//public static Element testElement = sys.entryWindowFront;
-	public static Element testElement = new STLMesh("mirrorBlockClosed", "/work/ipp/w7x/cad/aea21/radExposure/mirrorBlockClosed.stl");
+	//public static Element testElement = new STLMesh("mirrorBlockClosed", "/work/ipp/w7x/cad/aea21/radExposure/mirrorBlockClosed.stl");
+
+	public static Element testElement = new STLMesh("simpleCapFront", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Front.stl");
+	//public static Element testElement = new STLMesh("simpleCapBottom", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Bottom.stl");
+	//public static Element testElement = new STLMesh("simpleCapLeftBottom", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftBottom.stl");
+	//public static Element testElement = new STLMesh("simpleCapLeftTop", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftTop.stl");
+	//public static Element testElement = new STLMesh("simpleCapTop", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Top.stl");
 		
 	private static int nX = 30, nY= 30;
 	public static String[] thingsInWay = { 
@@ -50,15 +56,22 @@ public class RadiationExposure {
 		//"/work/ipp/w7x/cad/aea21/radExposure/reducePlate.stl",
 					
 		// aea21 closed mirror = 700W
-		"/work/ipp/w7x/cad/aea21/radExposure/frontPlate.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/frontPlate.stl",
 		"/work/ipp/w7x/cad/aea21/radExposure/panelTL-simplified.stl",
 		"/work/ipp/w7x/cad/aea21/radExposure/panelTR-simplified.stl",
-		"/work/ipp/w7x/cad/aea21/radExposure/capSimple.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/capSimple.stl",
+		
+		"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Bottom.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Front.stl",
+		"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftBottom.stl",
+		"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftTop.stl",
+		"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Top.stl", 
+
 	};
 	//*/
 		
 	//AEM21
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
+	/*public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	
 	//public static double a[] = Util.plus(radSurfaceCentre, Util.mul(radSurfaceNormal, -0.300)); 
 	//public static Surface testSurface = new Disc("testdisc", a, radSurfaceNormal, 0.050, Absorber.ideal()); 
@@ -87,8 +100,8 @@ public class RadiationExposure {
 	};
 	//*/
 	
-	public static int nRaysPerPoint = 50;
-	public static int nSkip = 5;
+	public static int nRaysPerPoint = 20;
+	public static int nSkip = 0;
 	
 	
 	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure/";
