@@ -85,7 +85,7 @@ public class RadiationExposure {
 		"/work/ipp/w7x/cad/aea21/radExposure2/coverTop.stl",  // 120W 5200mm2 23Kwm2
 		"/work/ipp/w7x/cad/aea21/radExposure2/coverBottom.stl", // 300W 5200mm2 57Kwm2
 		"/work/ipp/w7x/cad/aea21/radExposure2/strap1.stl", // 5W 
-		//"/work/ipp/w7x/cad/aea21/radExposure2/strap2.stl", // 5W
+		//"/work/ipp/w7x/cad/aea21/radExposure2/strap2.stl", // 5W 
 
 	};
 	//*/
