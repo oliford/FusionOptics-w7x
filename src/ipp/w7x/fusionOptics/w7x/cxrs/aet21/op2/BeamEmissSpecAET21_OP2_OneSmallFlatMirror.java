@@ -28,6 +28,7 @@ import fusionOptics.surfaces.Square;
 import fusionOptics.types.Element;
 import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
+import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror extends Optic {
@@ -79,7 +80,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror extends Optic {
 	/**** Mirror ****/	
 	
 	public double mirror1FromFront = 0.110;
-	public double mirror1PortRightShift = 0.080;	
+	public double mirror1PortRightShift = 0.060;	
 	public double mirror1PortUpShift = 0.040;
 	public double mirror1Width = 0.100;
 	public double mirror1Height = 0.030;
@@ -323,12 +324,39 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror extends Optic {
 		addElement(fibrePlane);
 		//addElement(new Sphere("bSphere", mirror1.getBoundarySphereCentre(), mirror1.getBoundarySphereRadius(), NullInterface.ideal()));
 
+		dumpInfoForDesigner();
+		
 		setupFibrePositions();
 		setupFibrePlanes();
 		
 	}
 
-	public String getDesignName() { return "aet21-op2-oneFlat";	}
+	public void dumpInfoForDesigner() {
 		
+		for(Surface s : new Surface[] {
+					mirror1,
+					lens1.getPlanarSurface(),
+					lens2.getPlanarSurface(),
+					lens3.getPlanarSurface(),
+				}) {
+			double c[] = s.getCentre();
+			System.out.println(String.format("%s: (%5.3f, %5.3f, %5.3f) mm", 
+					s.getName(), 
+					c[0]*1e3, c[1]*1e3, c[2]*1e3));
+		}
+	
+		double c[] = lens4CentrePos;
+		System.out.println(String.format("lens4 (centre of case): (%5.3f, %5.3f, %5.3f) mm", c[0]*1e3, c[1]*1e3, c[2]*1e3));
+
+		c = mirror1.getNormal();			
+		System.out.println(String.format("mirror1 normal: (%5.3f, %5.3f, %5.3f)", c[0], c[1], c[2]));
+	
+		c = lens1.getBackSurface().getDishNormal();			
+		System.out.println(String.format("lens1,2,3 normal: (%5.3f, %5.3f, %5.3f)", c[0], c[1], c[2]));
+		
+	}
+
+
+	public String getDesignName() { return "aet21-op2-oneFlat";	}
 
 }

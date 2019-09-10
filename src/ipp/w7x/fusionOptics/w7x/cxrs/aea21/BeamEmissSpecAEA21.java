@@ -44,6 +44,8 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double targetObsPos[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
 	public double sourceNormal[] =  Util.reNorm(Util.minus(targetObsPos, portEntryPos));
 	
+	public double overrideObsPositions[][] = null;
+	
 	//directions perp to port, sidesways and toward/away from source 
 	public double portSourcePerp[] = Util.reNorm(Util.cross(sourceNormal, portNormal));
 	public double portSourcePlane[] = Util.reNorm(Util.cross(portNormal, portSourcePerp));

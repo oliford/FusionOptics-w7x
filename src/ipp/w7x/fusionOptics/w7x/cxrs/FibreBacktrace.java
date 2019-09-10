@@ -66,9 +66,9 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();	
-	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();
+	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -101,7 +101,7 @@ public class FibreBacktrace {
 	 
 	public final static int nAttempts = 100;
 
-	public static String writeWRLForDesigner = null;//"20190909";
+	public static String writeWRLForDesigner = null; //"20190910";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -112,41 +112,10 @@ public class FibreBacktrace {
 		
 		System.out.println(outPath);
 		
-		//STLDrawer stlOut = new STLDrawer(outPath + "/fibresTrace-" +sys.getDesignName() + ((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner) : "") + ".stl");
-		//stlOut.drawOptic(sys);
-		//stlOut.destroy()
-		
-		/*//info dump for designer
-		for(Surface s : new Surface[] {
-					sys.mirror1,
-					//sys.mirror2,
-					sys.lens1.getPlanarSurface(),
-					sys.lens2.getPlanarSurface(),
-					sys.lens3.getPlanarSurface(),
-				}) {
-			double c[] = s.getCentre();
-			System.out.println(String.format("%s: (%5.3f, %5.3f, %5.3f) mm", 
-					s.getName(), 
-					c[0]*1e3, c[1]*1e3, c[2]*1e3));
-		}
-		{
-			double c[] = sys.lens4CentrePos;
-			System.out.println(String.format("lens4 (centre of case): (%5.3f, %5.3f, %5.3f) mm", c[0]*1e3, c[1]*1e3, c[2]*1e3));
-
-			c = sys.mirror1.getNormal();			
-			System.out.println(String.format("mirror1 normal: (%5.3f, %5.3f, %5.3f)", c[0], c[1], c[2]));
-			
-			//c = sys.mirror2.getNormal();			
-			//System.out.println(String.format("mirror2 normal: (%5.3f, %5.3f, %5.3f)", c[0], c[1], c[2]));
-			
-			c = sys.lens1.getBackSurface().getDishNormal();			
-			System.out.println(String.format("lens1,2,3 normal: (%5.3f, %5.3f, %5.3f)", c[0], c[1], c[2]));
-			
-		}
-		
-		System.exit(0);
-		//*/
-		
+		STLDrawer stlOut = new STLDrawer(outPath + "/fibresTrace-" +sys.getDesignName() + ((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner) : "") + ".stl");
+		stlOut.drawOptic(sys);
+		stlOut.destroy();
+				
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 5.005);
 		if((writeWRLForDesigner == null)){
 			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});			
@@ -173,8 +142,8 @@ public class FibreBacktrace {
 		double closestApproachPos[][][] = new double[sys.channelR.length][][];
 		
 		for(int iB=0; iB < sys.channelR.length; iB++){
-			double beamStart[] = beams.start(sys.beamIdx[iB]);
-			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
+			double beamStart[] = beams.start(sys.beamIdx[iB] < 0 ? 0 : sys.beamIdx[iB]);
+			double beamVec[] =  beams.uVec(sys.beamIdx[iB] < 0 ? 0 : sys.beamIdx[iB]);
 			
 			startPoints[iB] = new double[sys.channelR[iB].length][];
 			closestApproachPos[iB] = new double[sys.channelR[iB].length][];

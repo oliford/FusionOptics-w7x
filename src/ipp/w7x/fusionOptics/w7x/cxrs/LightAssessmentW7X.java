@@ -67,9 +67,9 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	
-	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
+	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
 	public static Surface mustHitToDraw = sys.lens1.getPlanarSurface();
 	public static boolean forcePerpFibres = false;
@@ -97,10 +97,11 @@ public class LightAssessmentW7X {
 	//public static int beamSelection[] = { beams.BEAM_Q7, beams.BEAM_Q8 }; // OP1.2 beams (lower in plasma)
 	//public static int beamSelection[] = { beams.BEAM_Q7 }; // OP1.2 beams (lower in plasma)
 	//public static int beamSelection[] = { beams.BEAM_Q8 }; // just Q7
-	public static int beamSelection[] = { -2 }; // Box axis for K21
+	//public static int beamSelection[] = { -2 }; // Box axis for K21
 	//public static int beamSelection[] = { 0 }; // RuDIX
 	//public static int beamSelection[] = { beams.BEAM_Q4 }; // for T20
 	//public static int beamSelection[] = { -1 }; // Box axis for K20
+	public static int beamSelection[] = sys.beamIdx;
 	
 	// For fast drawing/debugging
 	//public static double pointR[] = { 5.50, 5.70, 5.90 };
@@ -111,11 +112,13 @@ public class LightAssessmentW7X {
 	//public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
 	//public static double pointR[] = OneLiners.linSpace(5.24, 6.05, 106); // for AEA21
 	
-	//public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 };
+	public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 };
 	
+	/* //For LOS finding for Maciej's high iota halpha
 	public static double pointR[] = OneLiners.linSpace(6.03, 6.20, 5); // for AEM21 from divertor for Maciej
 	public static double divTargetPhi = (93.7517444686941 + 2.0) * Math.PI / 180;
 	public static double divTargetZ = -0.5957244262695313;
+	//*/
 	
 	//public final static int nAttempts = 5000;
 	
@@ -164,15 +167,17 @@ public class LightAssessmentW7X {
 	
 	public static int nPointsPerBeam = pointR.length;
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "-divTarget";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName();
 			
 	public static void main(String[] args) {
 		int nBeams = beamSelection.length;
 		
-		sys.catchPlane.setInterface(NullInterface.ideal());
-		sys.strayPlane.setInterface(NullInterface.ideal());
 		
+		/* // For LOS finding for Maciej's high iota halpha
+		sys.catchPlane.setInterface(NullInterface.ideal());
+		sys.strayPlane.setInterface(NullInterface.ideal());		
 		sys.tracingTarget = sys.entryWindowFront;
+		//*/
 		
 		//double u[] = sys.portAxis;
 		//double cyldLen = sys.portTubeLength;
@@ -208,14 +213,19 @@ public class LightAssessmentW7X {
 				double R = pointR[iP];
 				fibre[iB][iP].R = R;
 				
-				//fibre[iB][iP].beamPos = (beamSel < 0) ? beams.getPosOfBoxAxisAtR((-beamSel)-1, R) : beams.getPosOfBeamAxisAtR(beamSel, R);
-								
-				fibre[iB][iP].beamPos = new double[] { FastMath.cos(divTargetPhi) * R, FastMath.sin(divTargetPhi) * R, divTargetZ }; 
+				if(sys.overrideObsPositions == null) {
+					fibre[iB][iP].beamPos = (beamSel < 0) ? beams.getPosOfBoxAxisAtR((-beamSel)-1, R) : beams.getPosOfBeamAxisAtR(beamSel, R);
 				
-				R = FastMath.sqrt(fibre[iB][iP].beamPos[0]*fibre[iB][iP].beamPos[0] + fibre[iB][iP].beamPos[1]*fibre[iB][iP].beamPos[1]);
+					// For LOS finding for Maciej's high iota halpha
+					//fibre[iB][iP].beamPos = new double[] { FastMath.cos(divTargetPhi) * R, FastMath.sin(divTargetPhi) * R, divTargetZ }; 
+				
+					R = FastMath.sqrt(fibre[iB][iP].beamPos[0]*fibre[iB][iP].beamPos[0] + fibre[iB][iP].beamPos[1]*fibre[iB][iP].beamPos[1]);
+					
+				}else {
+					fibre[iB][iP].beamPos = sys.overrideObsPositions[iB][iP];
+				}
+				
 				int nHit = 0;
-				
-				//fibre[iB][iP].beamPos = sys.beamDumps[iP];
 				
 				fibre[iB][iP].viewPos = new double[3];
 				for(int i=0; i < nAttempts; i++){

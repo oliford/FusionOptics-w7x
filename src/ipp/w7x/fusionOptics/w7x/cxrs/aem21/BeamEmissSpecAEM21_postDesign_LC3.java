@@ -103,6 +103,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public STLMesh colar = new STLMesh("colar", "/work/ipp/w7x/cad/aem21/colar.stl");
 	
 
+	public double overrideObsPositions[][] = null;
 	
 	public double opticAxis[] = portNormal;
 	

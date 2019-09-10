@@ -3,6 +3,9 @@ package ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2;
 import ipp.w7x.neutralBeams.W7xNBI;
 import net.jafama.FastMath;
 import oneLiners.OneLiners;
+
+import java.util.Arrays;
+
 import algorithmrepository.Algorithms;
 import fusionOptics.Util;
 import fusionOptics.interfaces.Absorber;
@@ -26,6 +29,7 @@ import fusionOptics.surfaces.Square;
 import fusionOptics.types.Element;
 import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
+import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
@@ -61,6 +65,17 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 		{ 0.15248867797851562, 5.02684375, 0.1864234619140625 },
 		{ -0.17423611450195312, 4.73173291015625, 0.174153076171875 }};
 	
+	public double hhfTiles[][] = {
+			 { 0.2124384078979492, 4.93090771484375, 0.4795155334472656},
+			 //{ 0.16073893737792969, 4.905971923828125, 0.46937031555175784},
+			 { 0.11097871398925782, 4.883496337890625, 0.45982559204101564},
+			 { 0.062120355606079106, 4.858057861328125, 0.45018853759765626},
+			 //{ 0.014070590496063233, 4.830812255859375, 0.43990501403808596},
+			 { -0.033051654338836674, 4.804234375, 0.4300990142822266 }	
+		};
+	
+	public double overrideObsPositions[][][] = { beamDumps.clone(), beamDumps.clone(), hhfTiles.clone() };
+	
 	public double targetObsPos[] = Util.mul(Util.plus(Util.plus(beamDumps[0], beamDumps[1]), Util.plus(beamDumps[2], beamDumps[3])), 0.25);
 	public Sphere targetSphere = new Sphere("targetSphere", targetObsPos, 0.025, NullInterface.ideal());
 
@@ -78,7 +93,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 	/**** Mirror ****/	
 	
 	public double mirror1FromFront = 0.130;
-	public double mirror1PortRightShift = 0.020;	
+	public double mirror1PortRightShift = 0.000;	
 	public double mirror1PortUpShift = 0.060;
 	public double mirror1Width = 0.050;
 	public double mirror1Height = 0.040;
@@ -86,7 +101,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 																		Util.plus(Util.mul(portRight, mirror1PortRightShift),
 																				  Util.mul(portUp, mirror1PortUpShift))));	
 	public double mirror2FromFront = 0.140;
-	public double mirror2PortRightShift = -0.050;	
+	public double mirror2PortRightShift = -0.070;	
 	public double mirror2PortUpShift = 0.030;	
 	public double mirror2Width = 0.100;
 	public double mirror2Height = 0.050;
@@ -227,7 +242,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 	public Square strayPlane = null;
 	public Cylinder rod = null;
 	
-	public int beamIdx[] = { W7xNBI.BEAM_Q7  };
+	public int beamIdx[] = { -1, -2, -3  };
 	//public double[] channelR = OneLiners.linSpace(5.38, 5.88, nFibres);
 	public String[] lightPathRowName = null;
 	
@@ -238,33 +253,45 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 	}};
 	
 	public double[][] channelR = { 
-			{ 5.06, 5.07, 5.08, 5.09,
-			 5.06, 5.07, 5.08, 5.09, }, 
+			{ 5.06, 5.07, 5.08, 5.09, }, 
+			{ 5.06, 5.07, 5.08, 5.09, }, 
+			{ 5.06, 5.07, 5.08, 5.09, }, 
 		}; 
 		public double[][][] fibreEndPos = { { 
-			
-			{ -0.9210183291964545, 6.729867004747737, -0.26715987262019025 },
-			{ -0.9131350741258694, 6.730586674023365, -0.267407539036859 },
-			{ -0.9116947146363172, 6.729458907431256, -0.27068633263687536 },
-			{ -0.9194838842455488, 6.728823464865586, -0.2713123308138487 },
-			
-			{ -0.9210183291964545, 6.729867004747737, -0.26715987262019025 },
-			{ -0.9131350741258694, 6.730586674023365, -0.267407539036859 },
-			{ -0.9116947146363172, 6.729458907431256, -0.27068633263687536 },
-			{ -0.9194838842455488, 6.728823464865586, -0.2713123308138487 },
+					{ -0.9010786871022751, 6.731401697743982, -0.26717089042311626 },
+					{ -0.893176668314587, 6.732131543144569, -0.2673902348108153 },
+					{ -0.8917371274063317, 6.730998404144845, -0.2706847327051954 },
+					{ -0.8995549145625799, 6.730348299899508, -0.27132907538704953 },
+				}, { 
+					{ -0.90107792370191, 6.731389616179666, -0.2671669259491668 },
+					{ -0.893176564457166, 6.732128364322455, -0.26738880614598126 },
+					{ -0.8917358913666572, 6.730992714358874, -0.2706811362143581 },
+					{ -0.8995546968058177, 6.730346121478938, -0.27132821831695764 },
+				}, { 
+					{ -0.8923613764259873, 6.732305268571073, -0.26646523674701283 },
+					{ -0.8940464768672114, 6.732325257909842, -0.26667512921463954 },
+					{ -0.8949636228206643, 6.732282414033288, -0.26680214500818916 },
+					{ -0.8968814547332628, 6.732092338281098, -0.26711775597312937 },
 				}, 	}; 
 		
 		public double[][][] fibreEndNorm = { { 
-			{ 0.19454430160486041, -0.9465105930124409, 0.2574300138451508 },
-			{ -0.01417406420422795, -0.9639323373283242, 0.26576972167026136 },
-			{ -0.05653836455201652, -0.9325555771639292, 0.3565718845257349 },
-			{ 0.1486389215107028, -0.9176021699667827, 0.3686634355131882 },
-
-			{ 0.19454430160486041, -0.9465105930124409, 0.2574300138451508 },
-			{ -0.01417406420422795, -0.9639323373283242, 0.26576972167026136 },
-			{ -0.05653836455201652, -0.9325555771639292, 0.3565718845257349 },
-			{ 0.1486389215107028, -0.9176021699667827, 0.3686634355131882 },
+					{ 0.1892780160400969, -0.9483480104534027, 0.2545778539327362 },
+					{ -0.011530443693639902, -0.9629266504366518, 0.26951681718786663 },
+					{ -0.05573573455638498, -0.9355913920784097, 0.3486578193046064 },
+					{ 0.14937003590665676, -0.9171839426063074, 0.3694079151810281 },
+				}, { 
+					{ 0.19961852465181837, -0.9464837545632989, 0.25361574667908965 },
+					{ -0.014373983810906762, -0.9616541211428774, 0.2738881886433293 },
+					{ -0.058070768984276086, -0.9307888769190767, 0.3609152980870977 },
+					{ 0.15192471727429455, -0.9156998872653067, 0.372038434497607 },
+				}, { 
+					{ -0.038072056380312996, -0.9695327268285221, 0.2419851444436718 },
+					{ 0.010747019541533457, -0.9676587622963148, 0.2520337702018084 },
+					{ 0.02903478635610837, -0.964801477747266, 0.26137155491358866 },
+					{ 0.08026909193005165, -0.9596387733336633, 0.2695371914882746 },
 				}, 	};
+
+
 	
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2() {
 		super("beamSpec-aet21-op2");
@@ -286,12 +313,26 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 		addElement(lens4);
 		addElement(fibrePlane);
 		//addElement(new Sphere("bSphere", mirror1.getBoundarySphereCentre(), mirror1.getBoundarySphereRadius(), NullInterface.ideal()));
+		
+		dumpInfoForDesigner();
+		
+		//defocus HST fibres
+
+		for(int j=0; j < channelR[0].length; j++) {
+			fibreEndPos[0][j] = Util.plus(fibreEndPos[0][j], Util.mul(fibrePlaneNormal, 0.005)); //refocus
+		}
+		
+		// all fibres parallel to port axis 
+		for(int i=0; i < channelR.length; i++) {
+			for(int j=0; j < channelR[i].length; j++) {
+				fibreEndNorm[i][j] = fibrePlaneNormal.clone();
+			}
+		}	
 	
-		for(int i=0; i < 4; i++) {
-			fibreEndPos[0][i] = Util.plus(fibreEndPos[0][i], Util.mul(fibrePlaneNormal, 0.005));
-			
-			fibreEndPos[0][i+4] = Util.plus(fibreEndPos[0][i], Util.mul(fibresXVec, 0.000500));			
-			
+		//make neightbour fibres for scientific measurements
+		for(int j=0; j < channelR[0].length; j++) {
+			fibreEndPos[1][j] = Util.plus(fibreEndPos[0][j], Util.mul(fibresXVec, 0.000500));
+			fibreEndNorm[1][j] = fibreEndNorm[0][j].clone();
 		}
 		
 		/*// Shift fibres +/- final lens
@@ -356,7 +397,36 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 		}
 	}
 	
-	public String getDesignName() { return "aet21-hst-twoFlat";	}
 		
 
+	public void dumpInfoForDesigner() {
+		
+		for(Surface s : new Surface[] {
+					mirror1,
+					mirror2,
+					lens1.getPlanarSurface(),
+					lens2.getPlanarSurface(),
+					lens3.getPlanarSurface(),
+				}) {
+			double c[] = s.getCentre();
+			System.out.println(String.format("%s: (%5.3f, %5.3f, %5.3f) mm", 
+					s.getName(), 
+					c[0]*1e3, c[1]*1e3, c[2]*1e3));
+		}
+	
+		double c[] = lens4CentrePos;
+		System.out.println(String.format("lens4 (centre of case): (%5.3f, %5.3f, %5.3f) mm", c[0]*1e3, c[1]*1e3, c[2]*1e3));
+
+		c = mirror1.getNormal();			
+		System.out.println(String.format("mirror1 normal: (%5.3f, %5.3f, %5.3f)", c[0], c[1], c[2]));
+		
+		c = mirror2.getNormal();			
+		System.out.println(String.format("mirror2 normal: (%5.3f, %5.3f, %5.3f)", c[0], c[1], c[2]));
+		
+		c = lens1.getBackSurface().getDishNormal();			
+		System.out.println(String.format("lens1,2,3 normal: (%5.3f, %5.3f, %5.3f)", c[0], c[1], c[2]));
+	}
+	
+	public String getDesignName() { return "aet21-hst-twoFlat";	}
+	
 }
