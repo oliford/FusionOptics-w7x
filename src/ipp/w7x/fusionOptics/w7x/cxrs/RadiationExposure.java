@@ -41,12 +41,21 @@ public class RadiationExposure {
 	//public static Element testElement = sys.entryWindowFront;
 	//public static Element testElement = new STLMesh("mirrorBlockClosed", "/work/ipp/w7x/cad/aea21/radExposure/mirrorBlockClosed.stl");
 
-	public static Element testElement = new STLMesh("simpleCapFront", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Front.stl");
+	//public static Element testElement = new STLMesh("simpleCapFront", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Front.stl");
 	//public static Element testElement = new STLMesh("simpleCapBottom", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Bottom.stl");
 	//public static Element testElement = new STLMesh("simpleCapLeftBottom", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftBottom.stl");
 	//public static Element testElement = new STLMesh("simpleCapLeftTop", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftTop.stl");
 	//public static Element testElement = new STLMesh("simpleCapTop", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Top.stl");
-		
+	
+	//public static Element testElement = new STLMesh("mirrorBlock", "/work/ipp/w7x/cad/aea21/radExposure2/mirrorBlock.stl");
+	//public static Element testElement = new STLMesh("cap1", "/work/ipp/w7x/cad/aea21/radExposure2/cap1.stl");
+	//public static Element testElement = new STLMesh("cap2", "/work/ipp/w7x/cad/aea21/radExposure2/cap2.stl");
+	//public static Element testElement = new STLMesh("coverFront", "/work/ipp/w7x/cad/aea21/radExposure2/coverFront.stl");
+	//public static Element testElement = new STLMesh("coverTop", "/work/ipp/w7x/cad/aea21/radExposure2/coverTop.stl");
+	//public static Element testElement = new STLMesh("coverBottom", "/work/ipp/w7x/cad/aea21/radExposure2/coverBottom.stl");
+	//public static Element testElement = new STLMesh("strap1", "/work/ipp/w7x/cad/aea21/radExposure2/strap1.stl");
+	public static Element testElement = new STLMesh("strap2", "/work/ipp/w7x/cad/aea21/radExposure2/strap2.stl");	
+
 	private static int nX = 30, nY= 30;
 	public static String[] thingsInWay = { 
 		//aea21 window = 8W
@@ -57,15 +66,26 @@ public class RadiationExposure {
 					
 		// aea21 closed mirror = 700W
 		//"/work/ipp/w7x/cad/aea21/radExposure/frontPlate.stl",
-		"/work/ipp/w7x/cad/aea21/radExposure/panelTL-simplified.stl",
-		"/work/ipp/w7x/cad/aea21/radExposure/panelTR-simplified.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/panelTL-simplified.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/panelTR-simplified.stl",
 		//"/work/ipp/w7x/cad/aea21/radExposure/capSimple.stl",
 		
-		"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Bottom.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Bottom.stl",
 		//"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Front.stl",
-		"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftBottom.stl",
-		"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftTop.stl",
-		"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Top.stl", 
+		//"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftBottom.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftTop.stl",
+		//"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Top.stl",
+			
+		"/work/ipp/w7x/cad/aea21/radExposure2/frontPlateWithRim.stl",
+			
+		"/work/ipp/w7x/cad/aea21/radExposure2/mirrorBlock.stl", // < 70W
+		"/work/ipp/w7x/cad/aea21/radExposure2/cap1.stl", // 400W 8500mm2 47Kwm2
+		"/work/ipp/w7x/cad/aea21/radExposure2/cap2.stl", // 90W
+		"/work/ipp/w7x/cad/aea21/radExposure2/coverFront.stl", // 520W 7200mm2 72Kwm2
+		"/work/ipp/w7x/cad/aea21/radExposure2/coverTop.stl",  // 120W 5200mm2 23Kwm2
+		"/work/ipp/w7x/cad/aea21/radExposure2/coverBottom.stl", // 300W 5200mm2 57Kwm2
+		"/work/ipp/w7x/cad/aea21/radExposure2/strap1.stl", // 5W 
+		//"/work/ipp/w7x/cad/aea21/radExposure2/strap2.stl", // 5W
 
 	};
 	//*/
