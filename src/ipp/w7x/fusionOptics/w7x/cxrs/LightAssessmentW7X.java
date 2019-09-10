@@ -67,13 +67,14 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
+	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
+	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
-	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
-	public static Surface mustHitToDraw = sys.entryTarget;
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
+	public static Surface mustHitToDraw = sys.lens1.getPlanarSurface();
 	public static boolean forcePerpFibres = false;
 
-	
-	//public static BeamEmissSpecAEM21_LC3_tilt3 sys = new BeamEmissSpecAEM21_LC3_tilt3();
+		
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
@@ -104,19 +105,23 @@ public class LightAssessmentW7X {
 	// For fast drawing/debugging
 	//public static double pointR[] = { 5.50, 5.70, 5.90 };
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
-	public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x OP1.2
+	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x OP1.2
 	//public static double pointR[] = OneLiners.linSpace(5.50, 5.95, 5); //for AET2x OP2
 		
 	//public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
 	//public static double pointR[] = OneLiners.linSpace(5.24, 6.05, 106); // for AEA21
 	
-	//public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 }; 
+	//public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 };
+	
+	public static double pointR[] = OneLiners.linSpace(6.03, 6.20, 5); // for AEM21 from divertor for Maciej
+	public static double divTargetPhi = (93.7517444686941 + 2.0) * Math.PI / 180;
+	public static double divTargetZ = -0.5957244262695313;
 	
 	//public final static int nAttempts = 5000;
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 5000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
@@ -124,7 +129,7 @@ public class LightAssessmentW7X {
 	//public static double wavelength = 530e-9; //C_VI
 	//public static double wavelength = 656e-9; //HAlpha
 	
-	public static int nRaysToDraw = 10000;
+	public static int nRaysToDraw = 1000;
 	// For calc
 	/*public static double pointR[] = sys.channelR;
 	public final static int nAttempts = 20000;
@@ -159,15 +164,20 @@ public class LightAssessmentW7X {
 	
 	public static int nPointsPerBeam = pointR.length;
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName();
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "-divTarget";
 			
 	public static void main(String[] args) {
 		int nBeams = beamSelection.length;
 		
-		double u[] = sys.portAxis;
-		double cyldLen = sys.portTubeLength;
-		double p[] = Util.minus(sys.portTubeCentre, Util.mul(u, cyldLen/2));
-		double cyldRadius = sys.portTubeDiameter / 2;
+		sys.catchPlane.setInterface(NullInterface.ideal());
+		sys.strayPlane.setInterface(NullInterface.ideal());
+		
+		sys.tracingTarget = sys.entryWindowFront;
+		
+		//double u[] = sys.portAxis;
+		//double cyldLen = sys.portTubeLength;
+		//double p[] = Util.minus(sys.portTubeCentre, Util.mul(u, cyldLen/2));
+		//double cyldRadius = sys.portTubeDiameter / 2;
 		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/lightAssess-"+sys.getDesignName()+ ((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 1.005);
 		if((writeWRLForDesigner == null)){
@@ -198,7 +208,10 @@ public class LightAssessmentW7X {
 				double R = pointR[iP];
 				fibre[iB][iP].R = R;
 				
-				fibre[iB][iP].beamPos = (beamSel < 0) ? beams.getPosOfBoxAxisAtR((-beamSel)-1, R) : beams.getPosOfBeamAxisAtR(beamSel, R);
+				//fibre[iB][iP].beamPos = (beamSel < 0) ? beams.getPosOfBoxAxisAtR((-beamSel)-1, R) : beams.getPosOfBeamAxisAtR(beamSel, R);
+								
+				fibre[iB][iP].beamPos = new double[] { FastMath.cos(divTargetPhi) * R, FastMath.sin(divTargetPhi) * R, divTargetZ }; 
+				
 				R = FastMath.sqrt(fibre[iB][iP].beamPos[0]*fibre[iB][iP].beamPos[0] + fibre[iB][iP].beamPos[1]*fibre[iB][iP].beamPos[1]);
 				int nHit = 0;
 				

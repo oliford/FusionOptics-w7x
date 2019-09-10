@@ -100,6 +100,8 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public STLMesh mirrorClampRing = new STLMesh("mirrorClampRing", "/work/ipp/w7x/cad/aem21/mirrorRing-simple.stl");	
 	public STLMesh blockPlate = new STLMesh("blockPlate", "/work/ipp/w7x/cad/aem21/blockPlate-grooved.stl");
 	
+	public STLMesh colar = new STLMesh("colar", "/work/ipp/w7x/cad/aem21/colar.stl");
+	
 
 	
 	public double opticAxis[] = portNormal;
@@ -843,6 +845,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		addElement(mirrorBlock);
 		addElement(mirrorClampRing);
 		//addElement(blockPlate);
+		addElement(colar);
 				
 		addElement(mirror);
 		addElement(entryWindowIris);
@@ -865,6 +868,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		
 		setupFibrePositions();
 		adjustFibres();
+		//setupFibresForMaciej();
 		setupFibrePlanes();
 		
 		channelZ = new double[channelR.length][];
@@ -917,5 +921,18 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	}
 	
 	
+	/*//maybe not
+	private void setupFibresForMaciej() {
 
+		double p1[] = { -0.43243243408203125, 5.33058251953125, 1.35901611328125 };
+		double p2[] = { -0.4332908020019531, 5.33930859375, 1.3619034423828125 };
+		double u[] = Util.reNorm(Util.minus(p2, p1));
+		double l = Util.length(Util.minus(p2, p1));
+		double x[] = OneLiners.linSpace(0.0, 1.0, 5);
+		
+		for(int i=0; i)
+
+	}
+	*/	
+	
 }
