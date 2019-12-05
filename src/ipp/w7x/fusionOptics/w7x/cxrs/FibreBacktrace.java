@@ -18,7 +18,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_asMeasuredOP12b;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
-import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses_75mm_UVFS_3cmAperture;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
@@ -67,8 +67,8 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();	
-	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();	
+	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();

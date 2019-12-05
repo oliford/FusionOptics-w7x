@@ -54,7 +54,31 @@ public class RadiationExposure {
 	//public static Element testElement = new STLMesh("coverTop", "/work/ipp/w7x/cad/aea21/radExposure2/coverTop.stl");
 	//public static Element testElement = new STLMesh("coverBottom", "/work/ipp/w7x/cad/aea21/radExposure2/coverBottom.stl");
 	//public static Element testElement = new STLMesh("strap1", "/work/ipp/w7x/cad/aea21/radExposure2/strap1.stl");
-	public static Element testElement = new STLMesh("strap2", "/work/ipp/w7x/cad/aea21/radExposure2/strap2.stl");	
+	public static Element[] testElements = {
+			//new STLMesh("frontPlateWithRim", "/work/ipp/w7x/cad/aea21/radExposure2/frontPlateWithRim.stl"),
+			new STLMesh("mirrorBlock", "/work/ipp/w7x/cad/aea21/radExposure2/mirrorBlock.stl"),
+			new STLMesh("cap1-middle", "/work/ipp/w7x/cad/aea21/radExposure2/cap1-middle.stl"),
+			new STLMesh("cap1-top", "/work/ipp/w7x/cad/aea21/radExposure2/cap1-top.stl"),
+			new STLMesh("cap1-bottom", "/work/ipp/w7x/cad/aea21/radExposure2/cap1-bottom.stl"),
+			new STLMesh("cap1-left", "/work/ipp/w7x/cad/aea21/radExposure2/cap1-left.stl"),
+			new STLMesh("cap1-right", "/work/ipp/w7x/cad/aea21/radExposure2/cap1-right.stl"),
+			new STLMesh("cap2", "/work/ipp/w7x/cad/aea21/radExposure2/cap2.stl"),
+			new STLMesh("strap1", "/work/ipp/w7x/cad/aea21/radExposure2/strap1.stl"),
+			new STLMesh("strap2", "/work/ipp/w7x/cad/aea21/radExposure2/strap2.stl"),
+			
+			new STLMesh("coverFront", "/work/ipp/w7x/cad/aea21/radExposure2/cover3-front.stl"),
+			new STLMesh("coverTop", "/work/ipp/w7x/cad/aea21/radExposure2/cover3-top.stl"),
+			new STLMesh("coverBottom", "/work/ipp/w7x/cad/aea21/radExposure2/cover3-bottom.stl"),
+			
+			//new STLMesh("coverFront", "/work/ipp/w7x/cad/aea21/radExposure2/coverFront.stl"),
+			//new STLMesh("coverTop", "/work/ipp/w7x/cad/aea21/radExposure2/coverTop.stl"),
+			//new STLMesh("coverBottom", "/work/ipp/w7x/cad/aea21/radExposure2/coverBottom.stl"),
+			
+			//new STLMesh("coverFront", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Front.stl"),
+			//new STLMesh("coverTop", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Top.stl"),
+			//new STLMesh("coverBottom", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Bottom.stl"),
+			
+	};
 
 	private static int nX = 30, nY= 30;
 	public static String[] thingsInWay = { 
@@ -76,8 +100,7 @@ public class RadiationExposure {
 		//"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-LeftTop.stl",
 		//"/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Top.stl",
 			
-		"/work/ipp/w7x/cad/aea21/radExposure2/frontPlateWithRim.stl",
-			
+		/*	
 		"/work/ipp/w7x/cad/aea21/radExposure2/mirrorBlock.stl", // < 70W
 		"/work/ipp/w7x/cad/aea21/radExposure2/cap1.stl", // 400W 8500mm2 47Kwm2
 		"/work/ipp/w7x/cad/aea21/radExposure2/cap2.stl", // 90W
@@ -85,8 +108,9 @@ public class RadiationExposure {
 		"/work/ipp/w7x/cad/aea21/radExposure2/coverTop.stl",  // 120W 5200mm2 23Kwm2
 		"/work/ipp/w7x/cad/aea21/radExposure2/coverBottom.stl", // 300W 5200mm2 57Kwm2
 		"/work/ipp/w7x/cad/aea21/radExposure2/strap1.stl", // 5W 
-		//"/work/ipp/w7x/cad/aea21/radExposure2/strap2.stl", // 5W 
-
+		//"/work/ipp/w7x/cad/aea21/radExposure2/strap2.stl", // 5W		  
+		 */
+		"/work/ipp/w7x/cad/aea21/radExposure2/frontPlateWithRim.stl"
 	};
 	//*/
 		
@@ -120,7 +144,7 @@ public class RadiationExposure {
 	};
 	//*/
 	
-	public static int nRaysPerPoint = 20;
+	public static int nRaysPerPoint = 50;
 	public static int nSkip = 0;
 	
 	
@@ -148,20 +172,23 @@ public class RadiationExposure {
 		double dx = sys.radSurfWidth / (nX - 1);
 		double dy = sys.radSurfHeight / (nY - 1);
 			
-		double col[][] = ColorMaps.jet(nX*nY);
+		double col[][] = ColorMaps.jet(testElements.length);
 		
-		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/radExposure-"+sys.getDesignName() + "-" + testElement.getName() + ".vrml", 5.005);
+		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/radExposure-"+sys.getDesignName() + "-cover1.vrml", 5.005);
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		vrmlOut.setSkipRays(nSkip);
 		
 		//vrmlOut.drawOptic(sys);
 		
-		sys.addElement(testElement);
-		if(testElement instanceof Surface)
-			((Surface)testElement).setInterface(Absorber.ideal());
-		if(testElement instanceof Optic)
-			for(Surface s : ((Optic)testElement).getSurfacesAll())
-				s.setInterface(Absorber.ideal());
+		for(Element testElement : testElements) {
+			if(testElement instanceof Surface)
+				((Surface)testElement).setInterface(Absorber.ideal());
+			if(testElement instanceof Optic)
+				for(Surface s : ((Optic)testElement).getSurfacesAll())
+					s.setInterface(Absorber.ideal());
+		}
+		Optic testElementsAll = new Optic("testElements", testElements);
+		sys.addElement(testElementsAll);
 		
 		sys.addElement(sys.radSurface);
 		
@@ -170,7 +197,8 @@ public class RadiationExposure {
 			sys.addElement(new STLMesh("bg_"+parts[parts.length-1], fileName));			
 		}
 		
-		double totalPower = 0;
+		double totalPower[] = new double[testElements.length];
+		int nHitTotal[] = new int[testElements.length];
 		
 		for(int iY = 0; iY < nY; iY++){
 			double y = -sys.radSurfHeight/2 + iY * dy;
@@ -185,14 +213,14 @@ public class RadiationExposure {
 				
 				
 				double solidAngle = Double.NaN;				
-				int nHit = 0;
+				int nHit[] = new int[testElements.length];
 				
 				for(int iR=0; iR < nRaysPerPoint; iR++){
 
 					RaySegment ray = new RaySegment();
 					ray.startPos = startPos;
 					
-					ray.dir = Tracer.generateRandomRayTowardSurface(startPos, testElement, true);
+					ray.dir = Tracer.generateRandomRayTowardSurface(startPos, testElementsAll, true);
 					solidAngle = Util.length(ray.dir);
 					ray.dir = Util.reNorm(ray.dir);
 							
@@ -202,36 +230,49 @@ public class RadiationExposure {
 					ray.up = Util.createPerp(ray.dir);
 							
 					Tracer.trace(sys, ray, 100, 0, false);
-						
-					List<Intersection> hits = ray.getIntersections(testElement);
-					if(hits.size() > 0){
-						nHit++;
-						vrmlOut.drawRay(ray, col[iY*nX+iX]);
+							
+					for(int iTE=0; iTE < testElements.length; iTE++) {						
+						List<Intersection> hits = ray.getIntersections(testElements[iTE]);
+						if(hits.size() > 0){
+							nHit[iTE]++;
+							vrmlOut.drawRay(ray, col[iTE]);
+							break; //don't count twice. Shouldn't if they are absorbers
+						}
 					}
 					
 					Pol.recoverAll();
 				}
 				
-				double power = powerAngularDensity * dx * dy * solidAngle //power emitted into ray generation cone 
-								* ((double)nHit / nRaysPerPoint);  //fraction of that power captured by target
-				totalPower += power;
-				System.out.println(iY + ", "+ iX+": " + nHit + " / " + nRaysPerPoint + " = " + power + "W, SR = " + solidAngle);
+				System.out.print(iY + ", "+ iX+": ");
+				for(int iTE=0; iTE < testElements.length; iTE++) {
+					double power = powerAngularDensity * dx * dy * solidAngle //power emitted into ray generation cone 
+								* ((double)nHit[iTE] / nRaysPerPoint);  //fraction of that power captured by target
+					totalPower[iTE] += power;
+					nHitTotal[iTE] += nHit[iTE];
 					
-				
+					System.out.print(nHit[iTE] + ", ");
+				}
+				System.out.println();
 			}
 			
 			
 			
 		}
 
-		System.out.println(sys.getDesignName() + " " + testElement.getName());
-		System.out.println("dx*dy = " + (dx*dy));
-		System.out.println("Total = " + totalPower + " W");
-		if(testElement instanceof Disc) {
-			double targetArea = Math.PI * FastMath.pow2(((Disc)testElement).getRadius());
-			System.out.println("Power/area = " + (totalPower / targetArea) + " W/m2");
+		double totalPowerAll = 0;
+		for(int iTE=0; iTE < testElements.length; iTE++) {
+			System.out.print(sys.getDesignName() + " " + testElements[iTE].getName() + ": nHit = " + nHitTotal[iTE] + ", dx*dy = " + (dx*dy) + ", Total = " + totalPower[iTE] + " W");
+			totalPowerAll += totalPower[iTE];
+			if(testElements[iTE] instanceof Disc) {
+				double targetArea = Math.PI * FastMath.pow2(((Disc)testElements[iTE]).getRadius());
+				System.out.print(", Power/area = " + (totalPower[iTE] / targetArea) + " W/m2");
+			}else if(testElements[iTE] instanceof Square) {
+				double targetArea = ((Square)testElements[iTE]).getWidth() *  ((Square)testElements[iTE]).getHeight();
+				System.out.print(". Power/area = " + (totalPower[iTE] / targetArea) + " W/m2");				
+			}
+			System.out.println();
 		}
-		
+		System.out.println("Total power captured = " + totalPowerAll + " W");
 		
 		vrmlOut.destroy();
 	}

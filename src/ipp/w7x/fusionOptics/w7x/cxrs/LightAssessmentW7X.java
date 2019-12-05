@@ -10,7 +10,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolet
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
-import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses_75mm_UVFS_3cmAperture;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_Parabolic;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_TwoFlatAndLenses;
@@ -69,8 +69,8 @@ public class LightAssessmentW7X {
 	
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	
-	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
-	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
+	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
 	public static Surface mustHitToDraw = sys.lens1.getPlanarSurface();
 	public static boolean forcePerpFibres = false;
 
@@ -107,12 +107,12 @@ public class LightAssessmentW7X {
 	//public static double pointR[] = { 5.50, 5.70, 5.90 };
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
 	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x OP1.2
-	//public static double pointR[] = OneLiners.linSpace(5.50, 5.95, 5); //for AET2x OP2
+	public static double pointR[] = OneLiners.linSpace(5.50, 5.95, 5); //for AET2x OP2
 		
 	//public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
 	//public static double pointR[] = OneLiners.linSpace(5.24, 6.05, 106); // for AEA21
 	
-	public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 };
+	//public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 };
 	
 	/* //For LOS finding for Maciej's high iota halpha
 	public static double pointR[] = OneLiners.linSpace(6.03, 6.20, 5); // for AEM21 from divertor for Maciej
@@ -124,7 +124,7 @@ public class LightAssessmentW7X {
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 5000;
+	public final static int nAttempts = 2000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
@@ -132,7 +132,7 @@ public class LightAssessmentW7X {
 	//public static double wavelength = 530e-9; //C_VI
 	//public static double wavelength = 656e-9; //HAlpha
 	
-	public static int nRaysToDraw = 1000;
+	public static int nRaysToDraw = 500;
 	// For calc
 	/*public static double pointR[] = sys.channelR;
 	public final static int nAttempts = 20000;

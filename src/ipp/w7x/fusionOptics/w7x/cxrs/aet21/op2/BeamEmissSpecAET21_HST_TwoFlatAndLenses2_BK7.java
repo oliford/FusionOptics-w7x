@@ -32,7 +32,7 @@ import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
+public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public String lightPathsSystemName = "AET21-HST";
 	
 	public double globalUp[] = {0,0,1};
@@ -297,7 +297,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 
 
 	
-	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2() {
+	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7() {
 		super("beamSpec-aet21-op2");
 		
 		//addElement(frontDisc);
