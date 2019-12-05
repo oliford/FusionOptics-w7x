@@ -62,8 +62,11 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 	public double beamDumps[][] = {
 		{ -0.21141751098632813, 4.57866845703125, 0.4623721008300781 },
 		{ 0.1455321044921875, 4.9178349609375, 0.41085964965820315 },
-		{ 0.15248867797851562, 5.02684375, 0.1864234619140625 },
-		{ -0.17423611450195312, 4.73173291015625, 0.174153076171875 }};
+		{ 0.1492540283203125, 4.95760693359375, 0.27083691406250002},
+		{ -0.17423611450195312, 4.73173291015625, 0.174153076171875 }
+		
+		
+	};
 	
 	public double hhfTiles[][] = {
 			 { 0.2124384078979492, 4.93090771484375, 0.4795155334472656},
@@ -214,7 +217,8 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2 extends Optic {
 	//public Dish mirror2 = new Dish("mirror2", mirror2CentrePos, mirror2Normal, 0.100, mirror2Width/2, Reflector.ideal());
 
 	/*** Fibre plane ****/
-	public double fibrePlaneFromLens4 = lens4FocalLength + 0.0043;
+	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.0043; //25mm obj
+	public double fibrePlaneFromLens4 = lens4FocalLength + 0.010; //35mm obj
 	public double fibrePlanePos[] = Util.plus(lens4CentrePos, Util.mul(lensNormal, fibrePlaneFromLens4));
 	public double fibrePlaneSize = 0.050;
 	
