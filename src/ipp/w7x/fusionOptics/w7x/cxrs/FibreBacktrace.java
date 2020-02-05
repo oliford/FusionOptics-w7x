@@ -3,6 +3,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U;
+import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U_CISDual;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsK41;
@@ -57,7 +58,7 @@ import fusionOptics.types.Surface;
 
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class FibreBacktrace {
-	public String lightPathsSystemName = "AET20";
+	public String lightPathsSystemName = "AET21U";
 	
 	public static double losCyldRadius = 0.005;
 	
@@ -67,8 +68,9 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();	
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();
+	public static BeamEmissSpecAEA21U_CISDual sys = new BeamEmissSpecAEA21U_CISDual();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -135,7 +137,8 @@ public class FibreBacktrace {
 		BinaryMatrixWriter fibreInfoOut = new BinaryMatrixWriter(outPath + "/fibreInfo.bin", 15); 
 				
 		//Need to get through the fibre plane
-		sys.fibrePlane.setInterface(NullInterface.ideal());		
+		sys.fibrePlane1.setInterface(NullInterface.ideal());		
+		sys.fibrePlane2.setInterface(NullInterface.ideal());
 		sys.addElement(sys.beamPlane);
 		
 		double startPoints[][][] = new double[sys.channelR.length][][];
@@ -405,8 +408,8 @@ public class FibreBacktrace {
 		
 		stlDrawer = new STLDrawer(outPath + "/rodCyld-"+sys.getDesignName()+".stl");		
 		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
-		if(sys.rod != null)
-			stlDrawer.drawOptic(new Optic("rodOptic", new Element[]{ sys.rod }));
+		//if(sys.rod != null)
+		//	stlDrawer.drawOptic(new Optic("rodOptic", new Element[]{ sys.rod }));
 		stlDrawer.destroy();
 	}
 }

@@ -2,6 +2,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import fusionDefs.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
+import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U_CISDual;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsK41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsL41;
@@ -60,6 +61,7 @@ import fusionOptics.types.Surface;
 public class LightAssessmentW7X {
 	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static BeamEmissSpecAEA21U_CISDual sys = new BeamEmissSpecAEA21U_CISDual();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true; //telecentric-ish
 	
@@ -70,8 +72,9 @@ public class LightAssessmentW7X {
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
-	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
-	public static Surface mustHitToDraw = sys.lens1.getPlanarSurface();
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
+	//public static Surface mustHitToDraw = sys.lens1.getSurfaces().get(0);
+	public static Surface mustHitToDraw = sys.entryWindowFront;	
 	public static boolean forcePerpFibres = false;
 
 		
@@ -90,7 +93,7 @@ public class LightAssessmentW7X {
 	
 	public static List<Surface> interestedSurfaces = new ArrayList<Surface>();
 	
-	public static Surface fibrePlane = sys.lens1.getBackSurface();
+	public static Surface fibrePlane = sys.fibrePlane;
 
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q7 };  
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q8 }; //for AEM21, 6 and 8 are the extremes	
@@ -124,7 +127,7 @@ public class LightAssessmentW7X {
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 2000;
+	public final static int nAttempts = 20000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
@@ -132,7 +135,7 @@ public class LightAssessmentW7X {
 	//public static double wavelength = 530e-9; //C_VI
 	//public static double wavelength = 656e-9; //HAlpha
 	
-	public static int nRaysToDraw = 500;
+	public static int nRaysToDraw = 5000;
 	// For calc
 	/*public static double pointR[] = sys.channelR;
 	public final static int nAttempts = 20000;
@@ -200,6 +203,11 @@ public class LightAssessmentW7X {
 		for(Surface s : sys.getSurfacesAll()){
 			if(!(s instanceof Triangle))
 				interestedSurfaces.add(s);
+		}
+		
+		if(sys.overrideObsPositions != null) {
+			nBeams = sys.overrideObsPositions.length;
+			nPointsPerBeam = sys.overrideObsPositions[0].length;			
 		}
 		
 		FibreInfo fibre[][] = new FibreInfo[nBeams][nPointsPerBeam];

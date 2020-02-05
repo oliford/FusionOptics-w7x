@@ -33,7 +33,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
  * @author oliford
  *
  */
-public class RadiationExposure {
+public class RadiationExposure_AEA21 {
 	
 	//AEA21
 	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
@@ -56,6 +56,27 @@ public class RadiationExposure {
 	//public static Element testElement = new STLMesh("strap1", "/work/ipp/w7x/cad/aea21/radExposure2/strap1.stl");
 	public static Element[] testElements = {
 			//new STLMesh("frontPlateWithRim", "/work/ipp/w7x/cad/aea21/radExposure2/frontPlateWithRim.stl"),
+			new STLMesh("mirrorBlock", "/work/ipp/w7x/cad/aea21/radExposure2/mirrorBlock.stl"),
+			new STLMesh("cap1-middle", "/work/ipp/w7x/cad/aea21/radExposure2/cap1-middle.stl"),
+			new STLMesh("cap1-top", "/work/ipp/w7x/cad/aea21/radExposure2/cap1-top.stl"),
+			new STLMesh("cap1-bottom", "/work/ipp/w7x/cad/aea21/radExposure2/cap1-bottom.stl"),
+			new STLMesh("cap1-left", "/work/ipp/w7x/cad/aea21/radExposure2/cap1-left.stl"),
+			new STLMesh("cap1-right", "/work/ipp/w7x/cad/aea21/radExposure2/cap1-right.stl"),
+			new STLMesh("cap2", "/work/ipp/w7x/cad/aea21/radExposure2/cap2.stl"),
+			new STLMesh("strap1", "/work/ipp/w7x/cad/aea21/radExposure2/strap1.stl"),
+			new STLMesh("strap2", "/work/ipp/w7x/cad/aea21/radExposure2/strap2.stl"),
+			
+			new STLMesh("coverFront", "/work/ipp/w7x/cad/aea21/radExposure2/cover3-front.stl"),
+			new STLMesh("coverTop", "/work/ipp/w7x/cad/aea21/radExposure2/cover3-top.stl"),
+			new STLMesh("coverBottom", "/work/ipp/w7x/cad/aea21/radExposure2/cover3-bottom.stl"),
+			
+			//new STLMesh("coverFront", "/work/ipp/w7x/cad/aea21/radExposure2/coverFront.stl"),
+			//new STLMesh("coverTop", "/work/ipp/w7x/cad/aea21/radExposure2/coverTop.stl"),
+			//new STLMesh("coverBottom", "/work/ipp/w7x/cad/aea21/radExposure2/coverBottom.stl"),
+			
+			//new STLMesh("coverFront", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Front.stl"),
+			//new STLMesh("coverTop", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Top.stl"),
+			//new STLMesh("coverBottom", "/work/ipp/w7x/cad/aea21/radExposure/simpleCap-Bottom.stl"),
 			
 	};
 
