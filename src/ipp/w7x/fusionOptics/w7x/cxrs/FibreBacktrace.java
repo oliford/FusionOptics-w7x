@@ -4,6 +4,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U_CISDual;
+import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U_CISDual_OneOnDiv;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK21_pelletsK41;
@@ -70,7 +71,7 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();
-	public static BeamEmissSpecAEA21U_CISDual sys = new BeamEmissSpecAEA21U_CISDual();
+	public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -99,7 +100,7 @@ public class FibreBacktrace {
 	
 	public final static double traceWavelength = sys.designWavelenth;
 	
-	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
+	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
 	public final static int nAttempts = 100;
 
@@ -145,6 +146,7 @@ public class FibreBacktrace {
 		double closestApproachPos[][][] = new double[sys.channelR.length][][];
 		
 		for(int iB=0; iB < sys.channelR.length; iB++){
+		
 			double beamStart[] = beams.start(sys.beamIdx[iB] < 0 ? 0 : sys.beamIdx[iB]);
 			double beamVec[] =  beams.uVec(sys.beamIdx[iB] < 0 ? 0 : sys.beamIdx[iB]);
 			
@@ -180,7 +182,7 @@ public class FibreBacktrace {
 					double aV[] = sys.fibrePlanes[iB][iP].getUp();
 					double bV[] = sys.fibrePlanes[iB][iP].getRight();
 					
-					double sinMaxTheta = fibreEffectiveNA; //sys.fibreNA;
+					double sinMaxTheta = sys.fibreNA[iB];
 					double cosMaxTheta = FastMath.cos(FastMath.asin(sinMaxTheta)); //probably just 1-sinTheta, but... meh
 					
 					double cosTheta = 1 - RandomManager.instance().nextUniform(0, 1) * (1 - cosMaxTheta);
