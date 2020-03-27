@@ -170,11 +170,11 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	public double fibresXVec[] = Util.reNorm(Util.cross(Util.cross(beamAxis, opticAxis),opticAxis));
 	public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, opticAxis));	
 	
-	public Square fibrePlane1 = new Square("fibrePlane1", fibrePlane1Pos, opticAxis, fibresYVec, 0.100, 0.100, NullInterface.ideal());
+	public Square fibrePlane1 = new Square("fibrePlane1", fibrePlane1Pos, opticAxis, fibresYVec, 0.020, 0.020, NullInterface.ideal());
 	public Square fibrePlanes[][];
 	
 	public double fibrePlane2Pos[] = Util.plus(lens2CentrePos, Util.mul(opticAxis, fibrePlaneBehindLens2)); 
-	public Square fibrePlane2 = new Square("fibrePlane2", fibrePlane2Pos, opticAxis, fibresYVec, 0.100, 0.100, NullInterface.ideal());
+	public Square fibrePlane2 = new Square("fibrePlane2", fibrePlane2Pos, opticAxis, fibresYVec, 0.020, 0.020, NullInterface.ideal());
 	
 	public Square fibrePlane = fibrePlane1;
 	
