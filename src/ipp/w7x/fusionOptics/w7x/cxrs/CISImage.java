@@ -77,12 +77,12 @@ public class CISImage {
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 100;
+	public final static int nAttempts = 10000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
 	
-	public static int nRaysToDraw = 10;
+	public static int nRaysToDraw = 500;
 		
 	public static String[] meshesToImage = {
 			"/work/cad/wendel/stl/panel-m11.stl",
@@ -94,7 +94,9 @@ public class CISImage {
 			"/work/cad/wendel/stl/shield-m2.stl",
 
 	};
-	public static int nPointsPerMesh = 20000;			
+	public static int nPointsPerM = 100;	//lower number will favor drawing long edges of triangles
+	public static int nPointsPerMesh = 10000;
+	public static int nRaysPerPoint = 100; //for vignetting statistics 
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName();
 			
@@ -104,8 +106,8 @@ public class CISImage {
 		if((writeWRLForDesigner == null)){
 			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});			
 		}
-		vrmlOut.setSkipRays((meshesToImage.length*nPointsPerMesh) / nRaysToDraw);
-		double col[][] = ColorMaps.jet(nPointsPerMesh);
+		vrmlOut.setSkipRays((meshesToImage.length*10000) / nRaysToDraw);
+		double col[][] = ColorMaps.jet(meshesToImage.length);
 		
 		/*Element[] e = new Element[meshesToImage.length];
 		for(int i=0; i < meshesToImage.length; i++) {
@@ -116,7 +118,7 @@ public class CISImage {
 		
 		//double imagePoints[][] = new double[meshesToImage.length*nPointsPerMesh*nAttempts][4];
 		int iI=0;
-		BinaryMatrixWriter binOut = new BinaryMatrixWriter(outPath + "/imageHits.bin", 5);
+		BinaryMatrixWriter binOut = new BinaryMatrixWriter(outPath + "/imageHits.bin", 6);
 				
 		for(int iB=0; iB < meshesToImage.length; iB++){
 						
@@ -124,26 +126,34 @@ public class CISImage {
 						
 			for(int iP=0; iP < nPointsPerMesh; iP++){
 								
-				int iT = (int)((long)iP * (long)triangles.count / nPointsPerMesh);
+				double l,d;
+				double startPos[];
 				
-				int iV1,iV2;
 				do {
-					iV1 = (int)RandomManager.instance().nextUniform(0, 3);
-					iV2 = (int)RandomManager.instance().nextUniform(0, 3);
-				}while(iV1 != iV2);				
-				double v[][] = { triangles.vertex1[iT], triangles.vertex2[iT], triangles.vertex3[iT] };
-				double p0[] = Util.mul(v[iV1], 1e-3);
-				double p1[] = Util.mul(v[iV2], 1e-3);
+					//pick a random triangle and a random edge
+					int iT = (int)RandomManager.instance().nextUniform(0, triangles.count);				
+					int iV1,iV2;
+					do {
+						iV1 = (int)RandomManager.instance().nextUniform(0, 3);
+						iV2 = (int)RandomManager.instance().nextUniform(0, 3);
+					}while(iV1 == iV2);				
+					double v[][] = { triangles.vertex1[iT], triangles.vertex2[iT], triangles.vertex3[iT] };
+					double p0[] = Util.mul(v[iV1], 1e-3);
+					double p1[] = Util.mul(v[iV2], 1e-3);
+					
+					double dp[] = Util.minus(p1, p0);
+					l = Util.length(dp);
+					
+					//pick a random point along '1m / nPointsPerM', and see if it's inside this length
+					d = RandomManager.instance().nextUniform(0, 1) / nPointsPerM;
+					startPos = Util.plus(p0, Util.mul(dp, d));
+					
+				}while(d > l);				
+															
+				int nHit[] = new int[2];
 				
-				double dp[] = Util.minus(p1, p0);
-				double l = Util.length(dp);
-				double d = RandomManager.instance().nextUniform(0, 1) * l;
-				double startPos[] = Util.plus(p0, Util.mul(dp, d));
-							
-								
-				int nHit = 0;
-				
-				
+				double xyAvg[][] = new double[imagePlanes.length][2];
+				double lRay = Double.NaN;;
 				for(int i=0; i < nAttempts; i++){
 					RaySegment ray = new RaySegment();
 					ray.startPos = startPos.clone();
@@ -161,27 +171,32 @@ public class CISImage {
 							Intersection fibrePlaneHit = hits.get(0);
 							
 							double xy[] = imagePlanes[j].posXYZToPlaneRU(fibrePlaneHit.pos);
-							binOut.writeRow(xy, j, iB, ray.length);
-							iI++;
-							vrmlOut.drawRay(ray, col[iP]);
+							//binOut.writeRow(xy, j, iB, ray.length);
+							xyAvg[j][0] += xy[0];
+							xyAvg[j][1] += xy[1];
+							lRay = ray.length;
 							
-							nHit++;
+							iI++;
+							vrmlOut.drawRay(ray, col[iB]);
+							
+							nHit[j]++;
 						}
 					}
 					
 					Pol.recoverAll();
 					
-					//if(nHit > 0)
-					//	break;
-					
-					//hits = ray.getIntersections(mustHitToDraw);
-					//if(hits.size() > 0){												
-					//	vrmlOut.drawRay(ray, col[iP]);
-					//}
+				}
+				
+				for(int j=0; j < imagePlanes.length; j++) {
+					if(nHit[j] > 0) {
+						binOut.writeRow(xyAvg[j][0]/nHit[j],
+										xyAvg[j][1]/nHit[j],
+										j, iB, l, nHit[j]);
+					}
 				}
 
 				
-				System.out.println(meshesToImage[iB] + " " + iB + " " + iP + " (" + iT + "): " + nHit);
+				System.out.println(meshesToImage[iB] + " " + iB + " " + iP + ": n1=" + nHit[0] + ", n2=" + nHit[1]);
 			}
 		}
 		System.out.println("\n------------------------------------------------------------------------------------\n");

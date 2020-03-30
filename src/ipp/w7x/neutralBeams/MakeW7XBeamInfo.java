@@ -35,7 +35,14 @@ public class MakeW7XBeamInfo {
 			// Impact radius = closest distance to machine central axis
 			double a = Algorithms.pointOnLineNearestAnotherLine(W7xNBI.def().start(i), W7xNBI.def().uVec(i), new double[]{0, 0,0}, new double[]{0,0,1});
 			double pos[] = Util.plus(W7xNBI.def().start(i), Util.mul(W7xNBI.def().uVec(i), a));
-			System.out.println("\tImpact radius = " + FastMath.sqrt(pos[0]*pos[0] + pos[1]*pos[1]));			
+			System.out.println("\tImpact radius = " + FastMath.sqrt(pos[0]*pos[0] + pos[1]*pos[1]));
+			
+			/*
+			System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Cylinder\", \"NIB"+iB+"_"+iP+"\"); "+
+					"o.Shape = Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
+					",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
+					"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
+			*/
 		}
 
 		System.out.print("RuDIX p = ");		OneLiners.dumpArray(W7XRudix.def().startBox(0));

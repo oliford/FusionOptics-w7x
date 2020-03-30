@@ -40,7 +40,7 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	
 	/***** Observation target ****/
 	//public int targetBeamIdx = 6; // 6 = Q7 = K21 lower radial   
-	public double targetBeamR = 5.65;
+	public double targetBeamR = 5.5;
 	//public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	public double targetObsPos[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
 	public double sourceNormal[] =  Util.reNorm(Util.minus(targetObsPos, portEntryPos));
@@ -74,7 +74,7 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	
 	public double mirrorRotationInPlane = 0 * Math.PI / 180;
 	public double mirrorWidth = 0.130; // [Made up ]
-	public double mirrorHeight = 0.070;
+	public double mirrorHeight = 0.060;
 					
 	public double mirrorNormal[] = Util.reNorm(Util.plus(sourceNormal, opticAxis));
 
@@ -111,9 +111,9 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	double portRight[] = Util.reNorm(Util.cross(portNormal, globalUp));
 	double portUp[] = Util.reNorm(Util.cross(portRight, portNormal));
 	
-	double lens1FocalLength = 0.025;
-	double lens1BehindWindow = 0.050;
-	double lens1Right = 0.010;
+	double lens1FocalLength = 0.020;
+	double lens1BehindWindow = 0.025;
+	double lens1Right = 0.000;
 	double lens1Up = 0.016;
 	
 	double lens1CentrePos[] = Util.plus(Util.plus(Util.plus(
@@ -129,7 +129,7 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	
 	double lens2FocalLength = lens1FocalLength;
 	double lens2BehindWindow = lens1BehindWindow + 0.00001;
-	double lens2Right = 0.010;
+	double lens2Right = 0.000;
 	double lens2Up = -0.016;
 
 	double lens2CentrePos[] = Util.plus(Util.plus(Util.plus(
@@ -166,9 +166,14 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	
 	public double beamAxis[] = W7xNBI.def().uVec(0);
 	
+	double fibrePlaneRotate = -30 * Math.PI / 180;
+	
 	public double fibrePlane1Pos[] = Util.plus(lens1CentrePos, Util.mul(opticAxis, fibrePlaneBehindLens1)); 
-	public double fibresXVec[] = Util.reNorm(Util.cross(Util.cross(beamAxis, opticAxis),opticAxis));
-	public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, opticAxis));	
+	public double fibresXVec0[] = Util.reNorm(Util.cross(Util.cross(beamAxis, opticAxis),opticAxis));
+	public double fibresYVec0[] = Util.reNorm(Util.cross(fibresXVec0, opticAxis));
+	
+	public double fibresXVec[] = Util.plus(Util.mul(fibresXVec0, FastMath.cos(fibrePlaneRotate)), Util.mul(fibresYVec0, FastMath.sin(fibrePlaneRotate)));
+	public double fibresYVec[] = Util.plus(Util.mul(fibresXVec0, -FastMath.sin(fibrePlaneRotate)), Util.mul(fibresYVec0, FastMath.cos(fibrePlaneRotate)));
 	
 	public Square fibrePlane1 = new Square("fibrePlane1", fibrePlane1Pos, opticAxis, fibresYVec, 0.020, 0.020, NullInterface.ideal());
 	public Square fibrePlanes[][];
