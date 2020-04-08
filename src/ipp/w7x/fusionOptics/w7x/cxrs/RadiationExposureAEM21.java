@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.util.List;
 
 import otherSupport.ColorMaps;
+import otherSupport.RandomManager;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.collection.IntensityInfo;
@@ -42,14 +43,13 @@ public class RadiationExposureAEM21 {
 	public static String inPath = "/work/cad/aem21/radExposure20/";
 	
 	public static Element[] testElements = {
-
 			new STLMesh(inPath + "/port-AEM21-endOnly.stl"),
 			new STLMesh(inPath + "/zwickle2.stl"), 
-	};
+	//};
 
-	public static Element[] thingsInWay = {	
+	//public static Element[] thingsInWay = {	
 			//AEM21 port protection - front plate
-			new Optic("FrontPlate", new Element[] {
+			//new Optic("FrontPlate", new Element[] {
 				new STLMesh(inPath + "/FrontPlateSlice2.0.stl"), //bottom
 				new STLMesh(inPath + "/FrontPlateSlice2.1.stl"), //top right
 				new STLMesh(inPath + "/FrontPlateSlice2.2.stl"), //left
@@ -57,11 +57,11 @@ public class RadiationExposureAEM21 {
 				new STLMesh(inPath + "/FrontPlateSlice2.4.stl"), //middle top
 				new STLMesh(inPath + "/FrontPlateCap.stl"), //cap
 				new STLMesh(inPath + "/frontPlatePipe.stl"), //pipe welded into front plate
-			}),
+			//}),
 			
 			//AEM21 port protection - port shield
-			new Optic("PortShield", new Element[] {
-					new STLMesh(inPath + "/portShield-Slice002.0.stl"), //left middle
+			//new Optic("PortShield", new Element[] {
+				/*new STLMesh(inPath + "/portShield-Slice002.0.stl"), //left middle
 				new STLMesh(inPath + "/portShield-Slice002.1.stl"), //centre middle
 				new STLMesh(inPath + "/portShield-Slice002.2.stl"), //right middle
 				new STLMesh(inPath + "/portShield-Slice002.3.stl"), //left top
@@ -69,7 +69,43 @@ public class RadiationExposureAEM21 {
 				new STLMesh(inPath + "/portShield-Slice002.5.stl"), //right top
 				new STLMesh(inPath + "/portShield-Slice002.6.stl"), //left bottom
 				new STLMesh(inPath + "/portShield-Slice002.7.stl"), //centre/right bottom
-			}),
+				*/
+				new STLMesh(inPath + "/portShield-Slice003.0.0.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.0.1.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.0.2.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.0.3.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.1.0.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.1.1.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.1.2.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.1.3.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.2.0.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.2.1.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.3.0.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.3.1.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.0.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.1.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.2.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.3.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.4.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.5.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.6.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.7.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.8.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.9.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.10.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.5.0.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.5.1.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.6.0.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.6.1.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.7.0.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.7.1.stl"),
+
+				new STLMesh(inPath + "/portShield-Slice003.3.0b.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.3.1b.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.3b.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.6b.stl"),
+				new STLMesh(inPath + "/portShield-Slice003.4.9b.stl"),
+			//}),
 						
 			//Port and vessel walls
 			//new STLMesh(inPath + "/port-AEM21-endOnly.stl"),
@@ -80,7 +116,7 @@ public class RadiationExposureAEM21 {
 			
 			// Tube, shutter and components
 			new STLMesh(inPath + "/tubeSimple.stl"),
-			new Optic("Shutter", new Element[] {
+			//new Optic("Shutter", new Element[] {
 				new STLMesh(inPath + "/mirrorBlockClosed-simplified.stl"),
 				new STLMesh(inPath + "/protectionCollar1.stl"),
 				new STLMesh(inPath + "/protectionCollar2.stl"),
@@ -91,10 +127,10 @@ public class RadiationExposureAEM21 {
 				new STLMesh(inPath + "/strap2.stl"),
 				new STLMesh(inPath + "/strapCover1.stl"),
 				new STLMesh(inPath + "/strapCover2.stl"),
-			}),
-	//};
+			//}),
+	};
 	
-	//public static Element[] thingsInWay = {	
+	public static Element[] thingsInWay = {	
 			new STLMesh(inPath + "/panel1.stl"),
 			new STLMesh(inPath + "/panel2.stl"),
 			new STLMesh(inPath + "/panel3.stl"),
@@ -104,7 +140,9 @@ public class RadiationExposureAEM21 {
 			
 	};
 
-	private static int nX = 30, nY= 30;
+	//private static int nX = 70, nY= 70;
+	private static int nRays = 1000000;
+	private static int nRaysToDraw = 1000;
 	//*/
 		
 	//AEM21
@@ -112,11 +150,11 @@ public class RadiationExposureAEM21 {
 	//public static Surface testSurface = new Disc("testdisc", a, radSurfaceNormal, 0.050, Absorber.ideal()); 
 	
 	
-	public static int nRaysPerPoint = 30;
-	public static int nSkip = 0;
+	//public static int nRaysPerPoint = 100;
 	
 	
-	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure-portWalls-30x30x30/";
+	
+	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure30-all-1000000-portShieldBack/";
 	
 	/** Power emitted from radiating surface, Watts per square meter per Steradian */
 	public static double powerAngularDensity = 100e3 / 2 / Math.PI;  //100/2.pi kW m^-2 SR^-1
@@ -137,14 +175,15 @@ public class RadiationExposureAEM21 {
 		
 		
 		
-		double dx = sys.radSurfWidth / (nX - 1);
-		double dy = sys.radSurfHeight / (nY - 1);
+		//double dx = sys.radSurfWidth / (nX - 1);
+		//double dy = sys.radSurfHeight / (nY - 1);
+		double dA = sys.radSurfHeight * sys.radSurfWidth / nRays;
 			
 		double col[][] = ColorMaps.jet(testElements.length);
 		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/radExposure-"+sys.getDesignName() + ".vrml", 5.005);
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
-		vrmlOut.setSkipRays(nSkip);
+		int nRaysDrawn = 0;
 		
 		//vrmlOut.drawOptic(sys);
 		
@@ -164,11 +203,9 @@ public class RadiationExposureAEM21 {
 		double totalPower[] = new double[testElements.length];
 		int nHitTotal[] = new int[testElements.length];
 		
-		for(int iY = 0; iY < nY; iY++){
-			double y = -sys.radSurfHeight/2 + iY * dy;
-			
-			for(int iX = 0; iX < nX; iX++){
-				double x = -sys.radSurfWidth/2 + iX * dx;
+		for(int iS = 0; iS < nRays; iS++){
+			double y = sys.radSurfHeight * (RandomManager.instance().nextUniform(0,1) - 0.5); 
+			double x = sys.radSurfWidth * (RandomManager.instance().nextUniform(0,1) - 0.5); 
 				
 				double startPos[] = Util.plus(sys.radSurfaceCentre, 
 										Util.plus(
@@ -177,77 +214,87 @@ public class RadiationExposureAEM21 {
 				
 				
 				double solidAngle = Double.NaN;				
-				int nHit[] = new int[testElements.length];
-				
-				for(int iR=0; iR < nRaysPerPoint; iR++){
+			
 
-					RaySegment ray = new RaySegment();
-					ray.startPos = startPos;
+				RaySegment ray = new RaySegment();
+				ray.startPos = startPos;
+				
+				ray.dir = Tracer.generateRandomRayTowardSurface(startPos, testElementsAll, true);
+				solidAngle = Util.length(ray.dir);
+				ray.dir = Util.reNorm(ray.dir);
+						
+				//ray.dir = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget);
+				ray.wavelength = 500e-9; //irrelevant
+				ray.E0 = new double[][]{{1,0,0,0}};
+				ray.up = Util.createPerp(ray.dir);
+						
+				Tracer.trace(sys, ray, 100, 0, false);
+						
+				for(int iTE=0; iTE < testElements.length; iTE++) {						
+					List<Intersection> hits = ray.getIntersections(testElements[iTE]);
+					if(hits.size() > 0){
+						double power = powerAngularDensity * dA * solidAngle; //power emitted into ray generation cone
+						totalPower[iTE] += power;
+						nHitTotal[iTE] += 1;
 					
-					ray.dir = Tracer.generateRandomRayTowardSurface(startPos, testElementsAll, true);
-					solidAngle = Util.length(ray.dir);
-					ray.dir = Util.reNorm(ray.dir);
-							
-					//ray.dir = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget);
-					ray.wavelength = 500e-9; //irrelevant
-					ray.E0 = new double[][]{{1,0,0,0}};
-					ray.up = Util.createPerp(ray.dir);
-							
-					Tracer.trace(sys, ray, 100, 0, false);
-							
-					for(int iTE=0; iTE < testElements.length; iTE++) {						
-						List<Intersection> hits = ray.getIntersections(testElements[iTE]);
-						if(hits.size() > 0){
-							nHit[iTE]++;
+						if(vrmlOut != null) {
 							vrmlOut.drawRay(ray, col[iTE]);
-							break; //don't count twice. Shouldn't if they are absorbers
+							nRaysDrawn++;
 						}
+						break; //don't count twice. Shouldn't if they are absorbers
 					}
-					
-					Pol.recoverAll();
 				}
 				
-				System.out.print(iY + ", "+ iX+": ");
-				for(int iTE=0; iTE < testElements.length; iTE++) {
-					double power = powerAngularDensity * dx * dy * solidAngle //power emitted into ray generation cone 
-								* ((double)nHit[iTE] / nRaysPerPoint);  //fraction of that power captured by target
-					totalPower[iTE] += power;
-					nHitTotal[iTE] += nHit[iTE];
-					
-					System.out.print(nHit[iTE] + ", ");
+				Pol.recoverAll();
+				
+				
+				//System.out.print(iY + ", "+ iX+": ");
+				System.out.print(iS + ": ");
+				for(int iTE=0; iTE < testElements.length; iTE++) {					
+					System.out.print(nHitTotal[iTE] + ", ");
 				}
 				System.out.println();
+
+			if((iS % 100) == 0) {
+				dumpPowers(System.out, totalPower, nHitTotal, dA, ((double)iS)/nRays);
+				System.out.println("VRML: "+ nRaysDrawn + " / " + nRaysToDraw);
 			}
 			
-			
+			if(vrmlOut != null && nRaysDrawn >= nRaysToDraw) {
+				System.out.println("VRML Done");
+				vrmlOut.destroy();
+				vrmlOut = null;
+			}
 			
 		}
 		
 		try {
 			PrintStream textOut = new PrintStream(outPath + "/powers.txt");
 			
-			dumpPowers(textOut, totalPower, nHitTotal, dx, dy);
-			dumpPowers(System.out, totalPower, nHitTotal, dx, dy);
+			dumpPowers(textOut, totalPower, nHitTotal, dA, 1.0);
+			dumpPowers(System.out, totalPower, nHitTotal, dA, 1.0);
 			
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 		
-		vrmlOut.destroy();
+		if(vrmlOut != null)
+			vrmlOut.destroy();
 	}
 
-	private static void dumpPowers(PrintStream textOut, double[] totalPower, int[] nHitTotal, double dx, double dy) {
+	private static void dumpPowers(PrintStream textOut, double[] totalPower, int[] nHitTotal, double dA, double fracCollected) {
 
 		double totalPowerAll = 0;
 		for(int iTE=0; iTE < testElements.length; iTE++) {
-			textOut.print(sys.getDesignName() + " " + testElements[iTE].getName() + ": nHit = " + nHitTotal[iTE] + ", dx*dy = " + (dx*dy) + ", Total = " + totalPower[iTE] + " W");
-			totalPowerAll += totalPower[iTE];
+			double finalTotalPower = (totalPower[iTE] / fracCollected);
+			textOut.print(sys.getDesignName() + " " + testElements[iTE].getName() + ": nHit = " + nHitTotal[iTE] + ", dA = " + (dA) + ", Total = " + finalTotalPower + " W");
+			totalPowerAll += finalTotalPower;
 			if(testElements[iTE] instanceof Disc) {
 				double targetArea = Math.PI * FastMath.pow2(((Disc)testElements[iTE]).getRadius());
-				textOut.print(", Power/area = " + (totalPower[iTE] / targetArea) + " W/m2");
+				textOut.print(", Power/area = " + (finalTotalPower / targetArea) + " W/m2");
 			}else if(testElements[iTE] instanceof Square) {
 				double targetArea = ((Square)testElements[iTE]).getWidth() *  ((Square)testElements[iTE]).getHeight();
-				textOut.print(". Power/area = " + (totalPower[iTE] / targetArea) + " W/m2");				
+				textOut.print(". Power/area = " + (finalTotalPower / targetArea) + " W/m2");				
 			}
 			textOut.println();
 		}
