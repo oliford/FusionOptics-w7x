@@ -20,8 +20,10 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_asMeasuredOP12b;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses_75mm_UVFS_3cmAperture;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
@@ -44,6 +46,7 @@ import otherSupport.ColorMaps;
 import otherSupport.RandomManager;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
+import fusionOptics.collection.HitsCollector;
 import fusionOptics.collection.IntensityInfo;
 import fusionOptics.drawing.STLDrawer;
 import fusionOptics.drawing.VRMLDrawer;
@@ -69,9 +72,9 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();	
-	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();
-	public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7();	
+	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7();
+	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -102,7 +105,7 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 100;
+	public final static int nAttempts = 1000;
 
 	public static String writeWRLForDesigner = null; //"20190910";
 	
@@ -134,12 +137,14 @@ public class FibreBacktrace {
 		double col[][] = ColorMaps.jet(maxChans);
 		
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
+		HitsCollector windowHits = new HitsCollector(outPath + "/windowHits.bin", sys.window);
 
 		BinaryMatrixWriter fibreInfoOut = new BinaryMatrixWriter(outPath + "/fibreInfo.bin", 15); 
 				
 		//Need to get through the fibre plane
-		sys.fibrePlane1.setInterface(NullInterface.ideal());		
-		sys.fibrePlane2.setInterface(NullInterface.ideal());
+		sys.fibrePlane.setInterface(NullInterface.ideal());		
+		//sys.fibrePlane1.setInterface(NullInterface.ideal());		
+		//sys.fibrePlane2.setInterface(NullInterface.ideal());
 		sys.addElement(sys.beamPlane);
 		
 		double startPoints[][][] = new double[sys.channelR.length][][];
@@ -182,7 +187,8 @@ public class FibreBacktrace {
 					double aV[] = sys.fibrePlanes[iB][iP].getUp();
 					double bV[] = sys.fibrePlanes[iB][iP].getRight();
 					
-					double sinMaxTheta = sys.fibreNA[iB];
+					//double sinMaxTheta = sys.fibreNA[iB];
+					double sinMaxTheta = sys.fibreNA;
 					double cosMaxTheta = FastMath.cos(FastMath.asin(sinMaxTheta)); //probably just 1-sinTheta, but... meh
 					
 					double cosTheta = 1 - RandomManager.instance().nextUniform(0, 1) * (1 - cosMaxTheta);
@@ -204,7 +210,7 @@ public class FibreBacktrace {
 							
 					Tracer.trace(sys, ray, 100, 0, false);
 					
-					ray.processIntersections(null, intensityInfo);
+					ray.processIntersections(null, intensityInfo, windowHits);
 	
 					
 					//vrmlOut.drawRay(ray, col[iP]);
@@ -317,7 +323,7 @@ public class FibreBacktrace {
 			}
 		}
 		
-		
+		windowHits.destroy();
 		
 		fibreInfoOut.close();
 				

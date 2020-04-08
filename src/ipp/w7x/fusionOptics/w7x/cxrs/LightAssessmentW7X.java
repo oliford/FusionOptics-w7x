@@ -11,6 +11,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolet
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses_75mm_UVFS_3cmAperture;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_Parabolic;
@@ -61,7 +62,7 @@ import fusionOptics.types.Surface;
 public class LightAssessmentW7X {
 	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	public static BeamEmissSpecAEA21U_CISDual sys = new BeamEmissSpecAEA21U_CISDual();
+	//public static BeamEmissSpecAEA21U_CISDual sys = new BeamEmissSpecAEA21U_CISDual();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true; //telecentric-ish
 	
@@ -71,10 +72,10 @@ public class LightAssessmentW7X {
 	
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	
-	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2();	
+	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7();	
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
-	//public static Surface mustHitToDraw = sys.lens1.getSurfaces().get(0);
-	public static Surface mustHitToDraw = sys.entryWindowFront;	
+	public static Surface mustHitToDraw = sys.lens1.getSurfaces().get(0);
+	//public static Surface mustHitToDraw = sys.entryWindowFront;	
 	public static boolean forcePerpFibres = false;
 
 		

@@ -26,9 +26,13 @@ public class MakeW7XBeamInfo {
 		System.out.print("NBI K21 p_box = ");	OneLiners.dumpArray(W7xNBI.def().startBox(1));
 		System.out.print("NBI K21 v_box = ");	OneLiners.dumpArray(W7xNBI.def().uVecBox(1));
 		
+		double cyldRadius = 0.100;
+		double cyldLen = 1.5;
+		
 		for(int i=0; i < 8; i++){
 			System.out.println("NBI source "+(i+1)+":  ");
-			System.out.print("\tp_Entry = "); OneLiners.dumpArray(w7xNBI.def().getPosOfBeamAxisAtR(i, 6.3));
+			double entryPos[] = w7xNBI.def().getPosOfBeamAxisAtR(i, 6.3);
+			System.out.print("\tp_Entry = "); OneLiners.dumpArray(entryPos);
 			System.out.print("\tp_Exit = "); OneLiners.dumpArray(w7xNBI.def().getPosOfBeamAxisAtR(i, 5.0));
 			System.out.print("\tv = "); OneLiners.dumpArray(w7xNBI.def().uVec(i));
 			
@@ -37,12 +41,12 @@ public class MakeW7XBeamInfo {
 			double pos[] = Util.plus(W7xNBI.def().start(i), Util.mul(W7xNBI.def().uVec(i), a));
 			System.out.println("\tImpact radius = " + FastMath.sqrt(pos[0]*pos[0] + pos[1]*pos[1]));
 			
-			/*
-			System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Cylinder\", \"NIB"+iB+"_"+iP+"\"); "+
+			double s[] = w7xNBI.def().start(i);
+			double u[] = w7xNBI.def().uVec(i);
+			System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Cylinder\", \"NBI_Q"+(i+1)+"\"); "+
 					"o.Shape = Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
-					",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
+					",FreeCAD.Vector("+s[0]*1e3+","+s[1]*1e3+","+s[2]*1e3 +
 					"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
-			*/
 		}
 
 		System.out.print("RuDIX p = ");		OneLiners.dumpArray(W7XRudix.def().startBox(0));

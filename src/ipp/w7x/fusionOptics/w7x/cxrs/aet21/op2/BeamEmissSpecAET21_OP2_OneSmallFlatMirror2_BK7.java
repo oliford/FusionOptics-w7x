@@ -133,7 +133,9 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	public double lens3FromLens2 = 0.160;
 	public double lens3PortRightShift = 0.000;	
 	public double lens3PortUpShift = 0.000;	
-	
+
+	public double windowFromLens3 = 0.110;
+	public double windowDiameter = 0.038;
 
 	/*public double lens3FocalLength = 0.200;
 	public double lens3Thickness = 0.015;
@@ -160,6 +162,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	public double lensNormal[] = Util.reNorm(Util.minus(lens1CentrePos, mirror1CentrePos0));
 	public double lens2CentrePos[] = Util.plus(lens1CentrePos, Util.mul(lensNormal, lens2FromLens1));
 	public double lens3CentrePos[] = Util.plus(lens2CentrePos, Util.mul(lensNormal, lens3FromLens2));
+	public double windowCentrePos[] = Util.plus(lens3CentrePos, Util.mul(lensNormal, windowFromLens3));
 	public double lens4CentrePos[] = Util.plus(lens3CentrePos, Util.mul(lensNormal, lens4FromLens3));
 
 	public double mirror1Normal[] = Util.reNorm(Util.mul(Util.plus(lensNormal, observationVec), 0.5));
@@ -191,6 +194,8 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 			lens3CentrePos, lensNormal, lens3Diameter/2, lens3CurvatureRadius, lens3Thickness, lens3Medium, IsoIsoInterface.ideal());
 	public Iris lens3Iris = new Iris("lens3Iris", lens3CentrePos, lensNormal, lens3Diameter*0.7, lens3ClearAperture/2, null, null, Absorber.ideal());
 
+	public Disc window = new Disc("window", windowCentrePos, lensNormal, windowDiameter/2, null, null, NullInterface.ideal());
+	
 	Nikon50mmF11 lens4 = new Nikon50mmF11(lens4CentrePos, lens4FocalLength / 0.050, lensNormal);
 	
 	
@@ -321,6 +326,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 		addElement(lens2);
 		addElement(lens3Iris);
 		addElement(lens3);
+		addElement(window);
 		addElement(lens4);
 		addElement(fibrePlane);
 		//addElement(new Sphere("bSphere", mirror1.getBoundarySphereCentre(), mirror1.getBoundarySphereRadius(), NullInterface.ideal()));
