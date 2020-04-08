@@ -77,36 +77,52 @@ public class CISImage {
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 1000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
 	
-	public static int nRaysToDraw = 500;
+	public static int nRaysToDraw = 10000;
 		
 	public static String[] meshesToImage = {
 			"/work/cad/wendel/stl/panel-m11.stl",
-			"/work/cad/wendel/stl/target-m2.stl",
 			"/work/cad/wendel/stl/baffel-m1.stl",
+			"/work/cad/w7xBeams/Q4.stl",
+			"/work/cad/wendel/stl/target-m2.stl",
 			"/work/cad/wendel/stl/baffel-m2.stl",
 			"/work/cad/wendel/stl/panel-m20.stl",
 			"/work/cad/wendel/stl/shield-m1.stl",
 			"/work/cad/wendel/stl/shield-m2.stl",
+			"/work/cad/wendel/stl/panel-m10.stl",
 
 	};
 	public static int nPointsPerM = 100;	//lower number will favor drawing long edges of triangles
-	public static int nPointsPerMesh = 10000;
-	public static int nRaysPerPoint = 100; //for vignetting statistics 
+	public static int nPointsPerMesh = 500;
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName();
 			
 	public static void main(String[] args) {
+
+		double s[] = sys.mirror.getCentre();
+		double u[] = sys.mirror.getNormal();
+		double cyldRadius = FastMath.sqrt(0.060*0.060 + 0.030*0.030);
+		double cyldLen = 0.010;
+		System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Cylinder\", \"mirrorSurface\"); "+
+				"o.Shape = Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
+				",FreeCAD.Vector("+s[0]*1e3+","+s[1]*1e3+","+s[2]*1e3 +
+				"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
+		
+		STLDrawer stlDraw = new STLDrawer(outPath + "/mirror.stl");
+		stlDraw.setTransformationMatrix(new double[][] {{ 1000,0,0 },{0,1000,0},{0,0,1000}});
+		stlDraw.drawElement(sys.mirror);
+		stlDraw.destroy();
+		System.exit(0);
 		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/image-"+sys.getDesignName()+ ((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 1.005);
 		if((writeWRLForDesigner == null)){
 			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});			
 		}
-		vrmlOut.setSkipRays((meshesToImage.length*10000) / nRaysToDraw);
+		vrmlOut.setSkipRays((int)(((long)meshesToImage.length*nPointsPerMesh*nAttempts) / nRaysToDraw));
 		double col[][] = ColorMaps.jet(meshesToImage.length);
 		
 		/*Element[] e = new Element[meshesToImage.length];
@@ -116,9 +132,12 @@ public class CISImage {
 		sys.addElement(new Optic("meshes", e));
 		*/
 		
+		
 		//double imagePoints[][] = new double[meshesToImage.length*nPointsPerMesh*nAttempts][4];
 		int iI=0;
 		BinaryMatrixWriter binOut = new BinaryMatrixWriter(outPath + "/imageHits.bin", 6);
+		
+		OneLiners.TextToFile(outPath + "/stlFiles.txt", meshesToImage);
 				
 		for(int iB=0; iB < meshesToImage.length; iB++){
 						

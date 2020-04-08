@@ -40,9 +40,11 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	
 	/***** Observation target ****/
 	//public int targetBeamIdx = 6; // 6 = Q7 = K21 lower radial   
-	public double targetBeamR = 5.5;
+	public double targetBeamR = 5.55;
+	public double targetAboveBeam = -0.100; //reversed to K20, because we setup on K21 and flip
 	//public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
-	public double targetObsPos[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
+	public double targetObsPos0[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
+	public double targetObsPos[] = Util.plus(targetObsPos0, Util.mul(globalUp, targetAboveBeam));	
 	public double sourceNormal[] =  Util.reNorm(Util.minus(targetObsPos, portEntryPos));
 	
 	public double overrideObsPositions[][][] = {
@@ -73,7 +75,7 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 													Util.mul(portSourcePerp, mirrorDistSidewaysInPort));
 	
 	public double mirrorRotationInPlane = 0 * Math.PI / 180;
-	public double mirrorWidth = 0.130; // [Made up ]
+	public double mirrorWidth = 0.120; // [Made up ]
 	public double mirrorHeight = 0.060;
 					
 	public double mirrorNormal[] = Util.reNorm(Util.plus(sourceNormal, opticAxis));
@@ -83,7 +85,10 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	public double mirrorX[] = Util.reNorm(Util.plus(Util.mul(mirrorA, FastMath.cos(mirrorRotationInPlane)), Util.mul(mirrorB, FastMath.sin(mirrorRotationInPlane))));
 	public double mirrorY[] = Util.reNorm(Util.plus(Util.mul(mirrorA, -FastMath.sin(mirrorRotationInPlane)), Util.mul(mirrorB, FastMath.cos(mirrorRotationInPlane))));
 	
-	public Square mirror = new Square("mirror", mirrorCentrePos, mirrorNormal, mirrorX, mirrorHeight, mirrorWidth, Reflector.ideal());
+	//shift sideways to fit into shutter block
+	public double mirrorCentrePos1[] = Util.plus(mirrorCentrePos, Util.mul(mirrorY, -0.005));
+
+	public Square mirror = new Square("mirror", mirrorCentrePos1, mirrorNormal, mirrorX, mirrorHeight, mirrorWidth, Reflector.ideal());
 	
 	public final String backgroundSTLFiles[] = {
 			"/home/oliford/rzg/w7x/cad/aea21/bg-targetting/baffle-m3.off-aea21-cut.stl",
@@ -111,7 +116,7 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	double portRight[] = Util.reNorm(Util.cross(portNormal, globalUp));
 	double portUp[] = Util.reNorm(Util.cross(portRight, portNormal));
 	
-	double lens1FocalLength = 0.020;
+	double lens1FocalLength = 0.016;
 	double lens1BehindWindow = 0.025;
 	double lens1Right = 0.000;
 	double lens1Up = 0.016;
@@ -166,7 +171,7 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	
 	public double beamAxis[] = W7xNBI.def().uVec(0);
 	
-	double fibrePlaneRotate = -30 * Math.PI / 180;
+	double fibrePlaneRotate = -40 * Math.PI / 180;
 	
 	public double fibrePlane1Pos[] = Util.plus(lens1CentrePos, Util.mul(opticAxis, fibrePlaneBehindLens1)); 
 	public double fibresXVec0[] = Util.reNorm(Util.cross(Util.cross(beamAxis, opticAxis),opticAxis));
@@ -298,7 +303,7 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 		
 	}
 
-	public String getDesignName() { return "aea21u-cisDual";	}
+	public String getDesignName() { return "aea21u-cisDual-" + String.format("%.0f", lens1FocalLength*1e3) + "mm";	}
 
 	public Element[] makeSimpleModel() {
 		return new Element[0];
