@@ -61,18 +61,9 @@ public class RadiationExposureAEM21 {
 			
 			//AEM21 port protection - port shield
 			//new Optic("PortShield", new Element[] {
-				/*new STLMesh(inPath + "/portShield-Slice002.0.stl"), //left middle
-				new STLMesh(inPath + "/portShield-Slice002.1.stl"), //centre middle
-				new STLMesh(inPath + "/portShield-Slice002.2.stl"), //right middle
-				new STLMesh(inPath + "/portShield-Slice002.3.stl"), //left top
-				new STLMesh(inPath + "/portShield-Slice002.4.stl"), //centre top
-				new STLMesh(inPath + "/portShield-Slice002.5.stl"), //right top
-				new STLMesh(inPath + "/portShield-Slice002.6.stl"), //left bottom
-				new STLMesh(inPath + "/portShield-Slice002.7.stl"), //centre/right bottom
-				*/
+				
 				new STLMesh(inPath + "/portShield-Slice003.0.0.stl"),
 				new STLMesh(inPath + "/portShield-Slice003.0.1.stl"),
-				new STLMesh(inPath + "/portShield-Slice003.0.2.stl"),
 				new STLMesh(inPath + "/portShield-Slice003.0.3.stl"),
 				new STLMesh(inPath + "/portShield-Slice003.1.0.stl"),
 				new STLMesh(inPath + "/portShield-Slice003.1.1.stl"),
@@ -80,8 +71,6 @@ public class RadiationExposureAEM21 {
 				new STLMesh(inPath + "/portShield-Slice003.1.3.stl"),
 				new STLMesh(inPath + "/portShield-Slice003.2.0.stl"),
 				new STLMesh(inPath + "/portShield-Slice003.2.1.stl"),
-				new STLMesh(inPath + "/portShield-Slice003.3.0.stl"),
-				new STLMesh(inPath + "/portShield-Slice003.3.1.stl"),
 				new STLMesh(inPath + "/portShield-Slice003.4.0.stl"),
 				new STLMesh(inPath + "/portShield-Slice003.4.1.stl"),
 				new STLMesh(inPath + "/portShield-Slice003.4.2.stl"),
@@ -100,11 +89,25 @@ public class RadiationExposureAEM21 {
 				new STLMesh(inPath + "/portShield-Slice003.7.0.stl"),
 				new STLMesh(inPath + "/portShield-Slice003.7.1.stl"),
 
-				new STLMesh(inPath + "/portShield-Slice003.3.0b.stl"),
-				new STLMesh(inPath + "/portShield-Slice003.3.1b.stl"),
-				new STLMesh(inPath + "/portShield-Slice003.4.3b.stl"),
-				new STLMesh(inPath + "/portShield-Slice003.4.6b.stl"),
-				new STLMesh(inPath + "/portShield-Slice003.4.9b.stl"),
+				//modification by Mikhail to interface with panels
+				new STLMesh(inPath + "/portShield-Slice004.0.2.1.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.0.2.2.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.3.0.1.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.3.0.2.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.3.1.1.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.3.1.2.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.3.1.3.stl"),
+				
+				//backsides, so we know what hits the front and back
+				new STLMesh(inPath + "/portShield-Slice004.3.0.1b.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.3.1.1b.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.4.0b.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.4.3b.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.4.6b.stl"),
+				new STLMesh(inPath + "/portShield-Slice004.4.9b.stl"),
+				
+				
+
 			//}),
 						
 			//Port and vessel walls
@@ -117,16 +120,28 @@ public class RadiationExposureAEM21 {
 			// Tube, shutter and components
 			new STLMesh(inPath + "/tubeSimple.stl"),
 			//new Optic("Shutter", new Element[] {
-				new STLMesh(inPath + "/mirrorBlockClosed-simplified.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-1.1.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-2.1.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-3.2.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-4.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-5.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-6.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-7.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-8.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-9.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-3.1.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-1.2.stl"),
+				new STLMesh(inPath + "/mirrorBlockClosed-2.2.stl"),
+				
 				new STLMesh(inPath + "/protectionCollar1.stl"),
 				new STLMesh(inPath + "/protectionCollar2.stl"),
 				new STLMesh(inPath + "/shutterDriveMech1.stl"),
 				new STLMesh(inPath + "/shutterDriveMech2.stl"),
 				new STLMesh(inPath + "/shutterDriveMech3.stl"),
-				new STLMesh(inPath + "/strap1.stl"),
-				new STLMesh(inPath + "/strap2.stl"),
-				new STLMesh(inPath + "/strapCover1.stl"),
-				new STLMesh(inPath + "/strapCover2.stl"),
+				new STLMesh(inPath + "/strap1m.stl"),
+				new STLMesh(inPath + "/strap2m.stl"),
+				new STLMesh(inPath + "/strapCover1m.stl"),
+				new STLMesh(inPath + "/strapCover2m.stl"),
 			//}),
 	};
 	
@@ -154,7 +169,7 @@ public class RadiationExposureAEM21 {
 	
 	
 	
-	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure30-all-1000000-portShieldBack/";
+	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure30-all-1000000-portShield004/";
 	
 	/** Power emitted from radiating surface, Watts per square meter per Steradian */
 	public static double powerAngularDensity = 100e3 / 2 / Math.PI;  //100/2.pi kW m^-2 SR^-1
@@ -256,7 +271,7 @@ public class RadiationExposureAEM21 {
 				System.out.println();
 
 			if((iS % 100) == 0) {
-				dumpPowers(System.out, totalPower, nHitTotal, dA, ((double)iS)/nRays);
+				dumpPowers(totalPower, nHitTotal, dA, ((double)iS)/nRays);
 				System.out.println("VRML: "+ nRaysDrawn + " / " + nRaysToDraw);
 			}
 			
@@ -268,18 +283,22 @@ public class RadiationExposureAEM21 {
 			
 		}
 		
+		dumpPowers(totalPower, nHitTotal, dA, 1.0);
+		
+		if(vrmlOut != null)
+			vrmlOut.destroy();
+	}
+	
+	private static void dumpPowers(double[] totalPower, int[] nHitTotal, double dA, double fracCollected) {
 		try {
 			PrintStream textOut = new PrintStream(outPath + "/powers.txt");
 			
-			dumpPowers(textOut, totalPower, nHitTotal, dA, 1.0);
-			dumpPowers(System.out, totalPower, nHitTotal, dA, 1.0);
+			dumpPowers(textOut, totalPower, nHitTotal, dA, fracCollected);
+			dumpPowers(System.out, totalPower, nHitTotal, dA, fracCollected);
 			
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
-		
-		if(vrmlOut != null)
-			vrmlOut.destroy();
 	}
 
 	private static void dumpPowers(PrintStream textOut, double[] totalPower, int[] nHitTotal, double dA, double fracCollected) {
