@@ -48,37 +48,38 @@ public class RadiationExposureAET21_OP2 {
 	public static Element[] testElements = {
 			new STLMesh(inPath + "/cxrs-coverL1.stl"),
 			new STLMesh(inPath + "/cxrs-L1.stl"),
-			new STLMesh(inPath + "/endInner.stl"),
-			new STLMesh(inPath + "/frontPlateInner.stl"),
 			new STLMesh(inPath + "/hst-L1.stl"),
 			new STLMesh(inPath + "/hst-M1.stl"),
 			new STLMesh(inPath + "/hst-M2.stl"),
 			new STLMesh(inPath + "/hst-supportM1.stl"),
-			new STLMesh(inPath + "/innerEndplate.stl"),
-			new STLMesh(inPath + "/tube.stl"),
-
-			new STLMesh(inPath + "/graphiteBottom.stl"),
-			new STLMesh(inPath + "/graphiteTop.stl"),	
 			
+						
 			new STLMesh(inPath + "/shutterClosed.stl"),
 			
 	};
 
 	public static Element[] thingsInWay = {	
-			new STLMesh(inPath + "/panel-aet21-1.stl"),
-			new STLMesh(inPath + "/panel-aet21-2.stl"),
-			new STLMesh(inPath + "/port-aet21.stl"),
-			new STLMesh(inPath + "/portLiner-aet21-simple.stl"),
-			new STLMesh(inPath + "/shield-aet21.stl"),
-			new STLMesh(inPath + "/baffle-aet21.stl"),
-			new STLMesh(inPath + "/closure-aet21.stl"),		
+			//new STLMesh(inPath + "/panel-aet21-1.stl"),
+			//new STLMesh(inPath + "/panel-aet21-2.stl"),
+			//new STLMesh(inPath + "/port-aet21.stl"),
+			//new STLMesh(inPath + "/portLiner-aet21-simple.stl"),
+			//new STLMesh(inPath + "/shield-aet21.stl"),
+			//new STLMesh(inPath + "/baffle-aet21.stl"),
+			//new STLMesh(inPath + "/closure-aet21.stl"),		
 			
-			
+			new STLMesh(inPath + "/endInner.stl"),
+			new STLMesh(inPath + "/frontPlateInner.stl"),
+			new STLMesh(inPath + "/innerEndplate.stl"),
+			new STLMesh(inPath + "/tube.stl"),
+
+			new STLMesh(inPath + "/graphiteBottom.stl"),
+			new STLMesh(inPath + "/graphiteTop.stl"),	
+
 	};
 	
 	public static Optic testElementsOptic = new Optic("testElements", testElements);
 	
-	public static Element tracingTarget = testElementsOptic;
+	public static Element tracingTarget = sys.shutterHeaterTarget;
 	
 	
 	//private static int nX = 70, nY= 70;
@@ -95,10 +96,11 @@ public class RadiationExposureAET21_OP2 {
 	
 	
 	
-	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/aet21/radExposure1-tubeEndClosed/";
+	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/aet21/radExposure1-heater-targAll/";
 	
 	/** Power emitted from radiating surface, Watts per square meter per Steradian */
-	public static double powerAngularDensity = 100e3 / 2 / Math.PI;  //100/2.pi kW m^-2 SR^-1
+	//public static double powerAngularDensity = 100e3 / 2 / Math.PI;  //100/2.pi kW m^-2 SR^-1
+	public static double powerAngularDensity = sys.shutterHeaterPowerFlux / 2 / Math.PI;  //300W from shutter heater
 	
 	public static void main(String[] args) { 
 		System.out.println(outPath);
@@ -107,6 +109,7 @@ public class RadiationExposureAET21_OP2 {
 		sys.mirror2.setInterface(Absorber.ideal());
 		
 		sys.addElement(sys.radSurface);
+		sys.addElement(sys.shutterHeaterTarget);
 		
 		//sys.entryAperture.setInterface(NullInterface.ideal());
 		for(Surface s : sys.getSurfacesAll())
@@ -166,7 +169,6 @@ public class RadiationExposureAET21_OP2 {
 												Util.mul(sys.radSurface.getRight(), x),
 												Util.mul(sys.radSurface.getUp(), y) ));
 				
-				
 				double solidAngle = Double.NaN;				
 			
 
@@ -178,7 +180,7 @@ public class RadiationExposureAET21_OP2 {
 				ray.dir = Util.reNorm(ray.dir);
 						
 				//ray.dir = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget);
-				ray.wavelength = 500e-9; //irrelevant
+				ray.wavelength = sys.designWavelenth;
 				ray.E0 = new double[][]{{1,0,0,0}};
 				ray.up = Util.createPerp(ray.dir);
 						

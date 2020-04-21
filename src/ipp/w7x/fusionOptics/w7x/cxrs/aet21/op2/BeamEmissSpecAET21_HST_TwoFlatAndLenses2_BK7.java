@@ -254,9 +254,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public Cylinder rod = null;
 	
 	/** Plasma radiating surface for heat-load analysis */
-	//public double[] radSurfaceCentre = { -0.94729159,  5.92522396, -0.07443784 };	
-	//public double[] radSurfaceNormal = { -0.11966241,  0.90781853,  0.40192837  };
-	
+	/*
 	public double[] radSurfaceCentre = { -0.6759374 ,  5.97114095, -0.09727827 };	
 	public double[] radSurfaceNormal = { -0.12153662,  0.95077941,  0.28503923  };
 	
@@ -268,7 +266,30 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double radSurfHeight = 0.900;
 
 	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 
+	*/
+	
+	//heating element for HST test
+	public double shutterHeaterCentre[] = { -0.8896515502929687, 6.21238232421875, -0.0716107177734375 }; 
+	public double shutterHeaterNormal[] = Util.reNorm(new double[] { -0.51348896,  0.8281041 , -0.22488371 }); 
+	public double shutterHeaterUp[] =  Util.reNorm(new double[] { 0.10244399, 0.31902389, 0.94219371 }); 
+	public double shutterHeaterWidth = 0.035;
+	public double shutterHeaterHeight = 0.025; 
 
+	public double shutterHeaterPower = 300;
+	public double shutterHeaterPowerFlux = shutterHeaterPower / (shutterHeaterWidth * shutterHeaterHeight);
+	
+	public Square shutterHeater = new Square("shutterHeater", shutterHeaterCentre, shutterHeaterNormal, shutterHeaterUp, shutterHeaterHeight, shutterHeaterWidth, NullInterface.ideal()); 
+	
+	public Square radSurface = shutterHeater;
+	
+	public double radSurfaceCentre[] = shutterHeaterCentre;
+	public double radSurfWidth = shutterHeaterWidth; //for testing closed shutter
+	public double radSurfHeight = shutterHeaterHeight;
+	
+	public double shutterHeaterTargetDist = 0.030;
+	public double shutterHeaterTargetDiameter = 0.100;
+	public double shutterHeaterTargetCentre[] = Util.plus(shutterHeaterCentre, Util.mul(shutterHeaterNormal, shutterHeaterTargetDist));
+	public Disc shutterHeaterTarget = new Disc("shutterHeaterTarget", shutterHeaterTargetCentre, shutterHeaterNormal, shutterHeaterTargetDiameter/2, NullInterface.ideal()); 
 	
 	public int beamIdx[] = { -1, -2, -3  };
 	//public double[] channelR = OneLiners.linSpace(5.38, 5.88, nFibres);
