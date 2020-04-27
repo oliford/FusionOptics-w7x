@@ -142,6 +142,10 @@ public class RadiationExposureAEM21 {
 				new STLMesh(inPath + "/strap2m.stl"),
 				new STLMesh(inPath + "/strapCover1m.stl"),
 				new STLMesh(inPath + "/strapCover2m.stl"),
+
+				new STLMesh(inPath + "/MountingBracket.1.stl"),
+				new STLMesh(inPath + "/MountingBracket.2.stl"),
+				new STLMesh(inPath + "/MountingBracket.3.stl"),
 			//}),
 	};
 	
@@ -169,7 +173,7 @@ public class RadiationExposureAEM21 {
 	
 	
 	
-	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure30-all-1000000-portShield004/";
+	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure30-all-1000000-portShield004-mountingBracket/";
 	
 	/** Power emitted from radiating surface, Watts per square meter per Steradian */
 	public static double powerAngularDensity = 100e3 / 2 / Math.PI;  //100/2.pi kW m^-2 SR^-1
