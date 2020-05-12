@@ -146,7 +146,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double windowFromLens3 = 0.090;
 	public double windowDiameter = 0.038;
 	
-	public double lens4FocalLength = 0.020;
+	public double lens4FocalLength = 0.016;
 	public double lens4FromLens3 = 0.150;
 	
 	
@@ -225,7 +225,8 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	/*** Fibre plane ****/
 	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.0043; //25mm obj
 	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.010; //25mm obj
-	public double fibrePlaneFromLens4 = lens4FocalLength + 0.010; //20mm obj
+	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.010; //20mm obj
+	public double fibrePlaneFromLens4 = lens4FocalLength + 0.002; //16mm obj
 	public double fibrePlanePos[] = Util.plus(lens4CentrePos, Util.mul(lensNormal, fibrePlaneFromLens4));
 	public double fibrePlaneSize = 0.050;
 	
@@ -304,40 +305,40 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double[][] channelR = { 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
-			{ 5.06, 5.07, 5.08, 5.09, }, 
+			//{ 5.06, 5.07, 5.08, 5.09, }, 
 		}; 
 		public double[][][] fibreEndPos = { { 
-					{ -0.8994560994504602, 6.724898430284004, -0.26565969151874685 },
-					{ -0.893284400563162, 6.725395330681084, -0.26585322200435685 },
-					{ -0.8928141486178162, 6.724868870911248, -0.2675133729611159 },
-					{ -0.8982447461869874, 6.724014551896136, -0.26888889385651304 },
+					{ -0.8983385867229151, 6.720031117153394, -0.2643311419045835 },
+					{ -0.8935109068506887, 6.72040283940562, -0.26447805086864545 },
+					{ -0.8931427911105558, 6.719993543781674, -0.2657761902656337 },
+					{ -0.8973877316837462, 6.7193212510363525, -0.2668494936381046 },
 				}, { 
-					{ -0.8994564920516922, 6.724899112325649, -0.2656601169082632 },
-					{ -0.8932841057629289, 6.725394421683325, -0.2658531799648863 },
-					{ -0.8928141648806652, 6.724867650095476, -0.26751269290803015 },
-					{ -0.8982446529594905, 6.724013769024737, -0.2688888883852396 },
-				}, { 
-					{ -0.8926489791953359, 6.725573476546365, -0.26513755666026617 },
-					{ -0.8939525687055373, 6.72554478024354, -0.2652935143809435 },
-					{ -0.8946621484852063, 6.725502699949965, -0.26539065936411826 },
-					{ -0.896151744041317, 6.725344688104886, -0.2656291988459297 },
-				}, 	}; 
+					{ -0.8983388186474494, 6.7200332749908425, -0.2643315623422543 },
+					{ -0.8935112144434686, 6.7204047553749575, -0.2644787563640594 },
+					{ -0.8931430575364232, 6.719995344180738, -0.26577720287481466 },
+					{ -0.8973878289708143, 6.719324012792593, -0.2668505115301608 },
+				},/* { 
+					{ -0.8930123193837213, 6.720567627187239, -0.2639249715148769 },
+					{ -0.8940336958306863, 6.720518036005904, -0.2640403646239301 },
+					{ -0.8945875795108603, 6.720471905062947, -0.2641132414058427 },
+					{ -0.8957502807731105, 6.720343192192287, -0.26429776553193973 },
+				}, */	}; 
 		public double[][][] fibreEndNorm = { { 
-				{ 0.18533106546105735, -0.9443993784489058, 0.2715919920770671 },
-				{ -0.012403353205852796, -0.9599465326642767, 0.27990857660151053 },
-				{ -0.024470481777083875, -0.9438064700201864, 0.32959147845421055 },
-				{ 0.13874971949560344, -0.9175918293975458, 0.3725234891423046 },
+				{ 0.1757394639965727, -0.945548062438551, 0.2739607680177933 },
+				{ -0.003079346099739016, -0.9593754550551475, 0.28211567461827886 },
+				{ -0.019523076108710062, -0.9441559753571445, 0.32891996548803903 },
+				{ 0.13583317401848546, -0.9178106537579502, 0.37305891315510464 },
 				}, { 
-				{ 0.18090125858274775, -0.9463551026078127, 0.2677438223588623 },
-				{ -0.012453004720809298, -0.9604897619011781, 0.27803658024879 },
-				{ -0.026857247204950137, -0.9429288578553399, 0.33190941127994017 },
-				{ 0.14413622176935642, -0.9179954805726093, 0.36947130771186976 },
-				}, { 
-				{ -0.03966658663687273, -0.9661743526935894, 0.25482088238938155 },
-				{ 0.005507201609540825, -0.9648328444085874, 0.26280649360483116 },
-				{ 0.037283054772831045, -0.9609647006549942, 0.2741474382916307 },
-				{ 0.07529949466123169, -0.9571689973790253, 0.2795666227577869 },
-				}, 	};
+				{ 0.17404219401625728, -0.9450006704659665, 0.2769170408640126 },
+				{ 0.003073035489538602, -0.9586220454691418, 0.2846652953793956 },
+				{ -0.019384078112535397, -0.9478246931330538, 0.3182021505316385 },
+				{ 0.13426461051401653, -0.9207725678092548, 0.3662661501333024 },
+				}, /*{ 
+				{ -0.026107921339700364, -0.965928923377208, 0.2574872645912177 },
+				{ 0.013789732289115656, -0.9627124688374312, 0.27017502776595126 },
+				{ 0.04141278526662196, -0.9618066886413682, 0.2705787776252731 },
+				{ 0.07456288911768642, -0.9575729700987247, 0.278378128635729 },
+				}, 	*/};
 
 	
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7() {
@@ -366,11 +367,12 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		
 		//defocus HST fibres
 
+		//+0 is focus on beam dumps,
+		// +5mm is focus on M2,
+		//-5mm focuses near L4 and misses lots of mirrors
+		double fibreDefocus = 0.003;
 		for(int j=0; j < channelR[0].length; j++) {
-			//+0 is focus on beam dumps,
-			// +5mm is focus on M2,
-			//-5mm focuses near L4 and misses lots of mirrors
-			fibreEndPos[0][j] = Util.plus(fibreEndPos[0][j], Util.mul(fibrePlaneNormal, -0.005)); //refocus
+			fibreEndPos[0][j] = Util.plus(fibreEndPos[0][j], Util.mul(fibrePlaneNormal, fibreDefocus)); //refocus
 		}
 		
 		// all fibres parallel to port axis 
@@ -382,8 +384,9 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	
 		//make neightbour fibres for scientific measurements
 		for(int j=0; j < channelR[0].length; j++) {
-			fibreEndPos[1][j] = Util.plus(fibreEndPos[0][j], Util.mul(fibresXVec, 0.000500));
-			fibreEndNorm[1][j] = fibreEndNorm[0][j].clone();
+			int k = (j + 1) % channelR[0].length; //offset colours
+			fibreEndPos[1][k] = Util.plus(fibreEndPos[0][j], Util.mul(fibresXVec, 0.000500));
+			fibreEndNorm[1][k] = fibreEndNorm[0][j].clone();
 		}
 		
 		/*// Shift fibres +/- final lens
@@ -427,6 +430,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		
 		
 		setupFibrePlanes();
+		
 	}
 
 	private void setupFibrePlanes() {
@@ -448,7 +452,44 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		}
 	}
 	
+	public void dumpPositionsForLab() {
+		//positions relative to objective, using port normal and M1-M2 as axes
 		
+		double x[] = portAxis;
+		double yIsh[] = Util.reNorm(Util.minus(mirror2CentrePosPhys, mirror1CentrePos));
+		double z[] = Util.reNorm(Util.cross(x, yIsh));
+		double y[] = Util.reNorm(Util.cross(z, x));
+		
+		
+		double p0[] = lens3CentrePos;
+		
+		
+		dumpPos("FibrePlane", fibrePlanePos, p0, x,y,z);		
+		dumpPos("Obj4", lens4CentrePos, p0, x,y,z);	
+		
+		dumpPos("Window", windowCentrePos, p0, x,y,z);	
+		
+		dumpPos("Lens1", lens1CentrePos, p0, x,y,z);		
+		dumpPos("Lens2", lens2CentrePos, p0, x,y,z);		
+		dumpPos("Lens3", lens3CentrePos, p0, x,y,z);		
+		
+		dumpPos("Mirror2", mirror2CentrePosPhys, p0, x,y,z);
+		dumpPos("Mirror1", mirror1CentrePos, p0, x,y,z);
+		
+		dumpPos("Aperture", entryAperturePos, p0, x,y,z);
+		
+		
+	}
+		
+
+	private void dumpPos(String name, double[] p, double[] p0, double[] x, double[] y, double[] z) {
+		double dp[] = Util.minus(p, p0);
+		
+		System.out.println(name + ": x=" + (int)(Util.dot(dp, x)*1e3)
+								+ "mm, y=" + (int)(Util.dot(dp, y)*1e3)
+								+ "mm, z=" + (int)(Util.dot(dp, z)*1e3)
+								+ "mm");
+	}
 
 	public void dumpInfoForDesigner() {
 		

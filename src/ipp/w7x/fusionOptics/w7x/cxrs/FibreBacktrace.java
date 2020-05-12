@@ -71,9 +71,9 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7();	
-	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7();
+	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7();
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -109,7 +109,7 @@ public class FibreBacktrace {
 
 	public static String writeWRLForDesigner = null; //"20190910";
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm" + "-focusM2";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
@@ -117,6 +117,8 @@ public class FibreBacktrace {
 		makeFibreCyldSTL(); //		System.exit(0);
 		
 		System.out.println(outPath);
+		
+		sys.dumpPositionsForLab();
 		
 		STLDrawer stlOut = new STLDrawer(outPath + "/fibresTrace-" +sys.getDesignName() + ((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner) : "") + ".stl");
 		stlOut.drawOptic(sys);
@@ -137,7 +139,7 @@ public class FibreBacktrace {
 		double col[][] = ColorMaps.jet(maxChans);
 		
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
-		HitsCollector windowHits = new HitsCollector(outPath + "/windowHits.bin", sys.entryWindowFront);
+		//HitsCollector windowHits = new HitsCollector(outPath + "/windowHits.bin", sys.entryWindowFront);
 
 		BinaryMatrixWriter fibreInfoOut = new BinaryMatrixWriter(outPath + "/fibreInfo.bin", 15); 
 				
@@ -210,7 +212,7 @@ public class FibreBacktrace {
 							
 					Tracer.trace(sys, ray, 100, 0, false);
 					
-					ray.processIntersections(null, intensityInfo, windowHits);
+					//ray.processIntersections(null, intensityInfo, windowHits);
 	
 					
 					//vrmlOut.drawRay(ray, col[iP]);
@@ -323,7 +325,7 @@ public class FibreBacktrace {
 			}
 		}
 		
-		windowHits.destroy();
+		//windowHits.destroy();
 		
 		fibreInfoOut.close();
 				

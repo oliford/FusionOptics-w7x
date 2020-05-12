@@ -128,7 +128,7 @@ public class LightAssessmentW7X {
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 20000;
+	public final static int nAttempts = 5000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
