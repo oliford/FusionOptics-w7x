@@ -64,8 +64,6 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		{ 0.1455321044921875, 4.9178349609375, 0.41085964965820315 },
 		{ 0.1492540283203125, 4.95760693359375, 0.27083691406250002},
 		{ -0.17423611450195312, 4.73173291015625, 0.174153076171875 }
-		
-		
 	};
 	
 	public double hhfTiles[][] = {
@@ -146,7 +144,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double windowFromLens3 = 0.090;
 	public double windowDiameter = 0.038;
 	
-	public double lens4FocalLength = 0.016;
+	public double lens4FocalLength = 0.025;
 	public double lens4FromLens3 = 0.150;
 	
 	
@@ -224,9 +222,9 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 
 	/*** Fibre plane ****/
 	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.0043; //25mm obj
-	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.010; //25mm obj
+	public double fibrePlaneFromLens4 = lens4FocalLength + 0.000; //25mm obj
 	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.010; //20mm obj
-	public double fibrePlaneFromLens4 = lens4FocalLength + 0.002; //16mm obj
+	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.002; //16mm obj
 	public double fibrePlanePos[] = Util.plus(lens4CentrePos, Util.mul(lensNormal, fibrePlaneFromLens4));
 	public double fibrePlaneSize = 0.050;
 	
@@ -301,11 +299,10 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 
 	public Square fibrePlanes[][] = {{
 	}};
-	
+	/*//16mm
 	public double[][] channelR = { 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
-			//{ 5.06, 5.07, 5.08, 5.09, }, 
 		}; 
 		public double[][][] fibreEndPos = { { 
 					{ -0.8983385867229151, 6.720031117153394, -0.2643311419045835 },
@@ -317,12 +314,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 					{ -0.8935112144434686, 6.7204047553749575, -0.2644787563640594 },
 					{ -0.8931430575364232, 6.719995344180738, -0.26577720287481466 },
 					{ -0.8973878289708143, 6.719324012792593, -0.2668505115301608 },
-				},/* { 
-					{ -0.8930123193837213, 6.720567627187239, -0.2639249715148769 },
-					{ -0.8940336958306863, 6.720518036005904, -0.2640403646239301 },
-					{ -0.8945875795108603, 6.720471905062947, -0.2641132414058427 },
-					{ -0.8957502807731105, 6.720343192192287, -0.26429776553193973 },
-				}, */	}; 
+				}	}; 
 		public double[][][] fibreEndNorm = { { 
 				{ 0.1757394639965727, -0.945548062438551, 0.2739607680177933 },
 				{ -0.003079346099739016, -0.9593754550551475, 0.28211567461827886 },
@@ -333,13 +325,35 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 				{ 0.003073035489538602, -0.9586220454691418, 0.2846652953793956 },
 				{ -0.019384078112535397, -0.9478246931330538, 0.3182021505316385 },
 				{ 0.13426461051401653, -0.9207725678092548, 0.3662661501333024 },
-				}, /*{ 
-				{ -0.026107921339700364, -0.965928923377208, 0.2574872645912177 },
-				{ 0.013789732289115656, -0.9627124688374312, 0.27017502776595126 },
-				{ 0.04141278526662196, -0.9618066886413682, 0.2705787776252731 },
-				{ 0.07456288911768642, -0.9575729700987247, 0.278378128635729 },
-				}, 	*/};
-
+				}	};
+		//*/
+	//25mm
+	public double[][] channelR = { 
+			{ 5.06, 5.07, 5.08, 5.09, }, 
+			{ 5.06, 5.07, 5.08, 5.09, }, 
+		}; 
+		public double[][][] fibreEndPos = { { 
+					{ -0.9009305233119985, 6.731366336378546, -0.26742848649473516 },
+					{ -0.8929907295215366, 6.7320439835283095, -0.267688855215448 },
+					{ -0.8923858859390571, 6.731352225656039, -0.2698219517809947 },
+					{ -0.8993791955218674, 6.730264250358019, -0.27159830331056445 },
+				}, { 
+					{ -0.9009307372765338, 6.731368412536851, -0.267429551536691 },
+					{ -0.8929906987905285, 6.732041916264743, -0.2676879011411546 },
+					{ -0.892386285029392, 6.731353300026105, -0.269823240821865 },
+					{ -0.8993799679373151, 6.730270105601281, -0.271599685494157 },
+				}	}; 
+		public double[][][] fibreEndNorm = { { 
+				{ 0.1900531683118855, -0.9431553995951937, 0.27264938186074195 },
+				{ -0.013092762190143456, -0.961021905718204, 0.27616204718965937 },
+				{ -0.0352033756959906, -0.943052386907028, 0.33077623537455675 },
+				{ 0.1480053971143777, -0.9142891681988752, 0.37705400056122507 },
+				}, { 
+				{ 0.18688873353262003, -0.9436267618431343, 0.2732052993849384 },
+				{ -0.01523532220794472, -0.9598150850627735, 0.2802193559395227 },
+				{ -0.03326130150560207, -0.9457532133205677, 0.3231788132226094 },
+				{ 0.14016007633829594, -0.9161359100327776, 0.37556643533369394 },
+				} 	};
 	
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7() {
 		super("beamSpec-aet21-op2");
@@ -368,9 +382,10 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		//defocus HST fibres
 
 		//+0 is focus on beam dumps,
-		// +5mm is focus on M2,
+		// +3-5mm is focus on M2,
 		//-5mm focuses near L4 and misses lots of mirrors
-		double fibreDefocus = 0.003;
+		//double fibreDefocus = 0.003; //16mm
+		double fibreDefocus = 0.005; //25mm
 		for(int j=0; j < channelR[0].length; j++) {
 			fibreEndPos[0][j] = Util.plus(fibreEndPos[0][j], Util.mul(fibrePlaneNormal, fibreDefocus)); //refocus
 		}
@@ -519,6 +534,6 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		System.out.println(String.format("lens1,2,3 normal: (%5.3f, %5.3f, %5.3f)", c[0], c[1], c[2]));
 	}
 	
-	public String getDesignName() { return "aet21-hst-twoFlat";	}
+	public String getDesignName() { return "aet21-hst-twoFlat-25mm";	}
 	
 }

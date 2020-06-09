@@ -118,7 +118,7 @@ public class FibreBacktrace {
 		
 		System.out.println(outPath);
 		
-		sys.dumpPositionsForLab();
+		//sys.dumpPositionsForLab();
 		
 		STLDrawer stlOut = new STLDrawer(outPath + "/fibresTrace-" +sys.getDesignName() + ((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner) : "") + ".stl");
 		stlOut.drawOptic(sys);
