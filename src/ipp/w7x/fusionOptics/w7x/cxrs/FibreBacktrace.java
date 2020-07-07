@@ -274,9 +274,9 @@ public class FibreBacktrace {
 				System.out.println("P=" + iB + "." + iP + "(R=" + R + ", fwhmR = " + (fwhmR*1e3) + " mm):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 
-				for(int j=0;j < 3; j++){				
+				for(Thing j : Thing.values())
 					outputInfo(System.out, startPoints, closestApproachPos, iB, iP, j, false);
-				}
+				
 				
 				intensityInfo.reset();
 			}
@@ -284,7 +284,7 @@ public class FibreBacktrace {
 		
 		PrintStream textOut = new PrintStream(outPath + "/info.txt");
 		//spit out build commands and LOS definitions in blocks
-		for(int j=0;j < 3; j++){
+		for(Thing j : Thing.values()){
 			for(int iB=0; iB < sys.channelR.length; iB++){
 				for(int iP=0; iP < sys.channelR[iB].length; iP++){					
 					outputInfo(System.out, startPoints, closestApproachPos, iB, iP, j, false);	
@@ -302,7 +302,7 @@ public class FibreBacktrace {
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
 				boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
-				outputInfo(jsonOut, startPoints, closestApproachPos, iB, iP, 2, isLast);				
+				outputInfo(jsonOut, startPoints, closestApproachPos, iB, iP, Thing.JSON_LOS, isLast);				
 			}
 		}
 		jsonOut.println("]}");
@@ -336,7 +336,8 @@ public class FibreBacktrace {
 		vrmlOut.destroy();
 	}
 		
-	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, int thing, boolean supressComma){
+	private static enum Thing { FreeCADHitPos, FreeCADLOS, JSON_LOS };
+	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, Thing thing, boolean supressComma){
 
 		double extendLOSCylds = 0.400; // extend 200mm in each direction
 
@@ -367,18 +368,18 @@ public class FibreBacktrace {
 		double p[] = Util.minus(startPoints[iB][iP], Util.mul(u, extendLOSCylds/2));
 		
 		switch(thing){
-			case 0:		
+			case FreeCADHitPos:		
 				stream.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iB][iP][0]*1e3+","+hitPoints[iB][iP][1]*1e3+","+hitPoints[iB][iP][2]*1e3 + ")));"
 						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"beamApproach_"+sys.getDesignName()+"_"+chanName+"\";");
 				break;
 				
-			case 1:
+			case FreeCADLOS:
 				stream.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+(losLen + extendLOSCylds)*1e3 +","										
 						+"FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3+"), "
 						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+chanName+"\";");
 				break;
 				
-			case 2:
+			case JSON_LOS:
 				stream.print("{ \"id\" : \"" + chanName
 						+ "\", \"start\":[ " + String.format("%7.5g", startPoints[iB][iP][0]) + ", " + String.format("%7.5g", startPoints[iB][iP][1]) + ", " + String.format("%7.5g", startPoints[iB][iP][2]) + "]"
 						+ ", \"uVec\":[ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "]");
