@@ -6,8 +6,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 
+import algorithmrepository.Algorithms;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.drawing.SVGRayDrawing;
@@ -38,10 +40,10 @@ public class FibresBacktrace {
 	final static int nAttempts = 100;											// number of rays from every source
 	final static double wavelen = 850e-9;
 	
-	static AEN31AsDesignInPlace lens = new AEN31AsDesignInPlace();	
+	static AEN31AsDesignInPlace sys = new AEN31AsDesignInPlace();	
 	
 	
-	static double f[][]  = lens.bremstrahlungFibres; //new double[][]{ lens.bremstrahlungFibres[0] };
+	static double f[][]  = sys.bremstrahlungFibres; //new double[][]{ lens.bremstrahlungFibres[0] };
 	//final static String elementsFileName = new String("/home/andrea/Downloads/component_389.elements");
 	//final static String nodesFileName = new String("/home/andrea/Downloads/component_389.nodes");
 
@@ -55,11 +57,11 @@ public class FibresBacktrace {
 		
 		//Optic wall = new Optic("wall");
 		//MyUtil.AddTriangles(wall, elementsFileName, nodesFileName);
-		Optic all = new Optic("all", new Element[]{ lens, imgPlane, /*wall*/ });	// build the optical system
+		Optic all = new Optic("all", new Element[]{ sys, imgPlane, /*wall*/ });	// build the optical system
 		
 				
 		Square groundPlane = new Square("groundPlane",
-				Util.plus(lens.frontLensFront, Util.mul(lens.opticAxis, -3.5)),
+				Util.plus(sys.frontLensFront, Util.mul(sys.opticAxis, -3.5)),
 				new double[]{ 0,0,1 }, new double[]{ 1,0,0 }, 5, 5, Absorber.ideal());
 		
 		all.addElement(groundPlane);
@@ -79,9 +81,9 @@ public class FibresBacktrace {
 			int nHit = 0;
 			for(int iR=0; iR < nAttempts; iR++){
 				//generate ray from fibre (using it's direction and NA)
-				double nV[] = lens.fibrePlaneNorm;
-				double aV[] = lens.fibrePlaneUp;
-				double bV[] = lens.fibrePlaneRight;
+				double nV[] = sys.fibrePlaneNorm;
+				double aV[] = sys.fibrePlaneUp;
+				double bV[] = sys.fibrePlaneRight;
 				
 				double x, y, rMax = fibreEndDiameter / 2;
 				do{
@@ -134,4 +136,5 @@ public class FibresBacktrace {
 		vrmlOut.destroy();
 		
 	}
+	
 }
