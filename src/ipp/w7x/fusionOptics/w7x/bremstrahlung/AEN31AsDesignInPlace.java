@@ -56,6 +56,8 @@ public class AEN31AsDesignInPlace extends AEM31Design {
 	
 	//final static double dir[] = Util.reNorm(Util.minus(p1, p2));
 	public  final static double opticAxis[] = { -0.58785042,  0.4946133 ,  0.64014807 };
+
+	public static final String lightPathsSystemName = "FIXME_QSZ_AEN31";
 	
 	public double fibrePlaneNorm[], fibrePlaneRight[], fibrePlaneUp[];
 	
@@ -85,4 +87,6 @@ public class AEN31AsDesignInPlace extends AEM31Design {
 		System.arraycopy(bremstrahlungFibres, 0, allFibres, edgeTSFibres.length, bremstrahlungFibres.length);
 		
 	}
+	
+	public String getDesignName() { return "aen31-asDesign-inPlace";	}
 }
