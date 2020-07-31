@@ -56,8 +56,8 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();

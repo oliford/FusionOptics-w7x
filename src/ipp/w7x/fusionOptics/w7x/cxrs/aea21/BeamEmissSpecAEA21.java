@@ -78,10 +78,10 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public Square mirror = new Square("mirror", mirrorCentrePos, mirrorNormal, mirrorX, mirrorHeight, mirrorWidth, Reflector.ideal());
 	
 	public final String backgroundSTLFiles[] = {
-			"/home/oliford/rzg/w7x/cad/aea21/bg-targetting/baffle-m3.off-aea21-cut.stl",
-			"/home/oliford/rzg/w7x/cad/aea21/bg-targetting/panel-m21.off-aea21-cut.stl",
-			"/home/oliford/rzg/w7x/cad/aea21/bg-targetting/panel-m30.off-aea21-cut.stl",
-			"/home/oliford/rzg/w7x/cad/aea21/bg-targetting/shield-m3.off-aea21-cut.stl",
+			"/work/cad/aea21/bg-targetting/baffle-m3.off-aea21-cut.stl",
+			"/work/cad/aea21/bg-targetting/panel-m21.off-aea21-cut.stl",
+			"/work/cad/aea21/bg-targetting/panel-m30.off-aea21-cut.stl",
+			"/work/cad/aea21/bg-targetting/shield-m3.off-aea21-cut.stl",
 	};
 		
 	//public NodesAndElementsMesh shieldTiles = new2 NodesAndElementsMesh("shield", "/work/ipp/w7x/cad/shield-m2", mirrorPos, 0.150);
