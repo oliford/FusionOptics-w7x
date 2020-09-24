@@ -62,7 +62,7 @@ import fusionOptics.types.Surface;
 
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class FibreBacktrace {
-	public String lightPathsSystemName = "AET21U";
+	public String lightPathsSystemName = "AEA21-LED";
 	
 	public static double losCyldRadius = 0.005;
 	
@@ -105,11 +105,11 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 1000;
+	public final static int nAttempts = 10000;
 
 	public static String writeWRLForDesigner = null; //"20190910";
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "-LED/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	

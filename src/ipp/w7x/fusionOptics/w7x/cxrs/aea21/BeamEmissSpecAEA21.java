@@ -2,6 +2,10 @@ package ipp.w7x.fusionOptics.w7x.cxrs.aea21;
 
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 import algorithmrepository.Algorithms;
 import net.jafama.FastMath;
 import fusionOptics.Util;
@@ -523,6 +527,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 		//addElement(shieldTiles);
 		
 		setupFibrePositions();
+		makeLampFibre();
 		setupFibrePlanes();
 		
 		/*
@@ -728,6 +733,35 @@ public class BeamEmissSpecAEA21 extends Optic {
 	
 		}
 	}
+	
+	/** Adds an effetive 'fibre' for a LED light source near the head */
+	private void makeLampFibre() {
+		int n = channelR.length;		
+		channelR = new double[][] { { 5.5 }};
+		beamIdx = new int[] { W7xNBI.BEAM_BOXAVG };
+		lightPathRowName = new String[] {  "LED" };
+		fibreEndPos = Arrays.copyOf(fibreEndPos, n + 1);
+		fibreEndNorm = Arrays.copyOf(fibreEndNorm, n + 1);
+		
+		int i = fibreEndPos[0].length / 2;
+		
+		double x[] = Util.minus(fibreEndPos[0][i], fibreEndPos[0][i-1]);
+		double y[] = Util.reNorm(Util.cross(x, portNormal));
+		
+		fibreEndPos = new double[][][] {{ 
+			Util.plus(
+					Util.plus(fibreEndPos[0][i], Util.mul(portNormal,-0.040)),
+					Util.mul(y, 0.015)
+					)
+		}};
+		fibreEndNorm = new double[][][] {{
+			fibreEndNorm[0][i].clone()
+		}};
+		fibreNA = 0.6;
+		fibreEndDiameter = 0.019;
+			
+	}
+	
 	
 	private void setupFibrePlanes() {
 		int nBeams = channelR.length;
