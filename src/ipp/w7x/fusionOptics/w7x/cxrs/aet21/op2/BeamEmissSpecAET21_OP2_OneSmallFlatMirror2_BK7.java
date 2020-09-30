@@ -55,6 +55,9 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	public double frontDiscRadius = Util.length(Util.minus(baffelPoint, frontDiscCentre));
 	
 	public Disc frontDisc = new Disc("frontDisc", frontDiscCentre, portAxis, frontDiscRadius, NullInterface.ideal());
+
+	public boolean rotateToAET20 = false;
+	public boolean adjustToLC3 = false;
 	
 	/***** Observation target ****/
 	public int targetBoxIdx = 1; //NI21
@@ -310,8 +313,18 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 			}
 		}
 	}
+
 	public BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7() {
+		this(false, false);
+	}
+	
+	public BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(boolean rotateToAET20, boolean adjustToLC3) {
 		super("beamSpec-aet21-op2");
+		this.rotateToAET20 = rotateToAET20;
+		this.adjustToLC3 = adjustToLC3;
+		
+		if(rotateToAET20)
+			lightPathsSystemName = "AET20";
 		
 		//addElement(frontDisc);
 		addElement(panelEdge);
@@ -334,6 +347,52 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 		dumpInfoForDesigner();
 		
 		setupFibrePositions();
+		
+		if(rotateToAET20) {
+			double[] rotAxis = { FastMath.cos(2*FastMath.PI / 5), FastMath.sin(2*FastMath.PI / 5), 0 }; 
+			double rotMat[][] = Algorithms.rotationMatrix(rotAxis, FastMath.PI);
+			/*for(int i=0; i < 3; i++)
+				rotMat[i] = OneLiners.mul(rotMat[i], 1000);
+			vrmlOut.setTransformationMatrix(rotMat);*/
+			rotate(new double[] {0, 0,0,}, rotMat);
+			beamPlane.rotate(new double[] {0, 0,0,}, rotMat);
+			
+			for(int i=0; i < fibreEndPos.length; i++) {
+				for(int j=0; j < fibreEndPos[i].length; j++) {
+					fibreEndPos[i][j] = Algorithms.rotateVector(rotMat, fibreEndPos[i][j]);
+					fibreEndNorm[i][j] = Algorithms.rotateVector(rotMat, fibreEndNorm[i][j]);
+				}				
+			}
+		}
+		
+		if(adjustToLC3) {
+			//these are adjustments for AET20 (not 21)
+			double[] flangeCenterL0 = { 5.552504638671875, 5.833919921875, 0.7168470764160156 };
+			double[] flangeNormalL0 = { -0.61593547, -0.72288279, -0.31315167 };
+			double[] flangeCenterL3 = { 5.5469423828125, 5.836634521484375, 0.7072148132324219 };
+			double[] flangeNormalL3 = { -0.6152949 , -0.72339879, -0.31321937 };
+			
+			double shift[] = Util.minus(flangeCenterL3, flangeCenterL0);
+			shift(shift);
+			
+			double rotVec[] = Util.cross(flangeNormalL3, flangeNormalL0);
+			double rotAng = FastMath.asin(Util.length(rotVec));
+			rotVec = Util.reNorm(rotVec);
+			double[][] rotMat = Algorithms.rotationMatrix(rotVec, rotAng);
+			
+			rotate(flangeCenterL3, rotMat);
+			
+			
+			for(int i=0; i < fibreEndPos.length; i++) {
+				for(int j=0; j < fibreEndPos[i].length; j++) {
+					fibreEndPos[i][j] = Util.plus(fibreEndPos[i][j], shift);
+					
+					fibreEndPos[i][j] = Util.plus(flangeCenterL3, Algorithms.rotateVector(rotMat, Util.minus(fibreEndPos[i][j], flangeCenterL3)));
+					fibreEndNorm[i][j] = Algorithms.rotateVector(rotMat, fibreEndNorm[i][j]);
+				}				
+			}
+		}
+		
 		setupFibrePlanes();
 		
 	}
@@ -363,7 +422,9 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 		
 	}
 
-
-	public String getDesignName() { return "aet21-op2-oneFlat";	}
-
+	public String getDesignName() { 
+		return (rotateToAET20 ? "aet20" : "aet21")
+				+ "-op2-oneFlat" 
+				+ (adjustToLC3 ? "-lc3" : "");
+	}
 }

@@ -59,6 +59,9 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	/***** Observation target ****/
 	public int targetBoxIdx = 1; //NI21
 	
+	public boolean rotateToAET20 = false;
+	public boolean adjustToLC3 = false;
+	
 	public double beamDumps[][] = {
 		{ -0.21141751098632813, 4.57866845703125, 0.4623721008300781 },
 		{ 0.1455321044921875, 4.9178349609375, 0.41085964965820315 },
@@ -197,17 +200,17 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public Medium lens1Medium = new Medium(new BK7());
 	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromRadiusOfCurvAndCentreThickness("lens", 
 			lens1CentrePos, lensNormal, lens1Diameter/2, lens1CurvatureRadius, lens1Thickness, lens1Medium, IsoIsoInterface.ideal());
-	public Iris lens1Iris = new Iris("lens1Iris", lens1CentrePos, lensNormal, lens1Diameter*0.7, lens1ClearAperture/2, null, null, Absorber.ideal());
+	public Iris lens1Iris = new Iris("lens1Iris", lens1CentrePos.clone(), lensNormal, lens1Diameter*0.7, lens1ClearAperture/2, null, null, Absorber.ideal());
 
 	public Medium lens2Medium = new Medium(new BK7());
 	public SimplePlanarConvexLens lens2 = SimplePlanarConvexLens.fromRadiusOfCurvAndCentreThickness("lens", 
 			lens2CentrePos, lensNormal, lens2Diameter/2, lens2CurvatureRadius, lens2Thickness, lens2Medium, IsoIsoInterface.ideal());
-	public Iris lens2Iris = new Iris("lens2Iris", lens2CentrePos, lensNormal, lens2Diameter*0.7, lens2ClearAperture/2, null, null, Absorber.ideal());
+	public Iris lens2Iris = new Iris("lens2Iris", lens2CentrePos.clone(), lensNormal, lens2Diameter*0.7, lens2ClearAperture/2, null, null, Absorber.ideal());
 
 	public Medium lens3Medium = new Medium(new BK7());
 	public SimplePlanarConvexLens lens3 = SimplePlanarConvexLens.fromRadiusOfCurvAndCentreThickness("lens", 
 			lens3CentrePos, lensNormal, lens3Diameter/2, lens3CurvatureRadius, lens3Thickness, lens3Medium, IsoIsoInterface.ideal());
-	public Iris lens3Iris = new Iris("lens3Iris", lens3CentrePos, lensNormal, lens3Diameter*0.7, lens3ClearAperture/2, null, null, Absorber.ideal());
+	public Iris lens3Iris = new Iris("lens3Iris", lens3CentrePos.clone(), lensNormal, lens3Diameter*0.7, lens3ClearAperture/2, null, null, Absorber.ideal());
 	
 	public Disc window = new Disc("window", windowCentrePos, lensNormal, windowDiameter/2, null, null, NullInterface.ideal());
 	
@@ -356,7 +359,15 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 				} 	};
 	
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7() {
+		this(false, false);
+	}
+
+	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(boolean rotateToAET20, boolean adjustToLC3) {
 		super("beamSpec-aet21-op2");
+		this.rotateToAET20 = rotateToAET20;
+		this.adjustToLC3 = adjustToLC3;
+		
+		
 		
 		//addElement(frontDisc);
 		addElement(panelEdge);
@@ -443,6 +454,52 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		//shift 2 mid lenses and field
 		//mirror1.shift(shift);
 		
+		
+		
+		if(rotateToAET20) {
+			double[] rotAxis = { FastMath.cos(2*FastMath.PI / 5), FastMath.sin(2*FastMath.PI / 5), 0 }; 
+			double rotMat[][] = Algorithms.rotationMatrix(rotAxis, FastMath.PI);
+			/*for(int i=0; i < 3; i++)
+				rotMat[i] = OneLiners.mul(rotMat[i], 1000);
+			vrmlOut.setTransformationMatrix(rotMat);*/
+			rotate(new double[] {0, 0,0,}, rotMat);
+			beamPlane.rotate(new double[] {0, 0,0,}, rotMat);
+			
+			for(int i=0; i < fibreEndPos.length; i++) {
+				for(int j=0; j < fibreEndPos[i].length; j++) {
+					fibreEndPos[i][j] = Algorithms.rotateVector(rotMat, fibreEndPos[i][j]);
+					fibreEndNorm[i][j] = Algorithms.rotateVector(rotMat, fibreEndNorm[i][j]);
+				}				
+			}
+		}
+		
+		if(adjustToLC3) {
+			//these are adjustments for AET20 (not 21)
+			double[] flangeCenterL0 = { 5.552504638671875, 5.833919921875, 0.7168470764160156 };
+			double[] flangeNormalL0 = { -0.61593547, -0.72288279, -0.31315167 };
+			double[] flangeCenterL3 = { 5.5469423828125, 5.836634521484375, 0.7072148132324219 };
+			double[] flangeNormalL3 = { -0.6152949 , -0.72339879, -0.31321937 };
+			
+			double shift[] = Util.minus(flangeCenterL3, flangeCenterL0);
+			shift(shift);
+			
+			double rotVec[] = Util.cross(flangeNormalL3, flangeNormalL0);
+			double rotAng = FastMath.asin(Util.length(rotVec));
+			rotVec = Util.reNorm(rotVec);
+			double[][] rotMat = Algorithms.rotationMatrix(rotVec, rotAng);
+			
+			rotate(flangeCenterL3, rotMat);
+			
+			
+			for(int i=0; i < fibreEndPos.length; i++) {
+				for(int j=0; j < fibreEndPos[i].length; j++) {
+					fibreEndPos[i][j] = Util.plus(fibreEndPos[i][j], shift);
+					
+					fibreEndPos[i][j] = Util.plus(flangeCenterL3, Algorithms.rotateVector(rotMat, Util.minus(fibreEndPos[i][j], flangeCenterL3)));
+					fibreEndNorm[i][j] = Algorithms.rotateVector(rotMat, fibreEndNorm[i][j]);
+				}				
+			}
+		}
 		
 		setupFibrePlanes();
 		
@@ -534,6 +591,10 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		System.out.println(String.format("lens1,2,3 normal: (%5.3f, %5.3f, %5.3f)", c[0], c[1], c[2]));
 	}
 	
-	public String getDesignName() { return "aet21-hst-twoFlat-25mm";	}
+	public String getDesignName() { 
+		return (rotateToAET20 ? "aet20" : "aet21")
+				+ "-hst-twoFlat-25mm" 
+				+ (adjustToLC3 ? "-lc3" : "");	
+	}
 	
 }
