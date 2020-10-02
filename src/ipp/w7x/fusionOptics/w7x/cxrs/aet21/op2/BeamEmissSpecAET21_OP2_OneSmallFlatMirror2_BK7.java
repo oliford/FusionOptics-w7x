@@ -367,27 +367,44 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 		
 		if(adjustToLC3) {
 			//these are adjustments for AET20 (not 21)
-			double[] flangeCenterL0 = { 5.552504638671875, 5.833919921875, 0.7168470764160156 };
+			/*double[] flangeCenterL0 = { 5.552504638671875, 5.833919921875, 0.7168470764160156 };
 			double[] flangeNormalL0 = { -0.61593547, -0.72288279, -0.31315167 };
 			double[] flangeCenterL3 = { 5.5469423828125, 5.836634521484375, 0.7072148132324219 };
 			double[] flangeNormalL3 = { -0.6152949 , -0.72339879, -0.31321937 };
 			
 			double shift[] = Util.minus(flangeCenterL3, flangeCenterL0);
-			shift(shift);
 			
 			double rotVec[] = Util.cross(flangeNormalL3, flangeNormalL0);
 			double rotAng = FastMath.asin(Util.length(rotVec));
 			rotVec = Util.reNorm(rotVec);
 			double[][] rotMat = Algorithms.rotationMatrix(rotVec, rotAng);
+			double rotCentre[] = flangeCenterL3;
+			*/
 			
-			rotate(flangeCenterL3, rotMat);
+			double[] a0 = { 4.53189892578125, 4.818623046875, 0.2204550018310547 };
+			double[] b0 = { 4.44481591796875, 4.5028818359375, 0.09980704498291016 };
+			double[] a3 = { 4.52733349609375, 4.82219189453125, 0.22024343872070312 };
+			double[] b3 = { 4.44028173828125, 4.50640869140625, 0.09968163299560547 };
 			
+			double shift[] = Util.minus(a3, a0);
+			
+			double ab0[] = Util.minus(b0, a0);
+			double ab3[] = Util.minus(b3, a3);
+			double rotVec[] = Util.cross(ab3, ab0);
+			double rotAng = FastMath.asin(Util.length(rotVec));
+			rotVec = Util.reNorm(rotVec);
+			double[][] rotMat = Algorithms.rotationMatrix(rotVec, rotAng);
+			double rotCentre[] = a3.clone();
+			
+			shift(shift);
+			rotate(rotCentre, rotMat);
+						
 			
 			for(int i=0; i < fibreEndPos.length; i++) {
 				for(int j=0; j < fibreEndPos[i].length; j++) {
 					fibreEndPos[i][j] = Util.plus(fibreEndPos[i][j], shift);
 					
-					fibreEndPos[i][j] = Util.plus(flangeCenterL3, Algorithms.rotateVector(rotMat, Util.minus(fibreEndPos[i][j], flangeCenterL3)));
+					fibreEndPos[i][j] = Util.plus(rotCentre, Algorithms.rotateVector(rotMat, Util.minus(fibreEndPos[i][j], rotCentre)));
 					fibreEndNorm[i][j] = Algorithms.rotateVector(rotMat, fibreEndNorm[i][j]);
 				}				
 			}

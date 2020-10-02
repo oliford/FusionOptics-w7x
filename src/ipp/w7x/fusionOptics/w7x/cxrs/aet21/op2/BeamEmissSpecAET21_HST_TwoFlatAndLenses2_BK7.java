@@ -62,6 +62,17 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public boolean rotateToAET20 = false;
 	public boolean adjustToLC3 = false;
 	
+	public enum Focus {		
+		BeamDump(0.0),
+		M1(0.005),
+		L3(-0.005);
+		
+		Focus(double shift) { this.shift = shift; }		
+		public double shift;		
+	}
+	
+	public Focus focus;
+	
 	public double beamDumps[][] = {
 		{ -0.21141751098632813, 4.57866845703125, 0.4623721008300781 },
 		{ 0.1455321044921875, 4.9178349609375, 0.41085964965820315 },
@@ -359,15 +370,15 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 				} 	};
 	
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7() {
-		this(false, false);
+		this(false, false, Focus.BeamDump);
 	}
 
-	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(boolean rotateToAET20, boolean adjustToLC3) {
+	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(boolean rotateToAET20, boolean adjustToLC3, Focus focus) {
 		super("beamSpec-aet21-op2");
 		this.rotateToAET20 = rotateToAET20;
 		this.adjustToLC3 = adjustToLC3;
-		
-		
+		this.focus = focus;
+			
 		
 		//addElement(frontDisc);
 		addElement(panelEdge);
@@ -395,10 +406,9 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		//+0 is focus on beam dumps,
 		// +3-5mm is focus on M2,
 		//-5mm focuses near L4 and misses lots of mirrors
-		//double fibreDefocus = 0.003; //16mm
-		double fibreDefocus = 0.005; //25mm
+		
 		for(int j=0; j < channelR[0].length; j++) {
-			fibreEndPos[0][j] = Util.plus(fibreEndPos[0][j], Util.mul(fibrePlaneNormal, fibreDefocus)); //refocus
+			fibreEndPos[0][j] = Util.plus(fibreEndPos[0][j], Util.mul(fibrePlaneNormal, focus.shift)); //refocus
 		}
 		
 		// all fibres parallel to port axis 
@@ -475,7 +485,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		
 		if(adjustToLC3) {
 			//these are adjustments for AET20 (not 21)
-			double[] flangeCenterL0 = { 5.552504638671875, 5.833919921875, 0.7168470764160156 };
+			/*double[] flangeCenterL0 = { 5.552504638671875, 5.833919921875, 0.7168470764160156 };
 			double[] flangeNormalL0 = { -0.61593547, -0.72288279, -0.31315167 };
 			double[] flangeCenterL3 = { 5.5469423828125, 5.836634521484375, 0.7072148132324219 };
 			double[] flangeNormalL3 = { -0.6152949 , -0.72339879, -0.31321937 };
@@ -487,15 +497,31 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 			double rotAng = FastMath.asin(Util.length(rotVec));
 			rotVec = Util.reNorm(rotVec);
 			double[][] rotMat = Algorithms.rotationMatrix(rotVec, rotAng);
+			double rotCentre[] = flangeCenterL3; */
 			
-			rotate(flangeCenterL3, rotMat);
+			double[] a0 = { 4.53189892578125, 4.818623046875, 0.2204550018310547 };
+			double[] b0 = { 4.44481591796875, 4.5028818359375, 0.09980704498291016 };
+			double[] a3 = { 4.52733349609375, 4.82219189453125, 0.22024343872070312 };
+			double[] b3 = { 4.44028173828125, 4.50640869140625, 0.09968163299560547 };
 			
+			double shift[] = Util.minus(a3, a0);
 			
+			double ab0[] = Util.minus(b0, a0);
+			double ab3[] = Util.minus(b3, a3);
+			double rotVec[] = Util.cross(ab3, ab0);
+			double rotAng = FastMath.asin(Util.length(rotVec));
+			rotVec = Util.reNorm(rotVec);
+			double[][] rotMat = Algorithms.rotationMatrix(rotVec, rotAng);
+			double rotCentre[] = a3.clone();
+			
+			shift(shift);
+			rotate(rotCentre, rotMat);
+						
 			for(int i=0; i < fibreEndPos.length; i++) {
 				for(int j=0; j < fibreEndPos[i].length; j++) {
 					fibreEndPos[i][j] = Util.plus(fibreEndPos[i][j], shift);
 					
-					fibreEndPos[i][j] = Util.plus(flangeCenterL3, Algorithms.rotateVector(rotMat, Util.minus(fibreEndPos[i][j], flangeCenterL3)));
+					fibreEndPos[i][j] = Util.plus(rotCentre, Algorithms.rotateVector(rotMat, Util.minus(fibreEndPos[i][j], rotCentre)));
 					fibreEndNorm[i][j] = Algorithms.rotateVector(rotMat, fibreEndNorm[i][j]);
 				}				
 			}
@@ -594,6 +620,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public String getDesignName() { 
 		return (rotateToAET20 ? "aet20" : "aet21")
 				+ "-hst-twoFlat-25mm" 
+				+ "-focus" + focus.toString()
 				+ (adjustToLC3 ? "-lc3" : "");	
 	}
 	
