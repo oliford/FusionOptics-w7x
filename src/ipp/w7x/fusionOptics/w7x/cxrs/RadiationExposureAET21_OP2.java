@@ -91,16 +91,14 @@ public class RadiationExposureAET21_OP2 {
 	//public static double a[] = Util.plus(radSurfaceCentre, Util.mul(radSurfaceNormal, -0.300)); 
 	//public static Surface testSurface = new Disc("testdisc", a, radSurfaceNormal, 0.050, Absorber.ideal()); 
 	
-	
 	//public static int nRaysPerPoint = 100;
 	
-	
-	
 	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/aet21/radExposure1-heater-targAll/";
+	//public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/aet21/radExposure2-/";
 	
 	/** Power emitted from radiating surface, Watts per square meter per Steradian */
-	//public static double powerAngularDensity = 100e3 / 2 / Math.PI;  //100/2.pi kW m^-2 SR^-1
-	public static double powerAngularDensity = sys.shutterHeaterPowerFlux / 2 / Math.PI;  //300W from shutter heater
+	public static double powerAngularDensity = 100e3 / 2 / Math.PI;  //100/2.pi kW m^-2 SR^-1
+	//public static double powerAngularDensity = sys.shutterHeaterPowerFlux / 2 / Math.PI;  //300W from shutter heater
 	
 	public static void main(String[] args) { 
 		System.out.println(outPath);

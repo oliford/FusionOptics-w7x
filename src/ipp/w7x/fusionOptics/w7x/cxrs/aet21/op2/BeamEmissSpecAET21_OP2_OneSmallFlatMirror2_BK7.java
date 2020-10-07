@@ -83,9 +83,9 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	
 	/**** Mirror ****/	
 	
-	public double mirror1FromFront = 0.110;
+	public double mirror1FromFront = 0.105; //was 0.110 in preOct2020
 	public double mirror1PortRightShift = 0.060;	
-	public double mirror1PortUpShift = 0.040;
+	public double mirror1PortUpShift = 0.049; //was 0.040 in preOct2020
 	public double mirror1Width = 0.100;
 	public double mirror1Height = 0.030;
 	public double mirror1InPlaneRotate = 15 * Math.PI / 180;

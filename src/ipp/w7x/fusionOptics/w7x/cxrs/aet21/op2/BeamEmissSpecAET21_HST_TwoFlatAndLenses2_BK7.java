@@ -108,19 +108,20 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	/**** Mirror ****/	
 	
 	public double mirror1FromFront = 0.130;
-	public double mirror1PortRightShift = 0.000;	
-	public double mirror1PortUpShift = 0.060;
-	public double mirror1Width = 0.050;
-	public double mirror1Height = 0.040;
+	public double mirror1PortRightShift = 0.000;	// 0.000 in preOct2020
+	public double mirror1PortUpShift = 0.064;		// 0.060 in preOct2020
+	public double mirror1Width = 0.057;
+	public double mirror1Height = 0.043;
+	public double mirror1InPlaneRotate = 20 * Math.PI / 180;
 	public double mirror1CentrePos[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror1FromFront),
 																		Util.plus(Util.mul(portRight, mirror1PortRightShift),
 																				  Util.mul(portUp, mirror1PortUpShift))));	
 	public double mirror2FromFront = 0.140;
-	public double mirror2PortRightShift = -0.070;	
-	public double mirror2PortUpShift = 0.030;	
-	public double mirror2Width = 0.100;
-	public double mirror2Height = 0.050;
-	public double mirror2InPlaneRotate = -10 * Math.PI / 180;
+	public double mirror2PortRightShift = -0.070 - 0.00576;	// -0.070 in preOct2020
+	public double mirror2PortUpShift = 0.030;	// 0.030 in preOct2020
+	public double mirror2Width = 0.1068;
+	public double mirror2Height = 0.0488;
+	public double mirror2InPlaneRotate = -20 * Math.PI / 180;
 	public double mirror2InPlaneShiftRight = 0.010;
 	public double mirror2CentrePos0[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror2FromFront),
 																		Util.plus(Util.mul(portRight, mirror2PortRightShift),
@@ -188,8 +189,13 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double lens4CentrePos[] = Util.plus(lens3CentrePos, Util.mul(lensNormal, lens4FromLens3));
 
 	public double mirror1Normal[] = Util.reNorm(Util.mul(Util.plus(Util.mul(mirror12Vec, -1), observationVec), 0.5));
-	public double mirror1Right[] = Util.reNorm(Util.cross(mirror1Normal, globalUp));
+	public double mirror1Right0[] = Util.reNorm(Util.cross(mirror1Normal, globalUp));
+	public double mirror1Up0[] = Util.reNorm(Util.cross(mirror1Right0, mirror1Normal));
+	
+	public double mirror1Right[] = Util.plus(Util.mul(mirror1Right0, FastMath.cos(mirror1InPlaneRotate)),
+											Util.mul(mirror1Up0, FastMath.sin(mirror1InPlaneRotate)));
 	public double mirror1Up[] = Util.reNorm(Util.cross(mirror1Right, mirror1Normal));
+
 	
 	public double mirror2Normal[] = Util.reNorm(Util.mul(Util.plus(lensNormal, mirror12Vec), 0.5));
 	
@@ -313,11 +319,11 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 
 	public Square fibrePlanes[][] = {{
 	}};
-	/*//16mm
 	public double[][] channelR = { 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
 		}; 
+	/*//16mm preOct2020
 		public double[][][] fibreEndPos = { { 
 					{ -0.8983385867229151, 6.720031117153394, -0.2643311419045835 },
 					{ -0.8935109068506887, 6.72040283940562, -0.26447805086864545 },
@@ -341,11 +347,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 				{ 0.13426461051401653, -0.9207725678092548, 0.3662661501333024 },
 				}	};
 		//*/
-	//25mm
-	public double[][] channelR = { 
-			{ 5.06, 5.07, 5.08, 5.09, }, 
-			{ 5.06, 5.07, 5.08, 5.09, }, 
-		}; 
+/*	//25mm preOct2020
 		public double[][][] fibreEndPos = { { 
 					{ -0.9009305233119985, 6.731366336378546, -0.26742848649473516 },
 					{ -0.8929907295215366, 6.7320439835283095, -0.267688855215448 },
@@ -368,6 +370,42 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 				{ -0.03326130150560207, -0.9457532133205677, 0.3231788132226094 },
 				{ 0.14016007633829594, -0.9161359100327776, 0.37556643533369394 },
 				} 	};
+	//*/
+	
+	// shifted to Gunter's AET20
+		public double[][][] fibreEndPos = { { 
+					{ -0.8951957863092375, 6.731787019474719, -0.2674840019033479 },
+					{ -0.8872764626713161, 6.732487615193336, -0.2676479662666826 },
+					{ -0.8866461398914198, 6.731812513479982, -0.26977186745518705 },
+					{ -0.8935940516033365, 6.730698213508666, -0.2716239097588454 },
+				}, { 
+					{ -0.8951962464192974, 6.731789365774185, -0.26748490328306596 },
+					{ -0.8872772476005344, 6.732498598219873, -0.26765218238990646 },
+					{ -0.8866464163964496, 6.73180607805042, -0.2697703646741089 },
+					{ -0.8935938704036769, 6.73070045086459, -0.271625624876001 },
+				}, { 
+					{ -0.8864748054223605, 6.732676594533867, -0.26671130855467934 },
+					{ -0.8881441175866978, 6.732695084331736, -0.2669448776824963 },
+					{ -0.8890541516995684, 6.732654009054289, -0.267084411345618 },
+					{ -0.890966409103881, 6.732464676747568, -0.2674189957010567 },
+				}, 	}; 
+		public double[][][] fibreEndNorm = { { 
+				{ 0.19068143270087662, -0.9440970238816552, 0.2689263853193705 },
+				{ -0.02068484715191355, -0.9602653393304063, 0.2783210649213635 },
+				{ -0.030596987590113124, -0.9425067636824553, 0.3327834502544183 },
+				{ 0.1477663186316227, -0.9143646716044272, 0.3769646699622998 },
+				}, { 
+				{ 0.18728195534202793, -0.9451609817479306, 0.26757463965135914 },
+				{ -0.009521714343746717, -0.9602812858496559, 0.27887127676203494 },
+				{ -0.0387663439489722, -0.9442321993315137, 0.3269904040218959 },
+				{ 0.14916318065211534, -0.9159314401822084, 0.3725854833772914 },
+				}, { 
+				{ -0.037308902990487385, -0.9691802474631286, 0.24351117774130013 },
+				{ 0.005703160040360712, -0.9657930696372093, 0.25925126924721215 },
+				{ 0.031762586775497245, -0.9633628488953431, 0.2663140241323716 },
+				{ 0.07794919312453007, -0.9584358124415837, 0.2744534873538248 },
+				}, 	};
+
 	
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7() {
 		this(false, false, Focus.BeamDump);
@@ -467,6 +505,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		
 		
 		if(rotateToAET20) {
+			lightPathsSystemName = lightPathsSystemName.replaceAll("AET21", "AET20");
 			double[] rotAxis = { FastMath.cos(2*FastMath.PI / 5), FastMath.sin(2*FastMath.PI / 5), 0 }; 
 			double rotMat[][] = Algorithms.rotationMatrix(rotAxis, FastMath.PI);
 			/*for(int i=0; i < 3; i++)
@@ -485,21 +524,8 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		
 		if(adjustToLC3) {
 			//these are adjustments for AET20 (not 21)
-			/*double[] flangeCenterL0 = { 5.552504638671875, 5.833919921875, 0.7168470764160156 };
-			double[] flangeNormalL0 = { -0.61593547, -0.72288279, -0.31315167 };
-			double[] flangeCenterL3 = { 5.5469423828125, 5.836634521484375, 0.7072148132324219 };
-			double[] flangeNormalL3 = { -0.6152949 , -0.72339879, -0.31321937 };
-			
-			double shift[] = Util.minus(flangeCenterL3, flangeCenterL0);
-			shift(shift);
-			
-			double rotVec[] = Util.cross(flangeNormalL3, flangeNormalL0);
-			double rotAng = FastMath.asin(Util.length(rotVec));
-			rotVec = Util.reNorm(rotVec);
-			double[][] rotMat = Algorithms.rotationMatrix(rotVec, rotAng);
-			double rotCentre[] = flangeCenterL3; */
-			
-			double[] a0 = { 4.53189892578125, 4.818623046875, 0.2204550018310547 };
+			/*
+			// Adjust only according to flange movement 	
 			double[] b0 = { 4.44481591796875, 4.5028818359375, 0.09980704498291016 };
 			double[] a3 = { 4.52733349609375, 4.82219189453125, 0.22024343872070312 };
 			double[] b3 = { 4.44028173828125, 4.50640869140625, 0.09968163299560547 };
@@ -513,16 +539,26 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 			rotVec = Util.reNorm(rotVec);
 			double[][] rotMat = Algorithms.rotationMatrix(rotVec, rotAng);
 			double rotCentre[] = a3.clone();
+			*/
+			
+			// Adjust to Gunter's file, from preOct2020 design
+			double[] shift = { -0.00455078125, 0.00353173828125, -0.000154632568359375 };
+			double[] rotCentre = null;
+			double[][] rotMat = null;
+			
 			
 			shift(shift);
-			rotate(rotCentre, rotMat);
+			if(rotMat != null)
+				rotate(rotCentre, rotMat);
 						
 			for(int i=0; i < fibreEndPos.length; i++) {
 				for(int j=0; j < fibreEndPos[i].length; j++) {
 					fibreEndPos[i][j] = Util.plus(fibreEndPos[i][j], shift);
-					
-					fibreEndPos[i][j] = Util.plus(rotCentre, Algorithms.rotateVector(rotMat, Util.minus(fibreEndPos[i][j], rotCentre)));
-					fibreEndNorm[i][j] = Algorithms.rotateVector(rotMat, fibreEndNorm[i][j]);
+
+					if(rotMat != null) {
+						fibreEndPos[i][j] = Util.plus(rotCentre, Algorithms.rotateVector(rotMat, Util.minus(fibreEndPos[i][j], rotCentre)));					
+						fibreEndNorm[i][j] = Algorithms.rotateVector(rotMat, fibreEndNorm[i][j]);
+					}
 				}				
 			}
 		}

@@ -73,7 +73,7 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(true, true);	
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(true, false);	
 	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(true, false, Focus.L3);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
@@ -106,9 +106,9 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 1000;
 
-	public static String writeWRLForDesigner = null; //"20201002";
+	public static String writeWRLForDesigner = null;//"20201007";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	
