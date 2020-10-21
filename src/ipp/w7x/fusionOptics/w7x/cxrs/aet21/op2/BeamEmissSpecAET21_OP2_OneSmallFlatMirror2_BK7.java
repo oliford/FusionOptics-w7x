@@ -83,13 +83,14 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	
 	/**** Mirror ****/	
 	
-	public double mirror1FromFront = 0.105; //was 0.110 in preOct2020
+	public double mirror1FromFront = 0.110; //was 0.110 in preOct2020
 	public double mirror1PortRightShift = 0.060;	
-	public double mirror1PortUpShift = 0.049; //was 0.040 in preOct2020
-	public double mirror1Width = 0.100;
-	public double mirror1Height = 0.030;
+	public double mirror1PortUpShift = 0.040; //was 0.040 in preOct2020
+	public double mirror1Width = 0.102;
+	public double mirror1Height = 0.0348;
 	public double mirror1InPlaneRotate = 15 * Math.PI / 180;
 	public double mirror1InPlaneShiftRight = -0.015;
+	public double mirror1InPlaneShiftUp = -0.0015;
 	public double mirror1CentrePos0[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror1FromFront),
 																		Util.plus(Util.mul(portRight, mirror1PortRightShift),
 																				  Util.mul(portUp, mirror1PortUpShift))));
@@ -176,7 +177,9 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 											 Util.mul(mirror1Up0, FastMath.sin(mirror1InPlaneRotate)));
 	public double mirror1Up[] = Util.reNorm(Util.cross(mirror1Right, mirror1Normal));
 	
-	public double mirror1CentrePosPhys[] = Util.plus(mirror1CentrePos0, Util.mul(mirror1Right, mirror1InPlaneShiftRight));
+	public double mirror1CentrePosPhys[] = Util.plus(Util.plus(mirror1CentrePos0, 
+												Util.mul(mirror1Right, mirror1InPlaneShiftRight)),
+												Util.mul(mirror1Up, mirror1InPlaneShiftUp));
 	
 	public double entryAperturePos[] = Util.plus(mirror1CentrePos0, Util.mul(observationVec, entryApertureMirrorDist));
 	public Iris entryAperture = new Iris("entryAperture", entryAperturePos, observationVec, 3*entryApertureDiameter/2, entryApertureDiameter*0.495, Absorber.ideal());

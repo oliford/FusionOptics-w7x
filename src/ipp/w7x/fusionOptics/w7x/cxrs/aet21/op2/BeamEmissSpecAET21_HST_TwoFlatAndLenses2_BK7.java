@@ -106,18 +106,19 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	
 	/**** Mirror ****/		
 	public double mirror1FromFront = 0.130;
-	public double mirror1PortRightShift = 0.000;	// 0.000 in preOct2020
-	public double mirror1PortUpShift = 0.060;// + 0.004;		// 0.060 in preOct2020
+	public double mirror1PortRightShift = 0.000;
+	public double mirror1PortUpShift = 0.060;
 	public double mirror1Width = 0.057;
 	public double mirror1Height = 0.043;
 	public double mirror1InPlaneRotate = 20 * Math.PI / 180;
-	public double mirror1InPlaneShiftUp = -0.003;
-	public double mirror1CentrePos[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror1FromFront),
+	public double mirror1InPlaneShiftUp = 0.003;
+	public double mirror1InPlaneShiftRight = 0.000;
+	public double mirror1CentrePos0[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror1FromFront),
 																		Util.plus(Util.mul(portRight, mirror1PortRightShift),
 																				  Util.mul(portUp, mirror1PortUpShift))));	
 	public double mirror2FromFront = 0.140;
-	public double mirror2PortRightShift = -0.070;// - 0.00576;	// -0.070 in preOct2020
-	public double mirror2PortUpShift = 0.030;	// 0.030 in preOct2020
+	public double mirror2PortRightShift = -0.070;
+	public double mirror2PortUpShift = 0.030;
 	public double mirror2Width = 0.1068;
 	public double mirror2Height = 0.0568;
 	public double mirror2InPlaneRotate = -20 * Math.PI / 180;
@@ -125,8 +126,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double mirror2InPlaneShiftUp = -0.004;
 	public double mirror2CentrePos0[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror2FromFront),
 																		Util.plus(Util.mul(portRight, mirror2PortRightShift),
-																				  Util.mul(portUp, mirror2PortUpShift))));
-	
+																				  Util.mul(portUp, mirror2PortUpShift))));	
 	/**** Lens ****/
 	//https://www.edmundoptics.com/p/100mm-dia-x-300mm-focal-length-pcx-condenser-lens/1011/
 	//public double lens1FocalLength = 0.300;
@@ -168,10 +168,10 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	//public double mirror1Angle = (90 + 45) * Math.PI / 180;
 	//public double mirror1Normal[] = Util.reNorm(Algorithms.rotateVector(Algorithms.rotationMatrix(portUp, mirror1Angle), portAxis));	
 		
-	public double observationVec[] = Util.reNorm(Util.minus(targetObsPos, mirror1CentrePos));
+	public double observationVec[] = Util.reNorm(Util.minus(targetObsPos, mirror1CentrePos0));
 	public double observationUp[] = Util.reNorm(Util.cross(W7xNBI.def().uVecBox(targetBoxIdx), observationVec));
 	
-	public double mirror12Vec[] = Util.reNorm(Util.minus(mirror1CentrePos, mirror2CentrePos0));
+	public double mirror12Vec[] = Util.reNorm(Util.minus(mirror1CentrePos0, mirror2CentrePos0));
 	
 	
 	public double lens1CentrePos[] = Util.plus(mirror2CentrePos0, Util.plus(Util.mul(portAxis, -lens1FromMirror),
@@ -196,6 +196,9 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 											Util.mul(mirror1Up0, FastMath.sin(mirror1InPlaneRotate)));
 	public double mirror1Up[] = Util.reNorm(Util.cross(mirror1Right, mirror1Normal));
 
+	public double mirror1CentrePosPhys[] = Util.plus(Util.plus(mirror1CentrePos0, Util.mul(mirror1Right, mirror1InPlaneShiftRight)),
+			Util.mul(mirror1Up, mirror1InPlaneShiftUp));
+
 	
 	public double mirror2Normal[] = Util.reNorm(Util.mul(Util.plus(lensNormal, mirror12Vec), 0.5));
 	
@@ -211,7 +214,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 												Util.mul(mirror2Up, mirror2InPlaneShiftUp));
 	
 	
-	public double entryAperturePos[] = Util.plus(mirror1CentrePos, Util.mul(observationVec, entryApertureMirrorDist));
+	public double entryAperturePos[] = Util.plus(mirror1CentrePos0, Util.mul(observationVec, entryApertureMirrorDist));
 	public Iris entryAperture = new Iris("entryAperture", entryAperturePos, observationVec, 3*entryApertureDiameter/2, entryApertureDiameter*0.495, Absorber.ideal());
 	public Disc entryTarget = new Disc("entryTarget", entryAperturePos, observationVec, 0.505*entryApertureDiameter, NullInterface.ideal());
 	
@@ -234,7 +237,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	
 	public Nikon50mmF11 lens4 = new Nikon50mmF11(lens4CentrePos, lens4FocalLength / 0.050, lensNormal);
 		
-	public Square mirror1 = new Square("mirror1", mirror1CentrePos, mirror1Normal, mirror1Up, mirror1Height, mirror1Width, Reflector.ideal());
+	public Square mirror1 = new Square("mirror1", mirror1CentrePosPhys, mirror1Normal, mirror1Up, mirror1Height, mirror1Width, Reflector.ideal());
 	//public Disc mirror1 = new Disc("mirror1", mirror1CentrePos, mirror1Normal, mirror1Width/2, Reflector.ideal());
 	//public Dish mirror1 = new Dish("mirror1", mirror1CentrePos, mirror1Normal, 0.380, mirror1Width/2, Reflector.ideal());
 
@@ -324,90 +327,41 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 			{ 5.06, 5.07, 5.08, 5.09, }, 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
 		}; 
-	/*//16mm preOct2020
-		public double[][][] fibreEndPos = { { 
-					{ -0.8983385867229151, 6.720031117153394, -0.2643311419045835 },
-					{ -0.8935109068506887, 6.72040283940562, -0.26447805086864545 },
-					{ -0.8931427911105558, 6.719993543781674, -0.2657761902656337 },
-					{ -0.8973877316837462, 6.7193212510363525, -0.2668494936381046 },
-				}, { 
-					{ -0.8983388186474494, 6.7200332749908425, -0.2643315623422543 },
-					{ -0.8935112144434686, 6.7204047553749575, -0.2644787563640594 },
-					{ -0.8931430575364232, 6.719995344180738, -0.26577720287481466 },
-					{ -0.8973878289708143, 6.719324012792593, -0.2668505115301608 },
-				}	}; 
-		public double[][][] fibreEndNorm = { { 
-				{ 0.1757394639965727, -0.945548062438551, 0.2739607680177933 },
-				{ -0.003079346099739016, -0.9593754550551475, 0.28211567461827886 },
-				{ -0.019523076108710062, -0.9441559753571445, 0.32891996548803903 },
-				{ 0.13583317401848546, -0.9178106537579502, 0.37305891315510464 },
-				}, { 
-				{ 0.17404219401625728, -0.9450006704659665, 0.2769170408640126 },
-				{ 0.003073035489538602, -0.9586220454691418, 0.2846652953793956 },
-				{ -0.019384078112535397, -0.9478246931330538, 0.3182021505316385 },
-				{ 0.13426461051401653, -0.9207725678092548, 0.3662661501333024 },
-				}	};
-		//*/
-	//25mm preOct2020
-		public double[][][] fibreEndPos = { { 
-					{ -0.9009305233119985, 6.731366336378546, -0.26742848649473516 },
-					{ -0.8929907295215366, 6.7320439835283095, -0.267688855215448 },
-					{ -0.8923858859390571, 6.731352225656039, -0.2698219517809947 },
-					{ -0.8993791955218674, 6.730264250358019, -0.27159830331056445 },
-				}, { 
-					{ -0.9009307372765338, 6.731368412536851, -0.267429551536691 },
-					{ -0.8929906987905285, 6.732041916264743, -0.2676879011411546 },
-					{ -0.892386285029392, 6.731353300026105, -0.269823240821865 },
-					{ -0.8993799679373151, 6.730270105601281, -0.271599685494157 },
-				}	}; 
-		public double[][][] fibreEndNorm = { { 
-				{ 0.1900531683118855, -0.9431553995951937, 0.27264938186074195 },
-				{ -0.013092762190143456, -0.961021905718204, 0.27616204718965937 },
-				{ -0.0352033756959906, -0.943052386907028, 0.33077623537455675 },
-				{ 0.1480053971143777, -0.9142891681988752, 0.37705400056122507 },
-				}, { 
-				{ 0.18688873353262003, -0.9436267618431343, 0.2732052993849384 },
-				{ -0.01523532220794472, -0.9598150850627735, 0.2802193559395227 },
-				{ -0.03326130150560207, -0.9457532133205677, 0.3231788132226094 },
-				{ 0.14016007633829594, -0.9161359100327776, 0.37556643533369394 },
-				} 	};
-	//*/
+
+public double[][][] fibreEndPos = { { 
+			{ -0.9009351251434649, 6.731370867963247, -0.2674288880838504 },
+			{ -0.8929946755691235, 6.732041116065124, -0.267684756644496 },
+			{ -0.8923895560005203, 6.731350304556539, -0.2698199519231584 },
+			{ -0.8993837992575295, 6.730263703386894, -0.27159624521103887 },
+		}, { 
+			{ -0.9009345798229672, 6.731364779156342, -0.2674272229022717 },
+			{ -0.8929947215534777, 6.732041682163185, -0.26768523250811777 },
+			{ -0.892389766677509, 6.731357089733645, -0.26982151091319373 },
+			{ -0.8993842772381687, 6.730263295230016, -0.27159527035948794 },
+		}, { 
+			{ -0.8921800804939098, 6.732223067504862, -0.26675289196209606 },
+			{ -0.8938556070493875, 6.732252157036456, -0.2669697561973881 },
+			{ -0.8947698822512581, 6.732215572803202, -0.26709863353104785 },
+			{ -0.8966930883223921, 6.732031040892463, -0.26741112201053463 },
+		}, 	}; 
+public double[][][] fibreEndNorm = { { 
+		{ 0.18453312732050003, -0.9449114755873694, 0.2703513052023535 },
+		{ -0.017980975459953117, -0.9587884882436327, 0.28355126402997727 },
+		{ -0.03819006199148642, -0.9443105212554307, 0.3268320036523093 },
+		{ 0.14676647865444564, -0.9150140379384877, 0.3757777416490735 },
+		}, { 
+		{ 0.18749694374711717, -0.9455332979615226, 0.26610463831263254 },
+		{ -0.019879373252429066, -0.9593625838864632, 0.28147511996227925 },
+		{ -0.031694687982131785, -0.9426030201136992, 0.33240787178743025 },
+		{ 0.14483106236872506, -0.9134852550877577, 0.3802218459141987 },
+		}, { 
+		{ -0.04580736754110138, -0.9665796606215864, 0.252240846715224 },
+		{ 0.007972034853946992, -0.9649757360943693, 0.26221799215427133 },
+		{ 0.03425598856896587, -0.9615031848473968, 0.27265023890595713 },
+		{ 0.06853166902397345, -0.9568959122891254, 0.28222973511866356 },
+		}, 	};
 	
-	// shifted to Gunter's AET20
-	/*	public double[][][] fibreEndPos = { { 
-					{ -0.8951957863092375, 6.731787019474719, -0.2674840019033479 },
-					{ -0.8872764626713161, 6.732487615193336, -0.2676479662666826 },
-					{ -0.8866461398914198, 6.731812513479982, -0.26977186745518705 },
-					{ -0.8935940516033365, 6.730698213508666, -0.2716239097588454 },
-				}, { 
-					{ -0.8951962464192974, 6.731789365774185, -0.26748490328306596 },
-					{ -0.8872772476005344, 6.732498598219873, -0.26765218238990646 },
-					{ -0.8866464163964496, 6.73180607805042, -0.2697703646741089 },
-					{ -0.8935938704036769, 6.73070045086459, -0.271625624876001 },
-				}, { 
-					{ -0.8864748054223605, 6.732676594533867, -0.26671130855467934 },
-					{ -0.8881441175866978, 6.732695084331736, -0.2669448776824963 },
-					{ -0.8890541516995684, 6.732654009054289, -0.267084411345618 },
-					{ -0.890966409103881, 6.732464676747568, -0.2674189957010567 },
-				}, 	}; 
-		public double[][][] fibreEndNorm = { { 
-				{ 0.19068143270087662, -0.9440970238816552, 0.2689263853193705 },
-				{ -0.02068484715191355, -0.9602653393304063, 0.2783210649213635 },
-				{ -0.030596987590113124, -0.9425067636824553, 0.3327834502544183 },
-				{ 0.1477663186316227, -0.9143646716044272, 0.3769646699622998 },
-				}, { 
-				{ 0.18728195534202793, -0.9451609817479306, 0.26757463965135914 },
-				{ -0.009521714343746717, -0.9602812858496559, 0.27887127676203494 },
-				{ -0.0387663439489722, -0.9442321993315137, 0.3269904040218959 },
-				{ 0.14916318065211534, -0.9159314401822084, 0.3725854833772914 },
-				}, { 
-				{ -0.037308902990487385, -0.9691802474631286, 0.24351117774130013 },
-				{ 0.005703160040360712, -0.9657930696372093, 0.25925126924721215 },
-				{ 0.031762586775497245, -0.9633628488953431, 0.2663140241323716 },
-				{ 0.07794919312453007, -0.9584358124415837, 0.2744534873538248 },
-				}, 	};
-*/
-	
+
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7() {
 		this(false, false, Focus.BeamDump);
 	}
@@ -591,7 +545,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		//positions relative to objective, using port normal and M1-M2 as axes
 		
 		double x[] = portAxis;
-		double yIsh[] = Util.reNorm(Util.minus(mirror2CentrePosPhys, mirror1CentrePos));
+		double yIsh[] = Util.reNorm(Util.minus(mirror2CentrePosPhys, mirror1CentrePosPhys));
 		double z[] = Util.reNorm(Util.cross(x, yIsh));
 		double y[] = Util.reNorm(Util.cross(z, x));
 		
@@ -609,7 +563,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 		dumpPos("Lens3", lens3CentrePos, p0, x,y,z);		
 		
 		dumpPos("Mirror2", mirror2CentrePosPhys, p0, x,y,z);
-		dumpPos("Mirror1", mirror1CentrePos, p0, x,y,z);
+		dumpPos("Mirror1", mirror1CentrePosPhys, p0, x,y,z);
 		
 		dumpPos("Aperture", entryAperturePos, p0, x,y,z);
 		
@@ -636,7 +590,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 					lens3.getPlanarSurface(),
 				}) {
 			double c[] = s.getCentre();
-			System.out.println(String.format("%s: (%5.3f, %5.3f, %5.3f) mm", 
+			System.out.println(String.format("%s position: (%5.3f, %5.3f, %5.3f) mm", 
 					s.getName(), 
 					c[0]*1e3, c[1]*1e3, c[2]*1e3));
 		}

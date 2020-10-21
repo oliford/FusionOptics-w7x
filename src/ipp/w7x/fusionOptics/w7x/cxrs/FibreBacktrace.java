@@ -73,8 +73,8 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(true, false);	
-	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
+	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -108,7 +108,7 @@ public class FibreBacktrace {
 	 
 	public final static int nAttempts = 1000;
 
-	public static String writeWRLForDesigner = null;//"20201007";
+	public static String writeWRLForDesigner = "20201018";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	
@@ -316,7 +316,7 @@ public class FibreBacktrace {
 		
 		//spit out FreeCAD instructions to create fibre end block cylinders
 		double cyldLen = 0.030;
-		double cyldRadius = 0.0025;
+		double cyldRadius = 0.00025;
 		
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int i=0; i < sys.channelR[iB].length; i++){
@@ -327,6 +327,13 @@ public class FibreBacktrace {
 							"o.Shape = Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
 							",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
 							"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
+			}
+		}
+		
+		//and the positions for Gunter
+		for(int iB=0; iB < sys.channelR.length; iB++){
+			for(int i=0; i < sys.channelR[iB].length; i++){
+				System.out.println("Fibrepos set "+iB+", fibre " +i + ": " + sys.fibreEndPos[iB][i][0]*1e3+","+sys.fibreEndPos[iB][i][1]*1e3+","+sys.fibreEndPos[iB][i][2]*1e3 + " mm");		
 			}
 		}
 		
