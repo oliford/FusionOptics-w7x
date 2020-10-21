@@ -100,29 +100,29 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double portTubeCentre[] = Util.minus(frontDiscCentre, Util.mul(portAxis, 0.010 + portTubeLength / 2));
 	public Cylinder portTubeCyld = new Cylinder("portTubeCyld", portTubeCentre, portAxis, portTubeDiameter/2, portTubeLength, Absorber.ideal());
 
-
 	/*** Entry iris ***/
 	public double entryApertureMirrorDist = 0.080;
 	public double entryApertureDiameter = 0.025;
 	
-	/**** Mirror ****/	
-	
+	/**** Mirror ****/		
 	public double mirror1FromFront = 0.130;
 	public double mirror1PortRightShift = 0.000;	// 0.000 in preOct2020
-	public double mirror1PortUpShift = 0.064;		// 0.060 in preOct2020
+	public double mirror1PortUpShift = 0.060;// + 0.004;		// 0.060 in preOct2020
 	public double mirror1Width = 0.057;
 	public double mirror1Height = 0.043;
 	public double mirror1InPlaneRotate = 20 * Math.PI / 180;
+	public double mirror1InPlaneShiftUp = -0.003;
 	public double mirror1CentrePos[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror1FromFront),
 																		Util.plus(Util.mul(portRight, mirror1PortRightShift),
 																				  Util.mul(portUp, mirror1PortUpShift))));	
 	public double mirror2FromFront = 0.140;
-	public double mirror2PortRightShift = -0.070 - 0.00576;	// -0.070 in preOct2020
+	public double mirror2PortRightShift = -0.070;// - 0.00576;	// -0.070 in preOct2020
 	public double mirror2PortUpShift = 0.030;	// 0.030 in preOct2020
 	public double mirror2Width = 0.1068;
-	public double mirror2Height = 0.0488;
+	public double mirror2Height = 0.0568;
 	public double mirror2InPlaneRotate = -20 * Math.PI / 180;
-	public double mirror2InPlaneShiftRight = 0.010;
+	public double mirror2InPlaneShiftRight = 0.010; //shift with changing targeting
+	public double mirror2InPlaneShiftUp = -0.004;
 	public double mirror2CentrePos0[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror2FromFront),
 																		Util.plus(Util.mul(portRight, mirror2PortRightShift),
 																				  Util.mul(portUp, mirror2PortUpShift))));
@@ -207,7 +207,8 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double mirror2Up[] = Util.reNorm(Util.cross(mirror2Right, mirror1Normal));
 
 	
-	public double mirror2CentrePosPhys[] = Util.plus(mirror2CentrePos0, Util.mul(mirror2Right, mirror2InPlaneShiftRight));
+	public double mirror2CentrePosPhys[] = Util.plus(Util.plus(mirror2CentrePos0, Util.mul(mirror2Right, mirror2InPlaneShiftRight)),
+												Util.mul(mirror2Up, mirror2InPlaneShiftUp));
 	
 	
 	public double entryAperturePos[] = Util.plus(mirror1CentrePos, Util.mul(observationVec, entryApertureMirrorDist));
@@ -272,8 +273,8 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public Square strayPlane = null;
 	public Cylinder rod = null;
 	
-	/** Plasma radiating surface for heat-load analysis */
-	/*
+	
+	// Plasma radiating surface for heat-load analysis 	
 	public double[] radSurfaceCentre = { -0.6759374 ,  5.97114095, -0.09727827 };	
 	public double[] radSurfaceNormal = { -0.12153662,  0.95077941,  0.28503923  };
 	
@@ -285,10 +286,10 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double radSurfHeight = 0.900;
 
 	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 
-	*/
+	//*/
 	
 	//heating element for HST test
-	public double shutterHeaterCentre[] = { -0.8896515502929687, 6.21238232421875, -0.0716107177734375 }; 
+	/*public double shutterHeaterCentre[] = { -0.8896515502929687, 6.21238232421875, -0.0716107177734375 }; 
 	public double shutterHeaterNormal[] = Util.reNorm(new double[] { -0.51348896,  0.8281041 , -0.22488371 }); 
 	public double shutterHeaterUp[] =  Util.reNorm(new double[] { 0.10244399, 0.31902389, 0.94219371 }); 
 	public double shutterHeaterWidth = 0.035;
@@ -299,8 +300,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	
 	public Square shutterHeater = new Square("shutterHeater", shutterHeaterCentre, shutterHeaterNormal, shutterHeaterUp, shutterHeaterHeight, shutterHeaterWidth, NullInterface.ideal()); 
 	
-	public Square radSurface = shutterHeater;
-	
+	public Square radSurface = shutterHeater;	
 	public double radSurfaceCentre[] = shutterHeaterCentre;
 	public double radSurfWidth = shutterHeaterWidth; //for testing closed shutter
 	public double radSurfHeight = shutterHeaterHeight;
@@ -309,6 +309,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double shutterHeaterTargetDiameter = 0.100;
 	public double shutterHeaterTargetCentre[] = Util.plus(shutterHeaterCentre, Util.mul(shutterHeaterNormal, shutterHeaterTargetDist));
 	public Disc shutterHeaterTarget = new Disc("shutterHeaterTarget", shutterHeaterTargetCentre, shutterHeaterNormal, shutterHeaterTargetDiameter/2, NullInterface.ideal()); 
+	*/
 	
 	public int beamIdx[] = { -1, -2, -3  };
 	//public double[] channelR = OneLiners.linSpace(5.38, 5.88, nFibres);
@@ -347,7 +348,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 				{ 0.13426461051401653, -0.9207725678092548, 0.3662661501333024 },
 				}	};
 		//*/
-/*	//25mm preOct2020
+	//25mm preOct2020
 		public double[][][] fibreEndPos = { { 
 					{ -0.9009305233119985, 6.731366336378546, -0.26742848649473516 },
 					{ -0.8929907295215366, 6.7320439835283095, -0.267688855215448 },
@@ -373,7 +374,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	//*/
 	
 	// shifted to Gunter's AET20
-		public double[][][] fibreEndPos = { { 
+	/*	public double[][][] fibreEndPos = { { 
 					{ -0.8951957863092375, 6.731787019474719, -0.2674840019033479 },
 					{ -0.8872764626713161, 6.732487615193336, -0.2676479662666826 },
 					{ -0.8866461398914198, 6.731812513479982, -0.26977186745518705 },
@@ -405,7 +406,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 				{ 0.031762586775497245, -0.9633628488953431, 0.2663140241323716 },
 				{ 0.07794919312453007, -0.9584358124415837, 0.2744534873538248 },
 				}, 	};
-
+*/
 	
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7() {
 		this(false, false, Focus.BeamDump);
