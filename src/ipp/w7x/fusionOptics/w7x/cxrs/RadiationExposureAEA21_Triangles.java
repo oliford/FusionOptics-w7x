@@ -41,7 +41,7 @@ public class RadiationExposureAEA21_Triangles {
 	
 	//AEA21
 	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	public static String inPath = "/work/ipp/w7x/cad/aea21/radExposure3";
+	public static String inPath = "/work/cad/aea21/radExposure3";
 	
 	public static Element[] testElements = {
 			new STLMesh(inPath + "/mirrorBlock.stl"),
@@ -58,6 +58,9 @@ public class RadiationExposureAEA21_Triangles {
 			new STLMesh(inPath + "/frontPlateWithRim.stl"),
 			new STLMesh(inPath + "/panelTL-simplified.stl"),
 			new STLMesh(inPath + "/panelTR-simplified.stl"),
+			new STLMesh(inPath + "/backHoleClosure.stl"),
+			new STLMesh(inPath + "/pipeHoleClosure.stl"),
+			new STLMesh(inPath + "/sideClosure.stl"),
 	};
 	
 	//};
@@ -80,7 +83,7 @@ public class RadiationExposureAEA21_Triangles {
 		
 	
 	
-	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure3-4/";
+	public final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure3-8/";
 	
 	/** Power emitted from radiating surface, Watts per square meter per Steradian */
 	public static double powerAngularDensity = 100e3 / 2 / Math.PI;  //100/2.pi kW m^-2 SR^-1
