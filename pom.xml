@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>javaOneLineUtils</groupId>
 			<artifactId>JavaOneLineUtils</artifactId>
-			<version>1.2.83</version>
+			<version>1.4.50</version>
 		</dependency>
 	</dependencies>
 	<version>1.0.3</version>
