@@ -36,7 +36,7 @@ import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public abstract class BeamEmissSpecAEK21_base extends Optic {
+public abstract class BeamEmissSpecAEK41_base extends Optic {
 	public double globalUp[] = {0,0,1};
 		
 	public double flangeCentre[] = { -5.1112919921875, -6.455993896484375, 0.05283078002929688 };
@@ -133,7 +133,22 @@ public abstract class BeamEmissSpecAEK21_base extends Optic {
 
 	public Element tracingTarget = entryWindowFront;
 	
-	public Surface checkSurface = lens1.getFrontSurface(); 
+	public Surface checkSurface = lens1.getFrontSurface();
+	
+
+	/** Plasma radiating surface for heat-load analysis */
+	public double[] portCentreAtPanel = { -3.850013427734375, -4.8233515625, 0.368464647769928 };
+	//public double[] radSurfaceNormal = {  -6.38700537e-01, -7.69455340e-01,  3.21739182e-04 }; //port axis
+	public double[] radSurfaceNormal = { -0.46565936, -0.81304686,  0.34945123 }; //panel normal -ish
+	public double[] radSurfaceCentre = Util.plus(portCentreAtPanel, Util.mul(radSurfaceNormal, -0.100));
+	public double[] radRight = Util.reNorm(Util.cross(radSurfaceNormal, new double[] { 0,0,1 }));
+	public double[] radUp = Util.reNorm(Util.cross(radRight, radSurfaceNormal));
+	
+	public double radSurfWidth = 0.700; //for testing closed shutter
+	public double radSurfHeight = 1.100;
+
+	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 
+	
 			
 	protected abstract void setupFibrePositions();
 			
@@ -185,7 +200,7 @@ public abstract class BeamEmissSpecAEK21_base extends Optic {
 		*/
 	}
 	
-	public BeamEmissSpecAEK21_base() {
+	public BeamEmissSpecAEK41_base() {
 		super("beamSpec-aek21");
 				
 		addElement(entryWindowIris);

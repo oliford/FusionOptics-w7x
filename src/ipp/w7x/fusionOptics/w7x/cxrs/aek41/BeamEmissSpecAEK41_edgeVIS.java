@@ -8,7 +8,7 @@ import fusionOptics.interfaces.NullInterface;
 import fusionOptics.surfaces.Square;
 
 /** Jürgens 5-channel edge 'passive CXRS' */ 
-public class BeamEmissSpecAEK21_edgeVIS extends BeamEmissSpecAEK21_base {
+public class BeamEmissSpecAEK41_edgeVIS extends BeamEmissSpecAEK41_base {
 	public double designWavelenth = 530e-9; // VIS centre
 	
 	public double fibreEndDiameter = 0.000400; // Standard CXRS (as AUG)

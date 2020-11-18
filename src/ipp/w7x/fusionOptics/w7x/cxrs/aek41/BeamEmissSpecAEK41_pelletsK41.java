@@ -7,7 +7,7 @@ import fusionOptics.Util;
 import fusionOptics.interfaces.NullInterface;
 import fusionOptics.surfaces.Square;
 
-public class BeamEmissSpecAEK21_pelletsK41 extends BeamEmissSpecAEK21_base {
+public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 	public double designWavelenth = 530e-9; // VIS centre
 
 	public static double fibreEndDiameter = 0.000400; // as AUG
