@@ -24,6 +24,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAnd
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses_75mm_UVFS_3cmAperture;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7.Focus;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
@@ -69,11 +70,11 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7();	
-	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7();
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
+	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -105,13 +106,11 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 1000;
 
-	public static String writeWRLForDesigner = null; //"20190910";
+	public static String writeWRLForDesigner = "20201018";
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "-LED/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
-	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
-			"Scale { scaleFactor 1000 1000 1000 }\n";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		makeFibreCyldSTL(); //		System.exit(0);
@@ -126,7 +125,13 @@ public class FibreBacktrace {
 				
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 5.005);
 		if((writeWRLForDesigner == null)){
-			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});			
+			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
+			//rotation to NI20
+			/*double[] rotAxis = { FastMath.cos(2*FastMath.PI / 5), FastMath.sin(2*FastMath.PI / 5), 0 }; 
+			double rotMat[][] = Algorithms.rotationMatrix(rotAxis, FastMath.PI);
+			for(int i=0; i < 3; i++)
+				rotMat[i] = OneLiners.mul(rotMat[i], 1000);
+			vrmlOut.setTransformationMatrix(rotMat);*/
 		}
 		
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
@@ -311,7 +316,7 @@ public class FibreBacktrace {
 		
 		//spit out FreeCAD instructions to create fibre end block cylinders
 		double cyldLen = 0.030;
-		double cyldRadius = 0.0025;
+		double cyldRadius = 0.00025;
 		
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int i=0; i < sys.channelR[iB].length; i++){
@@ -322,6 +327,13 @@ public class FibreBacktrace {
 							"o.Shape = Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
 							",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
 							"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
+			}
+		}
+		
+		//and the positions for Gunter
+		for(int iB=0; iB < sys.channelR.length; iB++){
+			for(int i=0; i < sys.channelR[iB].length; i++){
+				System.out.println("Fibrepos set "+iB+", fibre " +i + ": " + sys.fibreEndPos[iB][i][0]*1e3+","+sys.fibreEndPos[iB][i][1]*1e3+","+sys.fibreEndPos[iB][i][2]*1e3 + " mm");		
 			}
 		}
 		
