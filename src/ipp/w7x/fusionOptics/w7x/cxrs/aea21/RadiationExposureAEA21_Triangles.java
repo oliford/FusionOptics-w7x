@@ -1,4 +1,4 @@
-package ipp.w7x.fusionOptics.w7x.cxrs;
+package ipp.w7x.fusionOptics.w7x.cxrs.aea21;
 
 import net.jafama.FastMath;
 import oneLiners.OneLiners;
@@ -29,7 +29,7 @@ import fusionOptics.types.Optic;
 import fusionOptics.types.Pol;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
-import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
+import ipp.w7x.fusionOptics.w7x.cxrs.RadiationExposureTriangles;
 
 /** Simple radiation exposure calculation by emitting rays in 4.pi from a plane representing the plasma edge
  * and seeing how many hit a given surface.
@@ -45,7 +45,7 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 	public void start() {
 		
 		inPath = "/work/cad/aea21/radExposure3";
-		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure3-testThreads/";
+		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure3/";
 		
 		testElements = new Element[]{
 				new STLMesh(inPath + "/mirrorBlock.stl"),

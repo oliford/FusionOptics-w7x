@@ -108,7 +108,7 @@ public class FibreBacktrace {
 	 
 	public final static int nAttempts = 1000;
 
-	public static String writeWRLForDesigner = "20201018";
+	public static String writeWRLForDesigner =null;//"20201018";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	
