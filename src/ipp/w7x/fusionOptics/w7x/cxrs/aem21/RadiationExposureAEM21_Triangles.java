@@ -1,4 +1,4 @@
-package ipp.w7x.fusionOptics.w7x.cxrs;
+package ipp.w7x.fusionOptics.w7x.cxrs.aem21;
 
 import net.jafama.FastMath;
 import oneLiners.OneLiners;
@@ -29,10 +29,8 @@ import fusionOptics.types.Optic;
 import fusionOptics.types.Pol;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
+import ipp.w7x.fusionOptics.w7x.cxrs.RadiationExposureTriangles;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
-import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21;
-import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_AsMeasured;
-import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 
 /** Simple radiation exposure calculation by emitting rays in 4.pi from a plane representing the plasma edge
  * and seeing how many hit a given surface.
