@@ -4,7 +4,11 @@ import net.jafama.FastMath;
 import oneLiners.OneLiners;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
@@ -129,7 +133,14 @@ public abstract class RadiationExposureTriangles {
 				synchronized (vrmlOut) {
 					System.out.println("VRML Done");
 					vrmlOut.destroy();
-					vrmlOut = null;
+					
+					Path vrmlPath = Paths.get(vrmlOut.getFileName());
+					Path linkPath = Paths.get(inPath, vrmlPath.getFileName().toString());					
+				    try {
+						Files.createSymbolicLink(linkPath, vrmlPath);
+					} catch (IOException e) { }
+				    
+				    vrmlOut = null;
 				}
 			}
 			
