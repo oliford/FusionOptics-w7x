@@ -137,8 +137,9 @@ public abstract class RadiationExposureTriangles {
 					Path vrmlPath = Paths.get(vrmlOut.getFileName());
 					Path linkPath = Paths.get(inPath, vrmlPath.getFileName().toString());					
 				    try {
+				    	Files.deleteIfExists(linkPath);
 						Files.createSymbolicLink(linkPath, vrmlPath);
-					} catch (IOException e) { }
+					} catch (IOException e) { e.printStackTrace();}
 				    
 				    vrmlOut = null;
 				}

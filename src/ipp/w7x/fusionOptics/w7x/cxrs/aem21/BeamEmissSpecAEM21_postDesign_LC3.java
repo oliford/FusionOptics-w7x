@@ -649,8 +649,28 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public double radSurfWidth = 1.000; //for testing closed shutter
 	public double radSurfHeight = 1.000;
 
-	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 
+	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal());
 	
+	public double[] fprA = {  -0.7039207763671875, 5.52718408203125, 0.80253076171875 };
+	public double[] fprB = {  -0.367311767578125, 5.34034814453125, 1.07567919921875 };
+	public double[] fprC = {  -0.4654627075195313, 5.54656298828125, 0.9291983032226563 };
+	
+	public double[] fprCentre0 = Util.mul(Util.plus(fprA, fprB), 0.5);
+	public double[] fprNormal = Util.reNorm(Util.cross(Util.minus(fprA, fprC), Util.minus(fprB, fprC)));
+	
+	public double fprPowerDensity = 4e3; //4kW/m^-2 from average of 240'C (averaged in T^4) over the FP area, for an area of ~175x175cm
+	public double fprShiftIn = 0.010;
+	public double fprLength = 0.300;
+	public double fprWidth = 0.200;
+	
+	public double[] fprCentre = Util.plus(fprCentre0, Util.mul(fprNormal, fprShiftIn));
+	
+	public double[] fprUp0 = Util.reNorm(Util.minus(fprB, fprA));
+	public double[] fprRight = Util.reNorm(Util.cross(fprNormal, fprUp0));
+	public double[] fprUp = Util.reNorm(Util.cross(fprNormal, fprRight));
+	
+	public Square frontPlateRadiator = new Square("frontPlateRadiator", fprCentre, fprNormal, fprUp, fprLength, fprWidth, NullInterface.ideal());
+		
 	public Element tracingTarget = mirror;
 	public Surface checkSurface = mirror;
 	
