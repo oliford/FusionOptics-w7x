@@ -95,12 +95,12 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	
 	public Disc mirror = new Disc("mirror", mirrorCentrePos, mirrorNormal, mirrorDiameter/2, Reflector.ideal());
 	
-	public STLMesh panelEdge = new STLMesh("panel", "/work/ipp/w7x/cad/aem21/panel-cutting-edge-channels-cut.stl");
-	public STLMesh mirrorBlock = new STLMesh("mirrorBlock", "/work/ipp/w7x/cad/aem21/mirrorBlockSimpleOpen.stl");	
-	public STLMesh mirrorClampRing = new STLMesh("mirrorClampRing", "/work/ipp/w7x/cad/aem21/mirrorRing-simple.stl");	
-	public STLMesh blockPlate = new STLMesh("blockPlate", "/work/ipp/w7x/cad/aem21/blockPlate-grooved.stl");
+	public STLMesh panelEdge = new STLMesh("panel", "/work/cad/aem21/panel-cutting-edge-channels-cut.stl");
+	public STLMesh mirrorBlock = new STLMesh("mirrorBlock", "/work/cad/aem21/mirrorBlockSimpleOpen.stl");	
+	public STLMesh mirrorClampRing = new STLMesh("mirrorClampRing", "/work/cad/aem21/mirrorRing-simple.stl");	
+	public STLMesh blockPlate = new STLMesh("blockPlate", "/work/cad/aem21/blockPlate-grooved.stl");
 	
-	public STLMesh colar = new STLMesh("colar", "/work/ipp/w7x/cad/aem21/colar.stl");
+	public STLMesh colar = new STLMesh("colar", "/work/cad/aem21/colar.stl");
 	
 
 	public double overrideObsPositions[][] = null;
