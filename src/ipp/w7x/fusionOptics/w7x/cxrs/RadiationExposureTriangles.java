@@ -70,7 +70,6 @@ public abstract class RadiationExposureTriangles {
 	private double[] totalPower;
 	private int[] nHitTotal;
 	public int nRaysDone, nRaysDrawn;
-	private double solidAngle;	
 	private double dA;
 	private double[][] col;
 	
@@ -118,7 +117,6 @@ public abstract class RadiationExposureTriangles {
 		
 		nRaysDone = 0;
 		nRaysDrawn = 0;
-		solidAngle = Double.NaN;
 		
 		startThreads();
 		
@@ -126,7 +124,7 @@ public abstract class RadiationExposureTriangles {
 			
 			System.out.println("Rays: " + nRaysDone + " / " + nRays + ", nHit = " + sum(nHitTotal));
 			dumpPowers(totalPower, nHitTotal, dA, ((double)nRaysDone)/nRays);
-			dumpTrianglePowers(triangleHits, dA, solidAngle, ((double)nRaysDone)/nRays);
+			dumpTrianglePowers(triangleHits, dA, ((double)nRaysDone)/nRays);
 			System.out.println("VRML: "+ nRaysDrawn + " / " + nRaysToDraw);
 			
 			if(vrmlOut != null && nRaysDrawn >= nRaysToDraw) {
@@ -180,7 +178,8 @@ public abstract class RadiationExposureTriangles {
 		RandomManager rnd = new RandomManager();
 		while(nRaysDone < nRays) {
 			double y = radSurf().getHeight() * (rnd.nextUniform(0,1) - 0.5); 
-			double x = radSurf().getWidth() * (rnd.nextUniform(0,1) - 0.5); 
+			double x = radSurf().getWidth() * (rnd.nextUniform(0,1) - 0.5);
+			//x=0;y=0;
 			
 			double startPos[] = Util.plus(radSurf().getCentre(), 
 									Util.plus(
@@ -192,7 +191,14 @@ public abstract class RadiationExposureTriangles {
 			ray.startPos = startPos;
 			
 			ray.dir = Tracer.generateRandomRayTowardSurface(startPos, tracingTarget(), true);
-			solidAngle = Util.length(ray.dir);
+			double solidAngle = Util.length(ray.dir);
+			
+			/*ray.dir = Util.reNorm(new double[] { 
+					RandomManager.instance().nextNormal(0, 1),
+					RandomManager.instance().nextNormal(0, 1),
+					RandomManager.instance().nextNormal(0, 1),
+			});
+			solidAngle = 4 * Math.PI;*/
 			//System.out.println(solidAngle);
 			
 			ray.dir = Util.reNorm(ray.dir);
@@ -243,7 +249,7 @@ public abstract class RadiationExposureTriangles {
 		}
 	}
 	
-	private void dumpTrianglePowers(HashMap<Element, double[][]> triangleHits, double dA, double solidAngle, double fracCollected) {
+	private void dumpTrianglePowers(HashMap<Element, double[][]> triangleHits, double dA, double fracCollected) {
 		
 		for(Element testElement : triangleHits.keySet()) {
 			double triHits[][] = triangleHits.get(testElement);
