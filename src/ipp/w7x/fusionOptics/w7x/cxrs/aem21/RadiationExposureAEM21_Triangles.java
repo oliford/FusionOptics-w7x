@@ -44,17 +44,18 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	
 	// Direct power from plasma 
-	/*@Override
+	@Override
 	public Square radSurf() { return sys.radSurface; }
 	
-	public Element tracingTarget() { return new Optic("testElems", testElements); }
+	private STLMesh targ = new STLMesh("/work/cad/aem21/radExposure50/MirrorClosed.stl");
+	public Element tracingTarget() { return targ; }
 	
 	public double powerDensity = 100e3;
 	//*/
 	
 	
 	// Reradiated power from front plate at max temperature
-	@Override
+	/*@Override
 	public Square radSurf() { return sys.frontPlateRadiator; }
 	
 	private STLMesh targ = new STLMesh("/work/cad/aem21/radExposure50/Tube.stl");
@@ -74,7 +75,7 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 		
 				
 		inPath = "/work/cad/aem21/radExposure50/";
-		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure50-reRadiated/";
+		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure50-withStraps/";
 		
 		testElements = new Element[]{
 				new STLMesh(inPath + "/FrontPlate.stl"),
@@ -100,6 +101,10 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 				new STLMesh(inPath + "/shutterDriveAcross.stl"),
 				new STLMesh(inPath + "/teWire1.stl"),
 				new STLMesh(inPath + "/teWire2.stl"),
+				
+				new STLMesh(inPath + "/strapL.stl"),
+				new STLMesh(inPath + "/strapR.stl"),
+				
 		};
 		
 		thingsInWay = new Element[]{	
