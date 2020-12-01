@@ -83,6 +83,15 @@ public abstract class RadiationExposureTriangles {
 		vrmlOut = new VRMLDrawer(outPath + "/radExposure-"+designName() + ".vrml", 5.005);
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		
+
+		Path inPathP = Paths.get(inPath);
+		Path inPathLink = Paths.get(outPath, "inputFiles");
+							
+	    try {
+	    	Files.deleteIfExists(inPathLink);
+			Files.createSymbolicLink(inPathLink, inPathP);
+		} catch (IOException e) { e.printStackTrace();}
+	    
 		
 		for(Element testElement : testElements) {
 			if(testElement instanceof Surface)
@@ -91,8 +100,7 @@ public abstract class RadiationExposureTriangles {
 				for(Surface s : ((Optic)testElement).getSurfacesAll())
 					s.setInterface(Absorber.ideal());
 		}
-		
-		
+			
 		
 		testElementsAll = new Optic("testElements", testElements);
 		
@@ -190,7 +198,7 @@ public abstract class RadiationExposureTriangles {
 			RaySegment ray = new RaySegment();
 			ray.startPos = startPos;
 			
-			ray.dir = Tracer.generateRandomRayTowardSurface(startPos, tracingTarget(), true);
+			ray.dir = Tracer.generateRandomRayTowardSurface(rnd, startPos, tracingTarget(), true);
 			double solidAngle = Util.length(ray.dir);
 			
 			/*ray.dir = Util.reNorm(new double[] { 

@@ -646,8 +646,8 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	//public double radSurfWidth = 1.100; //for testing inner parts (window etc)
 	//public double radSurfHeight = 0.900;
 
-	public double radSurfWidth = 1.000; //for testing closed shutter
-	public double radSurfHeight = 1.000;
+	public double radSurfWidth = 1.400; //for testing closed shutter
+	public double radSurfHeight = 1.100;
 
 	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal());
 	

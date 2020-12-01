@@ -289,8 +289,8 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	//public double radSurfWidth = 1.000; //for testing closed shutter
 	//public double radSurfHeight = 0.900;
 	
-	public double radSurfWidth = 1.100; //for testing graphite
-	public double radSurfHeight = 1.100;
+	public double radSurfWidth = 1.600; //for testing graphite
+	public double radSurfHeight = 1.600;
 
 
 	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 

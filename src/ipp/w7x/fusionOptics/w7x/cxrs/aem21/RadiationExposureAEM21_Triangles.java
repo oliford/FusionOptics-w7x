@@ -47,7 +47,7 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 	@Override
 	public Square radSurf() { return sys.radSurface; }
 	
-	private STLMesh targ = new STLMesh("/work/cad/aem21/radExposure50/MirrorClosed.stl");
+	private STLMesh targ = new STLMesh("/work/cad/aem21/radExposure50/FrontPlate.stl");
 	public Element tracingTarget() { return targ; }
 	
 	public double powerDensity = 100e3;
@@ -75,7 +75,7 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 		
 				
 		inPath = "/work/cad/aem21/radExposure50/";
-		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure50-withStraps/";
+		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure50-noEdges-gapFoil/";
 		
 		testElements = new Element[]{
 				new STLMesh(inPath + "/FrontPlate.stl"),
@@ -86,8 +86,11 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 				new STLMesh(inPath + "/FrontPlatePipe.stl"),
 				new STLMesh(inPath + "/PortShieldPipe.stl"),
 				new STLMesh(inPath + "/MirrorClosed.stl"),
-				new STLMesh(inPath + "/Cover1.stl"),
-				new STLMesh(inPath + "/Cover2.stl"),
+				
+				new STLMesh(inPath + "/Cover1-noEdges-mod2.stl"),
+				new STLMesh(inPath + "/Cover2-noEdges-mod2.stl"),
+				new STLMesh(inPath + "/gapFoil.stl"),
+				
 				new STLMesh(inPath + "/ProtectionCollar1.stl"),
 				new STLMesh(inPath + "/ProtectionCollar2.stl"),
 				new STLMesh(inPath + "/Tube.stl"),

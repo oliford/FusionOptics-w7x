@@ -494,14 +494,17 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 0.500, 1.600, NullInterface.ideal());
 
 	/** Plasma radiating surface for heat-load analysis */
-	public double[] radSurfaceCentre = { 1.68544196,  5.88435327,  0.43004889 };
-	public double[] radSurfaceNormal = { -0.2822023 , -0.85883142, -0.42751662 };
+	public double[] radSurfaceCentre = { 1.68544196,  5.98435327,  0.43004889 };
+	//public double[] radSurfaceCentre = { 2.0045980224609375, 5.7806533203125, 0.3630195007324219 };
+	//public double[] radSurfaceCentre = { 2.080599609375, 5.9053466796875, 0.37977685546875 };
+	//public double[] radSurfaceNormal = { -0.2822023 , -0.85883142, -0.42751662 };
+	public double[] radSurfaceNormal = portNormal;
 	public double[] radUp = Util.createPerp(radSurfaceNormal);
 	//public double radSurfWidth = 1.100; //for testing inner parts (window etc)
 	//public double radSurfHeight = 0.900;
 
-	public double radSurfWidth = 1.800; //for testing closed shutter
-	public double radSurfHeight = 1.300;
+	public double radSurfWidth = 2.800; //for testing closed shutter
+	public double radSurfHeight = 2.800;
 
 	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 
 	

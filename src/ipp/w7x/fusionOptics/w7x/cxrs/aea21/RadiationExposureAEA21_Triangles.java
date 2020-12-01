@@ -42,39 +42,51 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 	public BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	
 	@Override
+	public Square radSurf() { return sys.radSurface; }
+	
+	private Optic targ = new STLMesh("/work/cad/aea21/radExposure4/cxrsHousing.stl");
+	@Override public Element tracingTarget() { return targ; }
+	
+	@Override
 	public void start() {
 		
-		inPath = "/work/cad/aea21/radExposure3";
-		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure3/";
+		inPath = "/work/cad/aea21/radExposure4";
+		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure4-closed-all/";
 		
 		testElements = new Element[]{
-				new STLMesh(inPath + "/mirrorBlock.stl"),
-				new STLMesh(inPath + "/cap1.stl"),
-				new STLMesh(inPath + "/cap2.stl"),
-				new STLMesh(inPath + "/strap1.stl"),
-				new STLMesh(inPath + "/strap2.stl"),			
-				new STLMesh(inPath + "/cover.stl"),  
 
+				new STLMesh(inPath + "/strapB.stl"),
+				new STLMesh(inPath + "/strapT.stl"),
+				new STLMesh(inPath + "/cover1.stl"),
+				new STLMesh(inPath + "/cover2.stl"),
+				new STLMesh(inPath + "/gapFoil.stl"),
+				
+				new STLMesh(inPath + "/cxrsHousing-20mm.stl"),
+				new STLMesh(inPath + "/frontPlateRim.stl"),
+				new STLMesh(inPath + "/frontPlate.stl"),
+				new STLMesh(inPath + "/hingeBottom.stl"),
+				new STLMesh(inPath + "/hingePlate.stl"),
+				new STLMesh(inPath + "/hingeTop.stl"),
+				new STLMesh(inPath + "/housingGapClosure.stl"),
+				new STLMesh(inPath + "/pipe1.stl"),
+				new STLMesh(inPath + "/pipe2.stl"),
+				new STLMesh(inPath + "/portCatch.stl"),
+				new STLMesh(inPath + "/ringClamp.stl"),
+				new STLMesh(inPath + "/shutter.stl"),
+				new STLMesh(inPath + "/tube.stl"),
+				new STLMesh(inPath + "/window.stl"),
+		
 		};
 		
 		thingsInWay = new Element[]{	
-
-				new STLMesh(inPath + "/frontPlateWithRim.stl"),
+				
 				new STLMesh(inPath + "/panelTL-simplified.stl"),
 				new STLMesh(inPath + "/panelTR-simplified.stl"),
-				new STLMesh(inPath + "/backHoleClosure.stl"),
-				new STLMesh(inPath + "/pipeHoleClosure.stl"),
-				new STLMesh(inPath + "/sideClosure.stl"),
-
-				/*new STLMesh(inPath + "/shutterDriveMech1.stl"),
-				new STLMesh(inPath + "/shutterDriveMech2.stl"),
-				new STLMesh(inPath + "/shutterDriveMech3.stl"),
-				new STLMesh(inPath + "/strap1m.stl"),
-				new STLMesh(inPath + "/strap2m.stl"),*/
+				new STLMesh(inPath + "/notInterested.stl"),
 		};
-
-		nRays = 1000000;
-		nRaysToDraw = 1000;
+		
+		nRays = 10000000;
+		nRaysToDraw = 100;
 		nThreads = 12;
 		
 		sys.removeElement(sys.mirror);
@@ -87,8 +99,6 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 	
 	@Override
 	public Optic sys() { return sys; }
-	@Override
-	public Square radSurf() { return sys.radSurface; }
 	@Override
 	public String designName() { return sys.getDesignName(); }
 	
