@@ -41,14 +41,14 @@ public class RadiationExposureAET21_Triangles extends RadiationExposureTriangles
 	
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7();
 	
-	@Override public Element tracingTarget() { return sys.portTubeCyld; }
-	//@Override public Element tracingTarget() { return sys.entryAperture; }
+	//@Override public Element tracingTarget() { return sys.portTubeCyld; }
+	@Override public Element tracingTarget() { return sys.entryAperture; }
 	
 	@Override
 	public void start() {
 		
 		inPath = "/work/cad/aet21/op2/radExposure2";
-		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure2-bugfix/";
+		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure2-entryAperture-bugfix/";
 		
 		testElements = new Element[]{
 				new STLMesh(inPath + "/hst-M1.stl"),
@@ -64,8 +64,8 @@ public class RadiationExposureAET21_Triangles extends RadiationExposureTriangles
 				
 				new STLMesh(inPath + "/tube.stl"),
 				
-				new STLMesh(inPath + "/shutterClosed.stl"),
-				//new STLMesh(inPath + "/shutterOpen.stl"),
+				//new STLMesh(inPath + "/shutterClosed.stl"),
+				new STLMesh(inPath + "/shutterOpen.stl"),
 				
 				new STLMesh(inPath + "/coolingRing.stl"),
 				new STLMesh(inPath + "/coolingRingPlate.stl"),
@@ -83,7 +83,7 @@ public class RadiationExposureAET21_Triangles extends RadiationExposureTriangles
 				new STLMesh(inPath + "/closure-aet21.stl"),	
 		};
 
-		nRays = 1000000;
+		nRays = 50000000;
 		nRaysToDraw = 5000;
 		nThreads =12;
 		
