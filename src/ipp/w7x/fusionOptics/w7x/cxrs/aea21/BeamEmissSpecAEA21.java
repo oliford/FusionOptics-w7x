@@ -508,6 +508,18 @@ public class BeamEmissSpecAEA21 extends Optic {
 
 	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 
 	
+	//reradiation from CXRS housing front surface at 450°C
+	public double[] housingCentre0 = { 2.08450048828125, 6.0242529296875, 0.3746031799316406 };	
+	public double housingWidth = 0.125;
+	public double housingHeight = 0.120;
+	
+	//move just behind mesh 
+	public double[] housingCentre = Util.plus(housingCentre0, Util.mul(portNormal, 0.005));
+	public double[] housingRight = Util.reNorm(Util.cross(portNormal, globalUp));	
+	public double[] housingUp = Util.reNorm(Util.cross(housingRight, portNormal));
+	
+	public Square housingSurface = new Square("housingSurface", housingCentre, portNormal, housingUp, housingWidth, housingHeight, NullInterface.ideal()); 
+	
 	
 	public Element tracingTarget = mirror;
 	public Surface checkSurface = mirror;

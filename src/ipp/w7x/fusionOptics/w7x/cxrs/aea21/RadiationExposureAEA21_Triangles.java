@@ -41,25 +41,31 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 	
 	public BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	
+	/*
 	@Override
 	public Square radSurf() { return sys.radSurface; }
 	
 	private Optic targ = new STLMesh("/work/cad/aea21/radExposure4/cxrsHousing.stl");
+	@Override public Element tracingTarget() { return targ; }
+	*/
+	
+
+	@Override
+	public Square radSurf() { return sys.housingSurface; }
+	
+	private Optic targ = new STLMesh("/work/cad/aea21/radExposure4/shutter.stl");
 	@Override public Element tracingTarget() { return targ; }
 	
 	@Override
 	public void start() {
 		
 		inPath = "/work/cad/aea21/radExposure4";
-		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure4-closed-all/";
+		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure4-reradiation/";
+		
+		powerAngularDensity = 15e3 / 2 / Math.PI;  //reradiation from 450°C at emissivity=1
 		
 		testElements = new Element[]{
 
-				new STLMesh(inPath + "/strapB.stl"),
-				new STLMesh(inPath + "/strapT.stl"),
-				new STLMesh(inPath + "/cover1.stl"),
-				new STLMesh(inPath + "/cover2.stl"),
-				new STLMesh(inPath + "/gapFoil.stl"),
 				
 				new STLMesh(inPath + "/cxrsHousing-20mm.stl"),
 				new STLMesh(inPath + "/frontPlateRim.stl"),
@@ -72,10 +78,27 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 				new STLMesh(inPath + "/pipe2.stl"),
 				new STLMesh(inPath + "/portCatch.stl"),
 				new STLMesh(inPath + "/ringClamp.stl"),
-				new STLMesh(inPath + "/shutter.stl"),
 				new STLMesh(inPath + "/tube.stl"),
 				new STLMesh(inPath + "/window.stl"),
-		
+				
+				//closed
+				new STLMesh(inPath + "/shutter.stl"),
+				new STLMesh(inPath + "/strapB.stl"),
+				new STLMesh(inPath + "/strapT.stl"),
+				new STLMesh(inPath + "/cover1.stl"),
+				new STLMesh(inPath + "/cover2.stl"),
+				new STLMesh(inPath + "/gapFoil.stl"),
+				//*/
+				
+				//open
+				/*new STLMesh(inPath + "/driveBottom-open.stl"),
+				new STLMesh(inPath + "/driveTop-open.stl"),
+				new STLMesh(inPath + "/shutter-open.stl"),
+				new STLMesh(inPath + "/mirror-open.stl"),
+				new STLMesh(inPath + "/thermocoupleWire.stl"),
+				new STLMesh(inPath + "/cover1Copper-open.stl"),
+				//*/
+				
 		};
 		
 		thingsInWay = new Element[]{	

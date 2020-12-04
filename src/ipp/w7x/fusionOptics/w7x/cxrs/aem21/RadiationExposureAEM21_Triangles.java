@@ -75,7 +75,7 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 		
 				
 		inPath = "/work/cad/aem21/radExposure50/";
-		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure50-noEdges-gapFoil/";
+		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure50-shutterOpen/";
 		
 		testElements = new Element[]{
 				new STLMesh(inPath + "/FrontPlate.stl"),
@@ -85,11 +85,11 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 				new STLMesh(inPath + "/Zwickel.stl"), 			
 				new STLMesh(inPath + "/FrontPlatePipe.stl"),
 				new STLMesh(inPath + "/PortShieldPipe.stl"),
-				new STLMesh(inPath + "/MirrorClosed.stl"),
+				//new STLMesh(inPath + "/MirrorClosed.stl"),
 				
-				new STLMesh(inPath + "/Cover1-noEdges-mod2.stl"),
-				new STLMesh(inPath + "/Cover2-noEdges-mod2.stl"),
-				new STLMesh(inPath + "/gapFoil.stl"),
+				//new STLMesh(inPath + "/Cover1-noEdges-mod2.stl"),
+				//new STLMesh(inPath + "/Cover2-noEdges-mod2.stl"),
+				//new STLMesh(inPath + "/gapFoil.stl"),
 				
 				new STLMesh(inPath + "/ProtectionCollar1.stl"),
 				new STLMesh(inPath + "/ProtectionCollar2.stl"),
@@ -99,14 +99,18 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 				new STLMesh(inPath + "/portLiner-AEN21-spaltSchutz.stl"),
 				new STLMesh(inPath + "/portLiner-AEN21-spaltSchutz2.stl"),
 
-				new STLMesh(inPath + "/shutterDriveLeft.stl"),
-				new STLMesh(inPath + "/shutterDriveRight.stl"),
-				new STLMesh(inPath + "/shutterDriveAcross.stl"),
-				new STLMesh(inPath + "/teWire1.stl"),
-				new STLMesh(inPath + "/teWire2.stl"),
+				//new STLMesh(inPath + "/shutterDriveLeft.stl"),
+				//new STLMesh(inPath + "/shutterDriveRight.stl"),
+				//new STLMesh(inPath + "/shutterDriveAcross.stl"),
+				//new STLMesh(inPath + "/teWire1.stl"),
+				//new STLMesh(inPath + "/teWire2.stl"),
 				
-				new STLMesh(inPath + "/strapL.stl"),
-				new STLMesh(inPath + "/strapR.stl"),
+				//new STLMesh(inPath + "/strapL.stl"),
+				//new STLMesh(inPath + "/strapR.stl"),
+
+				new STLMesh(inPath + "/shutterOpen.stl"),
+				new STLMesh(inPath + "/mirrorOpen.stl"),
+				new STLMesh(inPath + "/protectionWindow.stl"),
 				
 		};
 		
