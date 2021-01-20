@@ -41,28 +41,29 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 	
 	public BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	
-	/*
+	
 	@Override
 	public Square radSurf() { return sys.radSurface; }
 	
 	private Optic targ = new STLMesh("/work/cad/aea21/radExposure4/cxrsHousing.stl");
 	@Override public Element tracingTarget() { return targ; }
-	*/
+	//*/
 	
-
+	/*
 	@Override
 	public Square radSurf() { return sys.housingSurface; }
 	
 	private Optic targ = new STLMesh("/work/cad/aea21/radExposure4/shutter.stl");
 	@Override public Element tracingTarget() { return targ; }
+	//*/
 	
 	@Override
 	public void start() {
 		
 		inPath = "/work/cad/aea21/radExposure4";
-		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure4-reradiation/";
+		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure4-open-morePipe/";
 		
-		powerAngularDensity = 15e3 / 2 / Math.PI;  //reradiation from 450°C at emissivity=1
+		//powerAngularDensity = 15e3 / 2 / Math.PI;  //reradiation from 450°C at emissivity=1
 		
 		testElements = new Element[]{
 
@@ -74,7 +75,7 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 				new STLMesh(inPath + "/hingePlate.stl"),
 				new STLMesh(inPath + "/hingeTop.stl"),
 				new STLMesh(inPath + "/housingGapClosure.stl"),
-				new STLMesh(inPath + "/pipe1.stl"),
+				new STLMesh(inPath + "/pipe1More.stl"),
 				new STLMesh(inPath + "/pipe2.stl"),
 				new STLMesh(inPath + "/portCatch.stl"),
 				new STLMesh(inPath + "/ringClamp.stl"),
@@ -82,7 +83,7 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 				new STLMesh(inPath + "/window.stl"),
 				
 				//closed
-				new STLMesh(inPath + "/shutter.stl"),
+				/*new STLMesh(inPath + "/shutter.stl"),
 				new STLMesh(inPath + "/strapB.stl"),
 				new STLMesh(inPath + "/strapT.stl"),
 				new STLMesh(inPath + "/cover1.stl"),
@@ -91,7 +92,7 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 				//*/
 				
 				//open
-				/*new STLMesh(inPath + "/driveBottom-open.stl"),
+				new STLMesh(inPath + "/driveBottom-open.stl"),
 				new STLMesh(inPath + "/driveTop-open.stl"),
 				new STLMesh(inPath + "/shutter-open.stl"),
 				new STLMesh(inPath + "/mirror-open.stl"),
