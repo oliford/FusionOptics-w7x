@@ -5,6 +5,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U_CISDual;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U_CISDual_OneOnDiv;
+import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21_SMSE;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsK41;
@@ -70,10 +71,10 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static BeamEmissSpecAEA21_SMSE sys = new BeamEmissSpecAEA21_SMSE();
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
@@ -108,7 +109,7 @@ public class FibreBacktrace {
 	 
 	public final static int nAttempts = 1000;
 
-	public static String writeWRLForDesigner = "20201018";
+	public static String writeWRLForDesigner = null;//"20201018";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	
