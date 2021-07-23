@@ -278,15 +278,20 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	
 	
 	// Plasma radiating surface for heat-load analysis 	
-	public double[] radSurfaceCentre = { -0.6759374 ,  5.97114095, -0.09727827 };	
+	//public double[] radSurfaceCentre = { -0.6759374 ,  5.97114095, -0.09727827 }; //shifted, for aperture targetting
+	public double[] radSurfaceCentre = {  -0.9586693115234375, 5.927921875, -0.07366898345947266 }; //central, for graphite
 	public double[] radSurfaceNormal = { -0.12153662,  0.95077941,  0.28503923  };
 	
 	public double[] radUp = Util.createPerp(radSurfaceNormal);
 	//public double radSurfWidth = 1.100; //for testing inner parts (window etc)
 	//public double radSurfHeight = 0.900;
 
-	public double radSurfWidth = 1.000; //for testing closed shutter
-	public double radSurfHeight = 0.900;
+	//public double radSurfWidth = 1.000; //for testing closed shutter
+	//public double radSurfHeight = 0.900;
+	
+	public double radSurfWidth = 1.600; //for testing graphite
+	public double radSurfHeight = 1.600;
+
 
 	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 
 	//*/

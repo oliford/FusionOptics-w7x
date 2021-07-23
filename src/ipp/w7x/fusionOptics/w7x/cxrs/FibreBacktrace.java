@@ -66,7 +66,7 @@ import fusionOptics.types.Surface;
 public class FibreBacktrace {
 	public String lightPathsSystemName = "AEA21-LED";
 	
-	public static double losCyldRadius = 0.005;
+	public static double losCyldRadius = 0.007;
 	
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
@@ -109,7 +109,7 @@ public class FibreBacktrace {
 	 
 	public final static int nAttempts = 1000;
 
-	public static String writeWRLForDesigner = null;//"20201018";
+	public static String writeWRLForDesigner = null; //"20201216";
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
 	
@@ -312,8 +312,17 @@ public class FibreBacktrace {
 			}
 		}
 		jsonOut.println("]}");
-		
-		
+
+		//output TXT LOS info in mm
+				PrintStream losOut = new PrintStream(outPath + "/lineOfSightDefs-"+sys.lightPathsSystemName+".txt");
+				losOut.println("# x1 y2 z2 x2 y2 z2 [mm]");
+				for(int iB=0; iB < sys.channelR.length; iB++){
+					for(int iP=0; iP < sys.channelR[iB].length; iP++){		
+						boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
+						outputInfo(losOut, startPoints, closestApproachPos, iB, iP, Thing.TXT_LOS_MM, isLast);				
+					}
+				}
+				
 		
 		//spit out FreeCAD instructions to create fibre end block cylinders
 		double cyldLen = 0.030;
@@ -349,7 +358,7 @@ public class FibreBacktrace {
 		vrmlOut.destroy();
 	}
 		
-	private static enum Thing { FreeCADHitPos, FreeCADLOS, JSON_LOS };
+	private static enum Thing { FreeCADHitPos, FreeCADLOS, JSON_LOS, TXT_LOS_MM };
 	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, Thing thing, boolean supressComma){
 
 		double extendLOSCylds = 0.400; // extend 200mm in each direction
@@ -359,9 +368,11 @@ public class FibreBacktrace {
 		double u[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
 		double losLen = Util.length(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
 		
+		int approaches[] = (beams instanceof W7xNBI) ? new int[] { 6, 7 } : new int[] { 0 };
+		
 		//point on ray closest to beam axes
 		double approach[][] = new double[8][];
-		for(int jB=6; jB < 8; jB++){
+		for(int jB : approaches){			
 			
 			//double beamStart[] = beams.start(sys.beamIdx[iB]);
 			//double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
@@ -377,7 +388,7 @@ public class FibreBacktrace {
 		String chanName = sys.lightPathsSystemName 
 				+ (sys.lightPathRowName != null ? ("_"+sys.lightPathRowName[iB]) : "")
 				+ ":" + String.format("%02d", iP+1);
-	
+		
 		double p[] = Util.minus(startPoints[iB][iP], Util.mul(u, extendLOSCylds/2));
 		
 		switch(thing){
@@ -407,11 +418,13 @@ public class FibreBacktrace {
 								+ "}" + (supressComma ? "" : ", ")
 						);
 				break;
+				
+			case TXT_LOS_MM:
+				stream.println(String.format("%7.3f", startPoints[iB][iP][0]*1e3) + " " + String.format("%7.3f", startPoints[iB][iP][1]*1e3) + " " + String.format("%7.3f", startPoints[iB][iP][2]*1e3) + " "
+							+ String.format("%7.3f", hitPoints[iB][iP][0]*1e3) + " " + String.format("%7.3f", hitPoints[iB][iP][1]*1e3) + " " + String.format("%7.3f", hitPoints[iB][iP][2]*1e3));
+						
+				break;
 		}
-		
-		
-		
-		
 	}
 	
 	private static void makeFibreCyldSTL() {

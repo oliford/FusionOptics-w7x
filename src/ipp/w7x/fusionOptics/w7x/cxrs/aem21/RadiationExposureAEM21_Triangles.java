@@ -1,4 +1,4 @@
-package ipp.w7x.fusionOptics.w7x.cxrs;
+package ipp.w7x.fusionOptics.w7x.cxrs.aem21;
 
 import net.jafama.FastMath;
 import oneLiners.OneLiners;
@@ -29,10 +29,8 @@ import fusionOptics.types.Optic;
 import fusionOptics.types.Pol;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
+import ipp.w7x.fusionOptics.w7x.cxrs.RadiationExposureTriangles;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
-import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21;
-import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_AsMeasured;
-import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 
 /** Simple radiation exposure calculation by emitting rays in 4.pi from a plane representing the plasma edge
  * and seeing how many hit a given surface.
@@ -45,14 +43,39 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 	//AEA21
 	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	
+	// Direct power from plasma 
 	@Override
-	public Element tracingTarget() { return sys.tracingTarget; }
+	public Square radSurf() { return sys.radSurface; }
+	
+	private STLMesh targ = new STLMesh("/work/cad/aem21/radExposure50/FrontPlate.stl");
+	public Element tracingTarget() { return targ; }
+	
+	public double powerDensity = 100e3;
+	//*/
+	
+	
+	// Reradiated power from front plate at max temperature
+	/*@Override
+	public Square radSurf() { return sys.frontPlateRadiator; }
+	
+	private STLMesh targ = new STLMesh("/work/cad/aem21/radExposure50/Tube.stl");
+	@Override
+	public Element tracingTarget() {  return targ; }
+	
+	public double powerDensity = sys.fprPowerDensity;
+	//*/
+	
+	
+
 	
 	@Override
 	public void start() {
+		
+		powerAngularDensity = powerDensity / 2 / Math.PI; // Reradiation from <T> = 350'C surface
+		
 				
-		inPath = "/work/cad/aem21/radExposure40/";
-		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure40-rerun/";
+		inPath = "/work/cad/aem21/radExposure50/";
+		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure50-shutterOpen/";
 		
 		testElements = new Element[]{
 				new STLMesh(inPath + "/FrontPlate.stl"),
@@ -62,9 +85,12 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 				new STLMesh(inPath + "/Zwickel.stl"), 			
 				new STLMesh(inPath + "/FrontPlatePipe.stl"),
 				new STLMesh(inPath + "/PortShieldPipe.stl"),
-				new STLMesh(inPath + "/MirrorClosed.stl"),
-				new STLMesh(inPath + "/Cover1.stl"),
-				new STLMesh(inPath + "/Cover2.stl"),
+				//new STLMesh(inPath + "/MirrorClosed.stl"),
+				
+				//new STLMesh(inPath + "/Cover1-noEdges-mod2.stl"),
+				//new STLMesh(inPath + "/Cover2-noEdges-mod2.stl"),
+				//new STLMesh(inPath + "/gapFoil.stl"),
+				
 				new STLMesh(inPath + "/ProtectionCollar1.stl"),
 				new STLMesh(inPath + "/ProtectionCollar2.stl"),
 				new STLMesh(inPath + "/Tube.stl"),
@@ -72,6 +98,20 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 				
 				new STLMesh(inPath + "/portLiner-AEN21-spaltSchutz.stl"),
 				new STLMesh(inPath + "/portLiner-AEN21-spaltSchutz2.stl"),
+
+				//new STLMesh(inPath + "/shutterDriveLeft.stl"),
+				//new STLMesh(inPath + "/shutterDriveRight.stl"),
+				//new STLMesh(inPath + "/shutterDriveAcross.stl"),
+				//new STLMesh(inPath + "/teWire1.stl"),
+				//new STLMesh(inPath + "/teWire2.stl"),
+				
+				//new STLMesh(inPath + "/strapL.stl"),
+				//new STLMesh(inPath + "/strapR.stl"),
+
+				new STLMesh(inPath + "/shutterOpen.stl"),
+				new STLMesh(inPath + "/mirrorOpen.stl"),
+				new STLMesh(inPath + "/protectionWindow.stl"),
+				
 		};
 		
 		thingsInWay = new Element[]{	
@@ -92,7 +132,7 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 //*/
 		};
 		
-		nRays = 1000000;
+		nRays = 10000000;
 		nRaysToDraw = 1000;
 		nThreads = 12;
 		
@@ -110,13 +150,12 @@ public class RadiationExposureAEM21_Triangles extends RadiationExposureTriangles
 	
 	@Override
 	public Optic sys() { return sys; }
-	@Override
-	public Square radSurf() { return sys.radSurface; }
-	@Override
-	public String designName() { return sys.getDesignName(); }
 	
 	public static void main(String[] args) {
 		new RadiationExposureAEM21_Triangles().start();		
 	}
+
+	@Override
+	public String designName() { return sys.getDesignName(); }
 	
 }

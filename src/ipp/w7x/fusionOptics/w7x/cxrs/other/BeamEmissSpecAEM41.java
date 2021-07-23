@@ -25,6 +25,14 @@ import fusionOptics.types.Optic;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAEM41 extends Optic {
+	
+	public String lightPathsSystemName = "AEM41";	
+	
+	public String lightPathRowName[] = null;
+	
+	public Element strayPlane = null;
+	
+	
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
@@ -74,9 +82,10 @@ public class BeamEmissSpecAEM41 extends Optic {
 	public double lensIrisPos[] = Util.plus(lensCentrePos, Util.mul(portNormal, -0.002));
 	public Iris lensIris = new Iris("lensIris", lensIrisPos, portNormal, lensDiameter, lensDiameter*0.48, null, null, Absorber.ideal());
 	
-	public STLMesh portLiner = new STLMesh("portLiner", "/work/ipp/w7x/cad/aem41/portLiner-AEM41-201706.stl");
+	public STLMesh portLiner = new STLMesh("portLiner", "/work/cad/aem41/portLiner-AEM41-201706.stl");
 	
-
+	public double overrideObsPositions[][][] = null;
+	
 	/*** Fibres ****/
 	int nFibres = 10;
 	
