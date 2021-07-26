@@ -2,6 +2,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import fusionDefs.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
+import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21.Subsystem;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsK41;
@@ -56,7 +57,7 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	

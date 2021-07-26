@@ -9,7 +9,7 @@ import oneLiners.OneLiners;
 public class BeamEmissSpecAEA21U extends BeamEmissSpecAEA21 {
 
 	public BeamEmissSpecAEA21U() {
-		super();
+		super(Subsystem.CXRS);
 		
 		lightPathsSystemName = "AEA21u";
 				

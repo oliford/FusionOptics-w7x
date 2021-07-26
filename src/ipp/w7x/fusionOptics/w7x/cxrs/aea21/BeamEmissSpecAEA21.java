@@ -523,9 +523,17 @@ public class BeamEmissSpecAEA21 extends Optic {
 	
 	public Element tracingTarget = mirror;
 	public Surface checkSurface = mirror;
+	
+	public enum Subsystem {
+		CXRS,
+		Lamp,
+		SMSE,
+	}
+	public Subsystem subsystem;
 			
-	public BeamEmissSpecAEA21() {
-		super("beamSpec-aea21");
+	public BeamEmissSpecAEA21(Subsystem subsystem) {
+		super("beamSpec-aea21-"+subsystem);
+		this.subsystem = subsystem;
 		
 		//addElement(new STLMesh("panel", "/work/ipp/w7x/cad/aea21/panel-cutting-aea21-edge-channels-cut-front.stl", portEntryPos, 0.500));
 		
@@ -541,8 +549,11 @@ public class BeamEmissSpecAEA21 extends Optic {
 		addElement(beamPlane);
 		//addElement(shieldTiles);
 		
-		setupFibrePositions();
-		makeLampFibre();
+		switch(subsystem) {
+			case CXRS: setupFibrePositionsCXRS(); break;
+			case Lamp: makeLampFibre(); break;
+			case SMSE: setupFibrePositionsSMSE(); break;
+		}
 		setupFibrePlanes();
 		
 		/*
@@ -602,6 +613,10 @@ public class BeamEmissSpecAEA21 extends Optic {
 				",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
 				"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360)); #SourceAxisCylinder");
 		
+		System.out.println("Part.show(Part.makeCylinder("+rodRadius*1e3+","+rodLength*1e3 +
+				",FreeCAD.Vector("+rodEndPos[0]*1e3+","+rodEndPos[1]*1e3+","+rodEndPos[2]*1e3 +
+				"), FreeCAD.Vector("+rodAxis[0]*1e3+","+rodAxis[1]*1e3+","+rodAxis[2]*1e3+"), 360)); #rodCylinder");
+		
 		double adjustedTargetPos[] = Util.plus(targetObsPos, Util.mul(opticAxis, mirrorDistIntoPort));
 		System.out.println("Part.show(Part.makeSphere("+(cyldRadius*1e3)+", FreeCAD.Vector("+adjustedTargetPos[0]*1e3+","+adjustedTargetPos[1]*1e3+","+adjustedTargetPos[2]*1e3 + "))); # adjustedTargetPos");
 		
@@ -609,7 +624,14 @@ public class BeamEmissSpecAEA21 extends Optic {
 		
 	}
 
-	public String getDesignName() { return "aea21";	}
+	public String getDesignName() { 
+		switch(subsystem) {
+			case CXRS: return "aea21";
+			case Lamp: return "aea21-led";
+			case SMSE: return "aea21-smse";
+			default: throw new IllegalArgumentException();
+		}
+	}
 
 	public Element[] makeSimpleModel() {
 		return new Element[0];
@@ -642,6 +664,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 			 						Util.plus(entryWindowBackPos, Util.mul(opticAxis, 0.2965)),
 			 						Util.mul(globalUp, 0.0005) ); //not sure why :/
 									
+	private double rodRadius = 0.001;
 	private double rodLength = 1.000;
 	private double rodCentre[] = Util.plus(rodEndPos, Util.mul(rodAxis, rodLength/2));
 	public Cylinder rod = new Cylinder("rod", rodCentre, rodAxis, 0.005, rodLength, NullInterface.ideal());
@@ -681,7 +704,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	private double ferruleAdjustFocus = 0.034;
 	//*/
 
-	private void setupFibrePositions() {
+	private void setupFibrePositionsCXRS() {
 		int nBeams = ferruleRowNFibres.length;
 		channelR = new double[nBeams][];
 		beamIdx = new int[] { W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q8 , W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q8 };
@@ -749,6 +772,66 @@ public class BeamEmissSpecAEA21 extends Optic {
 		}
 	}
 	
+	/** Set fibre positions according to 'mse5' CAD design
+	 */
+	private final int smseCols = 16; 
+	private final int smseRows = 9;
+	private double smseColumnTilt = 21.8 * Math.PI / 180;
+	
+	private double smseSpacingH = 0.6e-3;
+	private double smseSpacingW = 0.7e-3;
+	
+	private double smsePlateFromRodEnd = ferruleCurvatureCenterToRod[0] - ferruleRowCurvatureRadius[0];
+	private double smseFirstRowBelowRodCentre = 0.65e-3;
+	private double smseFirstColumnLeftOfRodCentre = 8.52e-3;
+	
+	private int[][] smseSkipFibres = {{15, 5}, {15, 6}, {15, 7}, { 14, 8 }, {15, 8}};
+		
+	
+	private void setupFibrePositionsSMSE() {
+		int nBeams = 1;
+		channelR = new double[nBeams][];
+		beamIdx = new int[] { W7xNBI.BEAM_Q8 };
+		lightPathRowName = new String[]{ "SMSE" };
+		fibreEndPos = new double[nBeams][][];
+		fibreEndNorm = new double[nBeams][][];
+		
+		for(int iB=0; iB < nBeams; iB++){
+			int nFibres = smseCols * smseRows - smseSkipFibres.length;
+			fibreEndPos[iB] = new double[nFibres][];
+			fibreEndNorm[iB] = new double[nFibres][];
+			channelR[iB] = new double[nFibres];
+		
+			//find row origin (green/blue dots in diagram)
+			double origin[] = rodEndPos.clone();
+			origin = Util.plus(origin, Util.mul(ferruleUp, ferruleAdjustUp));
+			origin = Util.plus(origin, Util.mul(ferruleRight, ferruleAdjustRight));			
+			origin = Util.plus(origin, Util.mul(rodAxis, -smsePlateFromRodEnd + ferruleAdjustFocus));
+			
+			int iF=0;
+			for(int iY=0; iY < smseRows; iY++ ) {
+				double rowOrigin[] = Util.plus(origin, Util.mul(ferruleUp, smseFirstRowBelowRodCentre + iY * smseSpacingH));
+nextFibre:		for(int iX=0; iX < smseCols; iX++) {
+					for(int i=0; i < smseSkipFibres.length; i++) {
+						if(smseSkipFibres[i][0] == iX && smseSkipFibres[i][1] == iY)
+							continue nextFibre;
+					}
+					
+					channelR[iB][iF] = 5.4 + iX/100;
+					double x = -smseFirstColumnLeftOfRodCentre + iX * smseSpacingW;
+					x += (iY * smseSpacingH) * FastMath.tan(smseColumnTilt);
+					fibreEndPos[iB][iF] = Util.plus(rowOrigin, Util.mul(ferruleRight, x));
+					//fibreEndPos[iB][iF] = origin.clone();
+					fibreEndNorm[iB][iF] = Util.mul(fibrePlane.getNormal(), -1.0);
+					iF++;
+				}
+			}
+
+		}
+		
+	}
+	
+
 	/** Adds an effetive 'fibre' for a LED light source near the head */
 	private void makeLampFibre() {
 		int n = channelR.length;		
@@ -776,7 +859,6 @@ public class BeamEmissSpecAEA21 extends Optic {
 		fibreEndDiameter = 0.019;
 			
 	}
-	
 	
 	private void setupFibrePlanes() {
 		int nBeams = channelR.length;

@@ -23,6 +23,7 @@ import fusionOptics.types.Pol;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
+import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21.Subsystem;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_AsMeasured;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
@@ -36,7 +37,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 public class RadiationExposure {
 	
 	//AEA21
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	
 	//public static Element testElement = sys.entryWindowFront;
 	//public static Element testElement = new STLMesh("mirrorBlockClosed", "/work/ipp/w7x/cad/aea21/radExposure/mirrorBlockClosed.stl");

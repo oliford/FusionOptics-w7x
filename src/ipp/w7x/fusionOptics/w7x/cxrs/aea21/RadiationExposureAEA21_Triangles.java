@@ -30,6 +30,7 @@ import fusionOptics.types.Pol;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
 import ipp.w7x.fusionOptics.w7x.cxrs.RadiationExposureTriangles;
+import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21.Subsystem;
 
 /** Simple radiation exposure calculation by emitting rays in 4.pi from a plane representing the plasma edge
  * and seeing how many hit a given surface.
@@ -39,7 +40,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.RadiationExposureTriangles;
  */
 public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles {
 	
-	public BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
+	public BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	
 	
 	@Override

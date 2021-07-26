@@ -399,7 +399,7 @@ public class BeamEmissSpecAEA21_SMSE extends Optic {
 	
 	
 	/* Adjustment to cope with other changes... */
-	private double ferruleAdjustUp = 0.000;
+	/*private double ferruleAdjustUp = 0.000;
 	private double ferruleAdjustRight = 0.000;
 	private double ferruleAdjustFocus = 0.000;	
 	//*/
@@ -411,7 +411,7 @@ public class BeamEmissSpecAEA21_SMSE extends Optic {
 	//*/
 	
 	// for L1-L2 of 75mm
-	/*private double ferruleAdjustUp = -0.0003; 
+	private double ferruleAdjustUp = -0.0003; 
 	private double ferruleAdjustRight = -0.00017;
 	private double ferruleAdjustFocus = 0.0053;
 	//*/
@@ -440,9 +440,9 @@ public class BeamEmissSpecAEA21_SMSE extends Optic {
 			//find row origin (green/blue dots in diagram)
 			double origin[] = rodEndPos.clone();
 			origin = Util.plus(origin, Util.mul(rodAxis, -fibrePlateFromRodEnd));
-			//origin = Util.plus(origin, Util.mul(ferruleUp, ferruleRowUpwardsOffset[iB] + ferruleAdjustUp));
-			//origin = Util.plus(origin, Util.mul(ferruleRight, ferruleRowSidewaysOffset[iB] + ferruleAdjustRight));			
-			//origin = Util.plus(origin, Util.mul(rodAxis, -ferruleCurvatureCenterToRod[iB] + ferruleAdjustFocus));
+			origin = Util.plus(origin, Util.mul(ferruleUp, ferruleAdjustUp));
+			origin = Util.plus(origin, Util.mul(ferruleRight, ferruleAdjustRight));			
+			origin = Util.plus(origin, Util.mul(rodAxis, ferruleAdjustFocus));
 			
 			int iF=0;
 			for(int iY=0; iY < fibreRows; iY++ ) {
