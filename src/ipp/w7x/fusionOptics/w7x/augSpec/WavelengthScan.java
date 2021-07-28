@@ -18,11 +18,13 @@ import otherSupport.ColorMaps;
 import otherSupport.RandomManager;
 
 public class WavelengthScan {
-	public static AugSpec4 sys = new AugSpec4();
+	//public static AugSpec4 sys = new AugSpec4();
+	public static SpexM750 sys = new SpexM750();
 	public static Surface mustHitToDraw = sys.ccd;
-	public static int nAttempts = 1000;
+	public static int nAttempts = 10000;
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/augSpec-2400-20deg/";
+	//final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/augSpec-2400-20deg/";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/SpecM750-2400/";
 	
 	public static double slitWidth = 100e-6;
 	
@@ -35,12 +37,14 @@ public class WavelengthScan {
 		//if((writeWRLForDesigner == null)){
 			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});			
 		//}
-		vrmlOut.setSkipRays(nAttempts*wavelengths.length / 5000);
+		vrmlOut.setSkipRays(nAttempts*wavelengths.length / 10000);
 			
 		double col[][] = ColorMaps.jet(wavelengths.length);
 			
 		BinaryMatrixWriter out = new BinaryMatrixWriter(outPath + "/wavelengthScan.bin", 4); 
-		int iF = sys.nFibres / 2;
+		//int iF = sys.nFibres / 2;
+		for(int iiF=0; iiF < 3; iiF++) {
+			int iF = iiF * (sys.nFibres - 1) / 2;
 		for(int iL=0; iL < wavelengths.length; iL+=1){
 			
 			int nHits = 0;
@@ -106,8 +110,10 @@ public class WavelengthScan {
 					}
 				}					
 			}
+		
 			System.out.println(iL + ": l=" + wavelengths[iL]*1e9 + ", " + nHits + "/" + nAttempts);
 			out.writeRow(wavelengths[iL], pos[0]/nHits, pos[1]/nHits, (double)nAttempts / nHits);
+		}
 		}
 		
 		out.close();
