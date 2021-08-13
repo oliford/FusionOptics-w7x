@@ -13,6 +13,8 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_asMeasuredOP12b;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7.Focus;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEM41;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
@@ -57,7 +59,8 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
+	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
+	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.M1);
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -85,7 +88,7 @@ public class BackgroundTargetting {
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
 	public static double losCyldRadius = 0.005;
-	public static Surface startSurface = sys.mirror;
+	public static Surface startSurface = sys.mirror2;
 		
 	public static void main(String[] args) throws FileNotFoundException {
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+".vrml", 5.005);
@@ -106,11 +109,11 @@ public class BackgroundTargetting {
 		}
 		Optic all = new Optic("all", new Element[]{ sys, background });
 		//background.addElement(sys.port30Plane);
-		//sys.addElement(background);		
+		//sys.addElement(background);
 				
 		//Need to get through the fibre plane
 		sys.fibrePlane.setInterface(NullInterface.ideal());		
-		sys.addElement(sys.beamPlane);
+		//sys.addElement(sys.beamPlane);
 		
 		double hitPoints[][][] = new double[sys.channelR.length][][];
 		double startPoints[][][] = new double[sys.channelR.length][][];
@@ -253,7 +256,7 @@ public class BackgroundTargetting {
 	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, int thing){
 	
 
-		double rad = hitPoints[iB][iP][3] / 4;
+		double rad = hitPoints[iB][iP][3] / 2;
 		
 		//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
 		//			"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "));");
@@ -263,7 +266,8 @@ public class BackgroundTargetting {
 		//point on ray closest to beam axes
 		double approach[][] = new double[8][];
 		for(int jB=6; jB < 8; jB++){
-			
+			if(sys.beamIdx[iB] < 0)
+				continue;
 			double beamStart[] = beams.start(sys.beamIdx[iB]);
 			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
 			

@@ -33,10 +33,12 @@ import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
-	public String lightPathsSystemName = "AET21-HST";
+	public String lightPathsSystemName = "AET21-HST"; //and -PHYS for the 2nd set
 	
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 1000e-9;
+	
+	public double virtualObsPos[] = { -0.8358309322759397,	6.072309870384837,	-0.02230182161925606 };
 	
 	/** DIrection of port axis */
 	public double portAxis[] = { 0.07272971344397348, -0.9468079681488022, 0.3134725829036636 };
@@ -64,7 +66,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	
 	public enum Focus {		
 		BeamDump(0.0),
-		M1(0.005),
+		M1(0.002), 	//Was 5mm, dropped to 2mm to avoid picking up from W tile.
 		L3(-0.005);
 		
 		Focus(double shift) { this.shift = shift; }		
@@ -73,12 +75,26 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	
 	public Focus focus;
 	
-	public double beamDumps[][] = {
+	/** Original design points OP1.2 and OP2 design. Roughly in the middle maybe adjusted according to Paul's intuition */
+	/*public double beamDumps[][] = {
 		{ -0.21141751098632813, 4.57866845703125, 0.4623721008300781 },
 		{ 0.1455321044921875, 4.9178349609375, 0.41085964965820315 },
 		{ 0.1492540283203125, 4.95760693359375, 0.27083691406250002},
 		{ -0.17423611450195312, 4.73173291015625, 0.174153076171875 }
 	};
+	//*/
+	
+	/** Target points from Sam [1-QYB-Y0011.1] */
+	public double beamDumps[][] = {
+			{ -0.217779, 4.57337, 0.488461 },
+			//{ 0.105223, 4.89688, 0.405341 },
+			{ 0.09220848846435548, 4.8905068359375, 0.404767578125 },	//Adjusted by Paul to avoid W		
+			//{ 0.122839, 4.94578, 0.256883 },
+			{ 0.1048245620727539, 4.93611865234375, 0.2572196044921875 },	//Adjusted by Paul to avoid W
+			{ -0.188638, 4.68283, 0.208365 }
+			
+		};
+	//*/
 	
 	public double hhfTiles[][] = {
 			 { 0.2124384078979492, 4.93090771484375, 0.4795155334472656},
@@ -88,6 +104,13 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 			 //{ 0.014070590496063233, 4.830812255859375, 0.43990501403808596},
 			 { -0.033051654338836674, 4.804234375, 0.4300990142822266 }	
 		};
+	
+	public final String backgroundSTLFiles[] = {
+			"/work/cad/aet21/bg-targetting/target-m2-aet21-hst-cut.stl",
+			"/work/cad/aet21/bg-targetting/shield-m2-aet21-hst-cut.stl",
+			"/work/cad/aet21/bg-targetting/baffle-m2-aet21-hst-cut.stl"
+	};
+	
 	
 	public double overrideObsPositions[][][] = { beamDumps.clone(), beamDumps.clone(), hhfTiles.clone() };
 	
@@ -111,7 +134,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double mirror1Width = 0.057;
 	public double mirror1Height = 0.043;
 	public double mirror1InPlaneRotate = 20 * Math.PI / 180;
-	public double mirror1InPlaneShiftUp = 0.003;
+	public double mirror1InPlaneShiftUp = 0.0015;
 	public double mirror1InPlaneShiftRight = 0.000;
 	public double mirror1CentrePos0[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror1FromFront),
 																		Util.plus(Util.mul(portRight, mirror1PortRightShift),
@@ -123,7 +146,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double mirror2Height = 0.0568;
 	public double mirror2InPlaneRotate = -20 * Math.PI / 180;
 	public double mirror2InPlaneShiftRight = 0.010; //shift with changing targeting
-	public double mirror2InPlaneShiftUp = -0.004;
+	public double mirror2InPlaneShiftUp = 0.000;
 	public double mirror2CentrePos0[] = Util.plus(frontDiscCentre, Util.plus(Util.mul(portAxis, -mirror2FromFront),
 																		Util.plus(Util.mul(portRight, mirror2PortRightShift),
 																				  Util.mul(portUp, mirror2PortUpShift))));	
@@ -192,8 +215,8 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double mirror1Right0[] = Util.reNorm(Util.cross(mirror1Normal, globalUp));
 	public double mirror1Up0[] = Util.reNorm(Util.cross(mirror1Right0, mirror1Normal));
 	
-	public double mirror1Right[] = Util.plus(Util.mul(mirror1Right0, FastMath.cos(mirror1InPlaneRotate)),
-											Util.mul(mirror1Up0, FastMath.sin(mirror1InPlaneRotate)));
+	public double mirror1Right[] = Util.reNorm(Util.plus(Util.mul(mirror1Right0, FastMath.cos(mirror1InPlaneRotate)),
+											Util.mul(mirror1Up0, FastMath.sin(mirror1InPlaneRotate))));
 	public double mirror1Up[] = Util.reNorm(Util.cross(mirror1Right, mirror1Normal));
 
 	public double mirror1CentrePosPhys[] = Util.plus(Util.plus(mirror1CentrePos0, Util.mul(mirror1Right, mirror1InPlaneShiftRight)),
@@ -205,9 +228,9 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	public double mirror2Right0[] = Util.reNorm(Util.cross(mirror2Normal, globalUp));
 	public double mirror2Up0[] = Util.reNorm(Util.cross(mirror2Right0, mirror2Normal));
 	
-	public double mirror2Right[] = Util.plus(Util.mul(mirror2Right0, FastMath.cos(mirror2InPlaneRotate)),
-											Util.mul(mirror2Up0, FastMath.sin(mirror2InPlaneRotate)));
-	public double mirror2Up[] = Util.reNorm(Util.cross(mirror2Right, mirror1Normal));
+	public double mirror2Right[] = Util.reNorm(Util.plus(Util.mul(mirror2Right0, FastMath.cos(mirror2InPlaneRotate)),
+											Util.mul(mirror2Up0, FastMath.sin(mirror2InPlaneRotate))));
+	public double mirror2Up[] = Util.reNorm(Util.cross(mirror2Right, mirror2Normal));
 
 	
 	public double mirror2CentrePosPhys[] = Util.plus(Util.plus(mirror2CentrePos0, Util.mul(mirror2Right, mirror2InPlaneShiftRight)),
@@ -245,8 +268,9 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	//public Dish mirror2 = new Dish("mirror2", mirror2CentrePos, mirror2Normal, 0.100, mirror2Width/2, Reflector.ideal());
 
 	/*** Fibre plane ****/
+	public double fibrePlaneFromLens4 = lens4FocalLength + 0.00495; //adjusted 
 	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.0043; //25mm obj
-	public double fibrePlaneFromLens4 = lens4FocalLength + 0.000; //25mm obj
+	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.000; //25mm obj
 	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.010; //20mm obj
 	//public double fibrePlaneFromLens4 = lens4FocalLength + 0.002; //16mm obj
 	public double fibrePlanePos[] = Util.plus(lens4CentrePos, Util.mul(lensNormal, fibrePlaneFromLens4));
@@ -328,6 +352,7 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 
 	public Square fibrePlanes[][] = {{
 	}};
+	/*// fibre positions used to feed OP2 design 	
 	public double[][] channelR = { 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
@@ -365,7 +390,48 @@ public double[][][] fibreEndNorm = { {
 		{ 0.03425598856896587, -0.9615031848473968, 0.27265023890595713 },
 		{ 0.06853166902397345, -0.9568959122891254, 0.28222973511866356 },
 		}, 	};
+		//*/
 	
+	
+	// fibre positions to match Sam's targetting positions, then hand adjusted by Paul due to the W
+	public double[][] channelR = { 
+			{ 5.06, 5.07, 5.08, 5.09, }, 
+			{ 5.06, 5.07, 5.08, 5.09, }, 
+		}; 
+	public double[][][] fibreEndPos = { { 
+		{ -0.9004458696269232, 6.731527942657511, -0.2672074358766425 },
+		{ -0.8933144255724201, 6.732005503927944, -0.2678898914923152 },
+		{ -0.8925452718788757, 6.731247861967695, -0.27016094595623935 },
+		{ -0.8993170854919695, 6.730393408161362, -0.27128415664134353 },
+	}, { 
+		{ -0.9004457675400341, 6.731529233905389, -0.26720711784764123 },
+		{ -0.8933141606142782, 6.732002615266892, -0.2678887878293318 },
+		{ -0.8925458328030985, 6.731245375282708, -0.2701612359647754 },
+		{ -0.8993170642788302, 6.730394513391485, -0.2712853508334592 },
+	}, { 
+		{ -0.8916096883943337, 6.732151682117579, -0.26686534792254507 },
+		{ -0.893212996398727, 6.732204265792126, -0.2670904279725732 },
+		{ -0.8940998102754941, 6.732187704879934, -0.26722576394319547 },
+		{ -0.8959938490746285, 6.732036027360562, -0.26754632447876253 },
+	}, 	}; 
+public double[][][] fibreEndNorm = { { 
+	{ 0.17282579102558204, -0.9494449981688461, 0.26207907472467495 },
+	{ 0.0010052259606122753, -0.9591016462723698, 0.28306010251958535 },
+	{ -0.024668208115372545, -0.9385238150682447, 0.3443320026633075 },
+	{ 0.14485628461944605, -0.9178598317363555, 0.36952670551823324 },
+	}, { 
+	{ 0.1746425740326383, -0.9478249178761116, 0.2666981372045872 },
+	{ -0.006832065209034431, -0.9588966780450818, 0.2836731988029291 },
+	{ -0.02913866836494202, -0.9410397311675062, 0.3370388143376156 },
+	{ 0.14415677998178372, -0.9200009016395659, 0.3644408920081133 },
+	}, { 
+	{ -0.058506725618591424, -0.9650407089082698, 0.25548658126644314 },
+	{ -0.01319679884368642, -0.9644241663090537, 0.2640300587799923 },
+	{ 0.014709036163230478, -0.9629843599879202, 0.2691556551027761 },
+	{ 0.06609564858608741, -0.9586519838425298, 0.2767990952166683 },
+	}, 	};
+
+	//*/
 
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7() {
 		this(false, false, Focus.BeamDump);
@@ -451,10 +517,10 @@ public double[][][] fibreEndNorm = { {
 		lens3.shift(shift);
 		//*/
 		
-		/* rotate mirrors
-		double rotMirror = 1.0 * Math.PI / 180;
+		// rotate mirrors
+		double rotMirror = -2.0 * Math.PI / 180;
 		//mirror1.rotate(mirror1.getCentre(), Algorithms.rotationMatrix(mirror1.getUp(), rotMirror));
-		//mirror2.rotate(mirror2.getCentre(), Algorithms.rotationMatrix(mirror2.getUp(), rotMirror));
+		//mirror2.rotate(mirror2.getCentre(), Algorithms.rotationMatrix(mirror2.getRight(), rotMirror));
 		//*/
 		
 		//shift mirrors
