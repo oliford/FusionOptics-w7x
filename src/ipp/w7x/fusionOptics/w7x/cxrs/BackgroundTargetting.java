@@ -87,11 +87,17 @@ public class BackgroundTargetting {
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
+	public static String writeWRLForDesigner = "20210817";
+	
 	public static double losCyldRadius = 0.005;
-	public static Surface startSurface = sys.mirror2;
+	public static Surface startSurface = sys.mirror1;
 		
 	public static void main(String[] args) throws FileNotFoundException {
-		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+".vrml", 5.005);
+		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/backTrace-"+sys.getDesignName()+((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 5.005);
+		if((writeWRLForDesigner == null)){
+			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
+		}		
+		
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
 		int totalFibres = sys.channelR.length*sys.channelR[0].length;

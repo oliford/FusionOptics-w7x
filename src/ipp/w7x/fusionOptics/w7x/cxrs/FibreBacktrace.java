@@ -329,17 +329,16 @@ public class FibreBacktrace {
 		
 		//spit out FreeCAD instructions to create fibre end block cylinders
 		double cyldLen = 0.030;
-		double cyldRadius = 0.00025;
-		
+		double cyldRadius = 0.000110;		
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int i=0; i < sys.channelR[iB].length; i++){
 				double u[] = sys.fibreEndNorm[iB][i];
 				 double p[] = Util.plus(sys.fibreEndPos[iB][i], Util.mul(u, -cyldLen));
-				 		
-				System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Cylinder\", \"FibreEnd"+i+"\"); "+
-							"o.Shape = Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
-							",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
-							"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
+				 						
+				System.out.println("Part.show(Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +","										
+						+"FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3+"), "
+						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"FibreEnd_"+sys.getDesignName()+"_"+i+"\";");
+				
 			}
 		}
 		
