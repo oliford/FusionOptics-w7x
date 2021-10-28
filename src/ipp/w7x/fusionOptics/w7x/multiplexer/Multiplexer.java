@@ -50,7 +50,7 @@ public class Multiplexer extends Optic {
 			lensMedium, IsoIsoInterface.ideal());
 	//*/
 	
-	// Thor Labs AL2520-A (S-LAH64)
+	// Thor Labs AL1210-A (S-LAH64)
 		public double lensFocalLength = 0.010;
 		public double lensHeight = lensFocalLength + 0.004;
 		public double lensDiameter = 0.0125;
