@@ -40,6 +40,15 @@ public class BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 extends Optic {
 	
 	public double virtualObsPos[] = { -0.8358309322759397,	6.072309870384837,	-0.02230182161925606 };
 	
+	/** Origin of coordinate system for lab alignment. Point on top of forward frame above rear most M8 but */
+	public static double labAlignOrigin[] = { -0.92803, 6.53730, -0.09468 };
+	
+	/** X axis of coordinate system for lab alignment. Plugin and tube axis direction. Should be the same as portAxis */
+	public static double labAlignX[] = Util.reNorm(new double[]{ 0.073, -0.947,  0.313 }); 
+	
+	/** X axis of coordinate system for lab alignment. Plugin and tube axis direction */
+	public static double labAlignZ[] = Util.reNorm(new double[]{ 0.141, 0.321, 0.937  }); 
+	
 	/** DIrection of port axis */
 	public double portAxis[] = { 0.07272971344397348, -0.9468079681488022, 0.3134725829036636 };
 	
@@ -397,6 +406,7 @@ public double[][][] fibreEndNorm = { {
 	public double[][] channelR = { 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
 			{ 5.06, 5.07, 5.08, 5.09, }, 
+			//{ -1.234  }, //tube axis laser
 		}; 
 	public double[][][] fibreEndPos = { { 
 		{ -0.9004460969964927, 6.7315331364030015, -0.267208888580648 },
@@ -408,12 +418,9 @@ public double[][][] fibreEndNorm = { {
 		{ -0.893313853869483, 6.731999877834865, -0.2678879367223601 },
 		{ -0.8925451886356279, 6.731243568400969, -0.2701599874983965 },
 		{ -0.8993171612544141, 6.730393483830447, -0.27128469327080773 },
-	}, { 
-		{ -0.891608991417088, 6.732149912809563, -0.2668647352080743 },
-		{ -0.8932129935126438, 6.732209279271226, -0.2670925311139713 },
-		{ -0.8940993186647731, 6.73218444709113, -0.26722537465152274 },
-		{ -0.8959942534780603, 6.732038613074201, -0.2675473240809538 },
-	}, 	}; 
+	}, /*{ 
+		fibrePlanePos,
+	}, 	*/}; 
 public double[][][] fibreEndNorm = { { 
 	{ 0.16814104935076746, -0.9490074852957616, 0.26667092150408456 },
 	{ -0.010778118221499511, -0.9601928554998671, 0.27912992031420586 },
@@ -424,12 +431,9 @@ public double[][][] fibreEndNorm = { {
 	{ -0.004987047218466593, -0.9592191910196138, 0.28261930744327857 },
 	{ -0.030914261919640577, -0.9403987917688414, 0.33866564757835577 },
 	{ 0.1466494232417221, -0.9189905407507704, 0.3659922576687616 },
-	}, { 
-	{ -0.058981638419651705, -0.9659407095597764, 0.2519518048049845 },
-	{ -0.006439595540550427, -0.9649035450404087, 0.2625255804254631 },
-	{ 0.013986183195829881, -0.9648163737484572, 0.2625523788246642 },
-	{ 0.06130921218002111, -0.9578659228911958, 0.28059589139127267 },
-	}, 	};
+	}, /*{
+		fibrePlaneNormal,
+	},*/ 	};
 
 	//*/
 
@@ -483,12 +487,13 @@ public double[][][] fibreEndNorm = { {
 		}	
 	
 		//make neightbour fibres for scientific measurements
-		double neighbourChannelShift = 0.000240;
+		/*double neighbourChannelShift = 0.000240;
 		for(int j=0; j < channelR[0].length; j++) {
 			int k = (j + 1) % channelR[0].length; //offset colours
 			fibreEndPos[1][k] = Util.plus(fibreEndPos[0][j], Util.mul(fibresXVec, neighbourChannelShift));
 			fibreEndNorm[1][k] = fibreEndNorm[0][j].clone();
-		}
+		}#8
+		
 		
 		//spit out cylinder mkaing code for ferrules
 		double ferruleLen = 0.040;
@@ -503,7 +508,7 @@ public double[][][] fibreEndNorm = { {
 					+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"Ferrule"+getDesignName()+"_"+i+"\";");
 				
 		}
-		
+		*/
 		
 		/*// Shift fibres +/- final lens
 		 double shiftX = 0.003;

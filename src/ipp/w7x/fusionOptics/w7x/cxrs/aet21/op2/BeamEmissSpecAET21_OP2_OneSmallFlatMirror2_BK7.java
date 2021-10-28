@@ -36,7 +36,16 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	
 	
 	public double globalUp[] = {0,0,1};
-	public double designWavelenth = 500e-9;	
+	public double designWavelenth = 500e-9;
+	
+	/** Origin of coordinate system for lab alignment. Point on top of forward frame above rear most M8 but */
+	public static double labAlignOrigin[] = BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7.labAlignOrigin;
+	
+	/** X axis of coordinate system for lab alignment. Plugin and tube axis direction. Should be the same as portAxis */
+	public static double labAlignX[] = BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7.labAlignX;
+	
+	/** X axis of coordinate system for lab alignment. Plugin and tube axis direction */
+	public static double labAlignZ[] = BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7.labAlignZ;	
 	
 	/** DIrection of port axis */
 	public double portAxis[] = { 0.07272971344397348, -0.9468079681488022, 0.3134725829036636 };
@@ -244,7 +253,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	
 	/** Fibres */
 	
-	public int beamIdx[] = { W7xNBI.BEAM_Q7 };
+	public int beamIdx[] = { W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q8 };
 	//public double[] channelR = OneLiners.linSpace(5.38, 5.88, nFibres);
 	public String[] lightPathRowName = null;
 	
@@ -260,18 +269,21 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	}};
 
 	public double[][] fibreFocus = {{ 
-		0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0,		 
-		}};
+			0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0,		 
+			}, 
+			//{0}
+		};
 	
 	public double[][] channelR = {{ 
-		5.55 , 5.571, 5.592, 5.613, 5.634,
-		5.655, 5.676, 5.697, 5.718, 5.739,
-		5.761, 5.782, 5.803, 5.824, 5.845,
-		5.866, 5.887, 5.908, 5.929, 5.95 }};
-
+			5.55 , 5.571, 5.592, 5.613, 5.634,
+			5.655, 5.676, 5.697, 5.718, 5.739,
+			5.761, 5.782, 5.803, 5.824, 5.845,
+			5.866, 5.887, 5.908, 5.929, 5.95 }, 
+			/*	{-1.234} */
+		};
 	
 	private void setupFibrePositions() {
 		int nBeams = channelR.length;

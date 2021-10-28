@@ -77,7 +77,7 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
-	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.M1);
+	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -113,11 +113,21 @@ public class FibreBacktrace {
 
 	public static String writeWRLForDesigner = null; //"20201216";
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm";
+	static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm/"; // /laserAlign
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		makeFibreCyldSTL(); //		System.exit(0);
 		
+		
+		sys.removeElement(sys.mirror1);
+		sys.removeElement(sys.mirror2);
+		sys.removeElement(sys.lens1);
+		sys.removeElement(sys.lens2);
+		sys.removeElement(sys.lens3);
+		sys.beamPlane.setCentre(Util.plus(sys.fibrePlanePos, Util.mul(sys.portAxis, 0.250)));
+		sys.beamPlane.setNormal(sys.portAxis.clone());
+		outPath += "/carriageOnly/";
+
 		System.out.println(outPath);
 		
 		//sys.dumpPositionsForLab();
@@ -146,6 +156,7 @@ public class FibreBacktrace {
 			if(sys.channelR[iB].length > maxChans)
 				maxChans = sys.channelR[iB].length;
 		double col[][] = ColorMaps.jet(maxChans);
+		//double col[][] = {{1.0, 0.5, 0.5}}; //just red
 		
 		IntensityInfo intensityInfo = new IntensityInfo(sys);
 		//HitsCollector windowHits = new HitsCollector(outPath + "/windowHits.bin", sys.entryWindowFront);
@@ -160,6 +171,7 @@ public class FibreBacktrace {
 		
 		double startPoints[][][] = new double[sys.channelR.length][][];
 		double closestApproachPos[][][] = new double[sys.channelR.length][][];
+		double beamPlanePos[][][] = new double[sys.channelR.length][][];
 		
 		for(int iB=0; iB < sys.channelR.length; iB++){
 		
@@ -168,6 +180,7 @@ public class FibreBacktrace {
 			
 			startPoints[iB] = new double[sys.channelR[iB].length][];
 			closestApproachPos[iB] = new double[sys.channelR[iB].length][];
+			beamPlanePos[iB] = new double[sys.channelR[iB].length][];
 			
 			for(int iP=0; iP < sys.channelR[iB].length; iP+=1){
 							
@@ -175,9 +188,10 @@ public class FibreBacktrace {
 				
 				double startPos[] = sys.fibreEndPos[iB][iP];
 				
-				double sumI=0, sumIR=0, sumIR2 = 0, beamPlanePos[] = new double[3], sumDistToBeam=0;
+				double sumI=0, sumIR=0, sumIR2 = 0, sumDistToBeam=0;
 				closestApproachPos[iB][iP] = new double[4];
 				startPoints[iB][iP] = new double[3];
+				beamPlanePos[iB][iP] = new double[3];
 				
 				for(int i=0; i < nAttempts; i++){
 					double x, y, rMax = sys.fibreEndDiameter / 2;
@@ -200,6 +214,8 @@ public class FibreBacktrace {
 					
 					//double sinMaxTheta = sys.fibreNA[iB];
 					double sinMaxTheta = sys.fibreNA;
+					if(sys.channelR[iB][iP] == -1.234)
+						sinMaxTheta = 0; //laser alignment					
 					double cosMaxTheta = FastMath.cos(FastMath.asin(sinMaxTheta)); //probably just 1-sinTheta, but... meh
 					
 					double cosTheta = 1 - RandomManager.instance().nextUniform(0, 1) * (1 - cosMaxTheta);
@@ -243,7 +259,7 @@ public class FibreBacktrace {
 						double p2[] = OneLiners.plus(beamStart, OneLiners.mul(beamVec, aL));
 						
 						for(int j=0; j<3; j++){
-							beamPlanePos[j] += p[j];
+							beamPlanePos[iB][iP][j] += p[j];
 							closestApproachPos[iB][iP][j] += p1[j];
 							startPoints[iB][iP][j] += hitRay.startPos[j];
 						}
@@ -269,14 +285,14 @@ public class FibreBacktrace {
 				double fwhmR = 2.35 * FastMath.sqrt(var);
 								
 				for(int j=0; j<3; j++){
-					beamPlanePos[j] /= nHit;
+					beamPlanePos[iB][iP][j] /= nHit;
 					closestApproachPos[iB][iP][j] /= nHit;
 					startPoints[iB][iP][j] /= nHit;
 				}
 				sumDistToBeam /= nHit;  
 				closestApproachPos[iB][iP][3] = fwhmR;
 				
-				fibreInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], R, fwhmR, (double)nHit / nAttempts, (double)nStray / nAttempts, R, sumDistToBeam, beamPlanePos, 
+				fibreInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], R, fwhmR, (double)nHit / nAttempts, (double)nStray / nAttempts, R, sumDistToBeam, beamPlanePos[iB][iP], 
 						closestApproachPos[iB][iP][0], closestApproachPos[iB][iP][1], closestApproachPos[iB][iP][2]);
 				
 				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
@@ -284,7 +300,7 @@ public class FibreBacktrace {
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 
 				for(Thing j : Thing.values())
-					outputInfo(System.out, startPoints, closestApproachPos, iB, iP, j, false);
+					outputInfo(System.out, startPoints, closestApproachPos, beamPlanePos, iB, iP, j, false);
 				
 				
 				intensityInfo.reset();
@@ -296,8 +312,8 @@ public class FibreBacktrace {
 		for(Thing j : Thing.values()){
 			for(int iB=0; iB < sys.channelR.length; iB++){
 				for(int iP=0; iP < sys.channelR[iB].length; iP++){					
-					outputInfo(System.out, startPoints, closestApproachPos, iB, iP, j, false);	
-					outputInfo(textOut, startPoints, closestApproachPos, iB, iP, j, false);
+					outputInfo(System.out, startPoints, closestApproachPos, beamPlanePos, iB, iP, j, false);	
+					outputInfo(textOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, j, false);
 					
 				}
 			}
@@ -311,7 +327,7 @@ public class FibreBacktrace {
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
 				boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
-				outputInfo(jsonOut, startPoints, closestApproachPos, iB, iP, Thing.JSON_LOS, isLast);				
+				outputInfo(jsonOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.JSON_LOS, isLast);				
 			}
 		}
 		jsonOut.println("]}");
@@ -322,7 +338,7 @@ public class FibreBacktrace {
 				for(int iB=0; iB < sys.channelR.length; iB++){
 					for(int iP=0; iP < sys.channelR[iB].length; iP++){		
 						boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
-						outputInfo(losOut, startPoints, closestApproachPos, iB, iP, Thing.TXT_LOS_MM, isLast);				
+						outputInfo(losOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.TXT_LOS_MM, isLast);				
 					}
 				}
 				
@@ -361,7 +377,7 @@ public class FibreBacktrace {
 	}
 		
 	private static enum Thing { FreeCADHitPos, FreeCADLOS, JSON_LOS, TXT_LOS_MM };
-	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, Thing thing, boolean supressComma){
+	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], double beamPlanePos[][][], int iB, int iP, Thing thing, boolean supressComma){
 
 		double extendLOSCylds = 0.400; // extend 200mm in each direction
 
@@ -414,9 +430,9 @@ public class FibreBacktrace {
 						stream.print(", \"approachQ"+(jB+1)+"\":[ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "]");
 				}
 						
-				stream.println(", \"beamPlaneHit\":[ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
-									+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
-									+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "]"
+				stream.println(", \"beamPlaneHit\":[ "+ String.format("%7.5g", beamPlanePos[iB][iP][0]) 
+									+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][1]) 
+									+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][2]) + "]"
 								+ "}" + (supressComma ? "" : ", ")
 						);
 				break;
