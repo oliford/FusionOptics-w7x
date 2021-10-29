@@ -133,7 +133,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public double lens1CurvatureRadius = 0.10336;
 	public double lens1ClearAperture = 0.0735;
 
-	public double lensCentrePos[] = Util.plus(windowCentre, Util.mul(opticAxis, lens1DistBehindWindow + lens1CentreThickness));
+	public double lens1CentrePos[] = Util.plus(windowCentre, Util.mul(opticAxis, lens1DistBehindWindow + lens1CentreThickness));
 	
 	//public Nikon50mmF11 objLens = new Nikon50mmF11(lensCentrePos, 0.100 / 0.050, opticAxis);
 	//public Iris objLensIris = new Iris("objLensIris", lensCentrePos, opticAxis, 0.100, objLens.getCaseRadius()*0.99, null, null, Absorber.ideal());
@@ -148,7 +148,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromRadiusOfCurvAndCentreThickness(
 	//public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
 											"lens1",
-											lensCentrePos,
+											lens1CentrePos,
 											opticAxis,
 											lens1Diameter/2, // radius
 											lens1CurvatureRadius, // rad curv
@@ -158,7 +158,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 											IsoIsoInterface.ideal());//,
 //											designWavelenth);
 	
-	public double lensIrisPos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, -0.005));
+	public double lensIrisPos[] = Util.plus(lens1CentrePos, Util.mul(opticAxis, -0.005));
 	public Iris lensIris = new Iris("lensIris", lensIrisPos, opticAxis, lens1Diameter, lens1ClearAperture/2, null, null, Absorber.ideal());
 	
 	/**** Lens2 *****/
@@ -176,7 +176,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public double lens2CurvatureRadius = 0.10336;
 	public double lens2ClearAperture = 0.0735;
 	
-	public double lens2CentrePos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, lens2DistBehindLens1 + lens2CentreThickness));
+	public double lens2CentrePos[] = Util.plus(lens1CentrePos, Util.mul(opticAxis, lens2DistBehindLens1 + lens2CentreThickness));
 	
 	
 	public Medium lens2Medium = new Medium(new BK7());  
@@ -630,7 +630,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public Square catchPlane = new Square("catchPlane", Util.plus(fibrePlanePos, Util.mul(opticAxis, 0.050)), 
 										opticAxis, fibresYVec, 0.300, 0.300, Absorber.ideal());
 
-	public double beamObsPerp[] = Util.reNorm(Util.cross(Util.minus(lensCentrePos, targetObsPos), beamAxis));
+	public double beamObsPerp[] = Util.reNorm(Util.cross(Util.minus(lens1CentrePos, targetObsPos), beamAxis));
 	public double beamObsPlaneNormal[] = Util.reNorm(Util.cross(beamAxis, beamObsPerp));
 	
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 1.500, 2.000, NullInterface.ideal());
@@ -939,6 +939,27 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		elements.add(lens2);
 		
 		return elements;
+	}
+
+	
+	/** Remove tube components for alignment of carriage */
+	public void carriageOnly() {
+		//removing tube stuff for in-lab alignment 
+		removeElement(mirror);
+		removeElement(catchPlane);
+		removeElement(entryWindowIris);
+		removeElement(colar);
+		removeElement(blockPlate);
+		removeElement(panelEdge);
+		removeElement(strayPlane);
+		removeElement(mirrorBlock);
+		removeElement(mirrorClampRing);
+		
+		beamPlane.setCentre(Util.plus(lens1CentrePos, Util.mul(opticAxis , -1.500)));
+		beamPlane.setNormal(opticAxis.clone());
+		
+		//outPath += "/carriageOnly/";	
+
 	}
 	
 	

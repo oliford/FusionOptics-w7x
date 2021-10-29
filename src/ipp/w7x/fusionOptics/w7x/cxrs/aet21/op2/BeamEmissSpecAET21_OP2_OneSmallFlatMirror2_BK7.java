@@ -429,6 +429,20 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 		
 	}
 
+	/** Remove tube components for alignment of carriage */
+	public void carriageOnly() {
+		//removing tube stuff for in-lab alignment 
+		removeElement(mirror1);
+		removeElement(lens1);
+		removeElement(lens2);
+		removeElement(lens3);
+		beamPlane.setCentre(Util.plus(fibrePlanePos, Util.mul(portAxis, 0.200)));
+		beamPlane.setNormal(portAxis.clone());
+		
+		//outPath += "/carriageOnly/";	
+
+	}
+	
 	public void dumpInfoForDesigner() {
 		
 		for(Surface s : new Surface[] {

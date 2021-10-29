@@ -77,9 +77,9 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
-	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
+	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
 	//public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
@@ -91,8 +91,8 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41();
 	//public static SimpleBeamGeometry beams = W7XPelletsL41.def();
 		
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -117,17 +117,11 @@ public class FibreBacktrace {
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		makeFibreCyldSTL(); //		System.exit(0);
-		
-		
-		sys.removeElement(sys.mirror1);
-		sys.removeElement(sys.mirror2);
-		sys.removeElement(sys.lens1);
-		sys.removeElement(sys.lens2);
-		sys.removeElement(sys.lens3);
-		sys.beamPlane.setCentre(Util.plus(sys.fibrePlanePos, Util.mul(sys.portAxis, 0.250)));
-		sys.beamPlane.setNormal(sys.portAxis.clone());
-		outPath += "/carriageOnly/";
 
+		
+		//sys.carriageOnly();
+		//outPath += "lens3Target/";
+		
 		System.out.println(outPath);
 		
 		//sys.dumpPositionsForLab();
@@ -364,6 +358,24 @@ public class FibreBacktrace {
 				System.out.println("Fibrepos set "+iB+", fibre " +i + ": " + sys.fibreEndPos[iB][i][0]*1e3+","+sys.fibreEndPos[iB][i][1]*1e3+","+sys.fibreEndPos[iB][i][2]*1e3 + " mm");		
 			}
 		}
+		
+		//target plane hit positions, in target plane coords
+		//		// );
+		System.out.println("a=array([");
+		for(int iB=0; iB < sys.channelR.length; iB++){
+			for(int iP=0; iP < sys.channelR[iB].length; iP++){
+				String chanName = sys.lightPathsSystemName 
+						+ (sys.lightPathRowName != null ? ("_"+sys.lightPathRowName[iB]) : "")
+						+ ":" + String.format("%02d", iP+1);
+				double planeXY[] = sys.beamPlane.posXYZToPlaneRU(beamPlanePos[iB][iP]);
+				System.out.println("[" + planeXY[0] + "," +  planeXY[1] + "], # '" + chanName + "'");				
+			}
+		}
+		System.out.println("]);");
+		System.out.println("clf(); plot(a[:,0]*100,a[:,1]*100,\".\"); ax=gca(); ax.grid(); "
+				+ "ax.set_aspect(1.0); ax.set_xlim(-10,10); ax.set_ylim(-10,10);"
+				+ "savefig(\""+outPath+"/carriage-align-cxrs-targetPlane.svg\");");
+		
 		
 		//windowHits.destroy();
 		

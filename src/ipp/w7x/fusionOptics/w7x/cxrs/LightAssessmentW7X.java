@@ -67,13 +67,13 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true; //telecentric-ish
 	
-	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
+	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);	
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
@@ -86,11 +86,11 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static Surface mustHitToDraw = sys.entryWindowFront;
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	//public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076
 	//public static boolean forcePerpFibres = false; //AEM41 has only one lens, so is not at all telecentric
 	
@@ -114,12 +114,15 @@ public class LightAssessmentW7X {
 	//public static double pointR[] = { 5.50, 5.70, 5.90 };
 	//public static double pointR[] = OneLiners.linSpace(5.40, 5.851, 0.05);
 	//public static double pointR[] = OneLiners.linSpace(5.35, 5.88, 20); //for AET2x OP1.2
-	public static double pointR[] = OneLiners.linSpace(5.50, 5.95, 5); //for AET2x OP2
+	//public static double pointR[] = OneLiners.linSpace(5.50, 5.95, 5); //for AET2x OP2
 		
 	//public static double pointR[] = OneLiners.linSpace(5.45, 6.05, 50); // for AEM21
 	//public static double pointR[] = OneLiners.linSpace(5.24, 6.05, 106); // for AEA21
 	
 	//public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 };
+	//public static double pointR[] = sys.channelR[0];
+	//public static double pointR[] = OneLiners.linSpace(5.15, 6.02, 50); //AEM41 50x for AEM41
+	public static double pointR[] = OneLiners.linSpace(5.2, 5.98, 10); //AEM41 10x for RUDIX-AEM41
 	
 	/* //For LOS finding for Maciej's high iota halpha
 	public static double pointR[] = OneLiners.linSpace(6.03, 6.20, 5); // for AEM21 from divertor for Maciej
@@ -131,7 +134,7 @@ public class LightAssessmentW7X {
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 5000;
+	public final static int nAttempts = 20000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
@@ -145,10 +148,9 @@ public class LightAssessmentW7X {
 	public final static int nAttempts = 20000;
 	//*/
 	
-	public static double fibreCoreDiameter = 400e-6;
-	public static double fibreNA = 0.22;
-	
-	
+	public static double fibreCoreDiameter = sys.fibreEndDiameter;
+	public static double fibreNA = sys.fibreNA;
+		
 	public static class FibreInfo{		
 		double R;
 		double beamPos[];
@@ -231,8 +233,8 @@ public class LightAssessmentW7X {
 					fibre[iB][iP].beamPos = (beamSel < 0) ? beams.getPosOfBoxAxisAtR((-beamSel)-1, R) : beams.getPosOfBeamAxisAtR(beamSel, R);
 				
 					// For LOS finding for Maciej's high iota halpha
-					//fibre[iB][iP].beamPos = new double[] { FastMath.cos(divTargetPhi) * R, FastMath.sin(divTargetPhi) * R, divTargetZ }; 
-				
+					//fibre[iB][iP].beamPos = new double[] { FastMath.cos(divTargetPhi) * R, FastMath.sin(divTargetPhi) * R, divTargetZ };
+					
 					R = FastMath.sqrt(fibre[iB][iP].beamPos[0]*fibre[iB][iP].beamPos[0] + fibre[iB][iP].beamPos[1]*fibre[iB][iP].beamPos[1]);
 					
 				}else {

@@ -517,6 +517,16 @@ public double[][][] fibreEndNorm = { {
 		}
 		lens4.shift(Util.mul(fibresXVec, shiftX));
 		//*/
+
+		// Shift fibres +/- final lens
+		/* double shiftPA = -0.010;
+		 for(int iB=0; iB < fibreEndPos.length; iB++) {
+			 for(int iF=0; iF < fibreEndPos[0].length; iF++) {
+					fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(portAxis, shiftPA));
+			 }
+		}
+		lens4.shift(Util.mul(portAxis, shiftPA));
+		//*/
 		
 		//rotate fibres and final lens around final lens centre
 		/*double rot = 1.0 * Math.PI / 180;
@@ -612,6 +622,21 @@ public double[][][] fibreEndNorm = { {
 		
 		setupFibrePlanes();
 		
+	}
+	
+	/** Remove tube components for alignment of carriage */
+	public void carriageOnly() {
+		//removing tube stuff for in-lab alignment 
+		removeElement(mirror1);		
+		removeElement(mirror2);
+		removeElement(lens1);
+		removeElement(lens2);
+		removeElement(lens3);
+		//beamPlane.setCentre(Util.plus(fibrePlanePos, Util.mul(portAxis, 0.200)));
+		beamPlane.setCentre(Util.plus(lens3.getBackSurface().getCentre(), Util.mul(portAxis, -0.0001)));
+		beamPlane.setNormal(portAxis.clone());
+		
+		//outPath += "/carriageOnly/";		
 	}
 
 	private void setupFibrePlanes() {
