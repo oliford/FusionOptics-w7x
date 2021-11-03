@@ -105,7 +105,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 
 	public double overrideObsPositions[][] = null;
 	
-	public double opticAxis[] = portNormal;
+	public double opticAxis[] = portNormal.clone();
 	
 	/***** Entry Window *****/
 	
@@ -704,7 +704,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 				
 	
 	
-	private double rodAxis[] = opticAxis;
+	private double rodAxis[] = opticAxis.clone();
 	private double rodEndPos[] = Util.plus(entryWindowBackPos, Util.mul(opticAxis, 0.289500));
 	private double rodLength = 1.000;
 	private double rodCentre[] = Util.plus(rodEndPos, Util.mul(rodAxis, rodLength/2));
@@ -924,6 +924,9 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 				}			
 			}
 		}
+		double portNormFinal[] = lensIris.getNormal(); //maybe adjuested to LC3
+		System.out.println("Mirror deflection angle: " + 2*Math.acos(Util.dot(mirror.getNormal(), portNormFinal))*180/Math.PI + " deg");
+		
 		
 	}
 

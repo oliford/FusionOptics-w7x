@@ -122,19 +122,18 @@ public class LightAssessmentW7X {
 	//public static double pointR[] = { 5.06, 5.07, 5.08, 5.09 };
 	//public static double pointR[] = sys.channelR[0];
 	//public static double pointR[] = OneLiners.linSpace(5.15, 6.02, 50); //AEM41 50x for AEM41
-	public static double pointR[] = OneLiners.linSpace(5.2, 5.98, 10); //AEM41 10x for RUDIX-AEM41
-	
-	/* //For LOS finding for Maciej's high iota halpha
-	public static double pointR[] = OneLiners.linSpace(6.03, 6.20, 5); // for AEM21 from divertor for Maciej
-	public static double divTargetPhi = (93.7517444686941 + 2.0) * Math.PI / 180;
-	public static double divTargetZ = -0.5957244262695313;
-	//*/
+	//public static double pointR[] = OneLiners.linSpace(5.13, 6.05, 10); //AEM41 10x for RUDIX-AEM41
+	//public static double pointR[] = OneLiners.linSpace(6.05, 5.2, 10); //AEM41 10x for RUDIX-AEM41
+	public static double pointR[] = { 
+		6.1  , 6.094, 6.086, 6.076, 6.065, 6.054, 6.041, 6.028, 6.015, 6.001, 5.986, 5.971, 5.955, 5.94 , 5.923, 5.907, 5.89 , 5.873, 5.855, 5.837, 5.819, 5.801, 5.782, 5.763, 5.744, 5.725, 5.705,
+	    5.685, 5.665, 5.645, 5.624, 5.604, 5.583, 5.562, 5.54 , 5.519, 5.497, 5.475, 5.453, 5.431, 5.409, 5.386, 5.363, 5.341, 5.318, 5.294, 5.271, 5.247, 5.224, 5.2
+    }; 
 	
 	//public final static int nAttempts = 5000;
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 20000;
+	public final static int nAttempts = 10000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
@@ -142,7 +141,7 @@ public class LightAssessmentW7X {
 	//public static double wavelength = 530e-9; //C_VI
 	//public static double wavelength = 656e-9; //HAlpha
 	
-	public static int nRaysToDraw = 5000;
+	public static int nRaysToDraw = 2000;
 	// For calc
 	/*public static double pointR[] = sys.channelR;
 	public final static int nAttempts = 20000;
