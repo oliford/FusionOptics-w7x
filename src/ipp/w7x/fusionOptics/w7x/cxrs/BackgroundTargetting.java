@@ -25,6 +25,8 @@ import net.jafama.FastMath;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import oneLiners.OneLiners;
@@ -60,12 +62,12 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
-	public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
+	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	//public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
 	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
@@ -90,7 +92,7 @@ public class BackgroundTargetting {
 	public static String writeWRLForDesigner = "20210817";
 	
 	public static double losCyldRadius = 0.005;
-	public static Surface startSurface = sys.mirror1;
+	public static Surface startSurface = sys.entryWindowFront;
 		
 	public static void main(String[] args) throws FileNotFoundException {
 		System.out.println(outPath);
@@ -232,21 +234,34 @@ public class BackgroundTargetting {
 				System.out.println("P=" + iB + "." + iP + "(fwhm = " + fwhm + "):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 				
-				for(int j=0;j < 3; j++){				
-					outputInfo(System.out, startPoints, hitPoints, iB, iP, j);
+				for(Thing thing : Thing.values()){
+					outputInfo(System.out, startPoints, hitPoints, iB, iP, thing);
 				}
 				
 				System.out.println();	
 			}
 		}
 		
+
+		//output JSON LOS info
+		PrintStream jsonOut = new PrintStream(outPath + "/lineOfSightDefs-"+sys.lightPathsSystemName+".json");
+		jsonOut.println("{ \"system\" : \""+sys.lightPathsSystemName+"\", \"info\" : \"From raytracer "+sys.getDesignName()+" on "+
+				((new SimpleDateFormat()).format(new Date()))+" \", \"los\" : [");
+		for(int iB=0; iB < sys.channelR.length; iB++){
+			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
+				outputInfo(jsonOut, startPoints, hitPoints, iB, iP, Thing.JSON_LOS);				
+			}
+		}
+		jsonOut.println("]}");
+
+		
 		PrintStream textOut = new PrintStream(outPath + "/info.txt");
 		//spit out build commands and LOS definitions in blocks
-		for(int j=0;j < 3; j++){
+		for(Thing thing : Thing.values()){
 			for(int iB=0; iB < sys.channelR.length; iB++){
-				for(int iP=0; iP < sys.channelR[iB].length; iP++){					
-					outputInfo(System.out, startPoints, hitPoints, iB, iP, j);	
-					outputInfo(textOut, startPoints, hitPoints, iB, iP, j);					
+				for(int iP=0; iP < sys.channelR[iB].length; iP++){			
+					outputInfo(System.out, startPoints, hitPoints, iB, iP, thing);	
+					outputInfo(textOut, startPoints, hitPoints, iB, iP, thing);					
 				}
 			}
 		}
@@ -261,8 +276,10 @@ public class BackgroundTargetting {
 		vrmlOut.destroy();
 	}
 	
-	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, int thing){
-	
+	private static enum Thing { FreeCADHitPos, FreeCADLOS, JSON_LOS, TXT_LOS_MM };
+	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, Thing thing){
+
+		boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
 
 		double rad = hitPoints[iB][iP][3] / 2;
 		
@@ -290,30 +307,37 @@ public class BackgroundTargetting {
 				+ ":" + String.format("%02d", iP+1);
 	
 		switch(thing){
-			case 0:		
+			case FreeCADHitPos:		
 				stream.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iB][iP][0]*1e3+","+hitPoints[iB][iP][1]*1e3+","+hitPoints[iB][iP][2]*1e3 + ")));"
 						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+chanName+"\";");
 				break;
 				
-			case 1:
+			case FreeCADLOS:
 				stream.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+losLen*1e3 +","										
 						+"FreeCAD.Vector("+startPoints[iB][iP][0]*1e3+","+startPoints[iB][iP][1]*1e3+","+startPoints[iB][iP][2]*1e3+"), "
 						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+chanName+"\";");
 				break;
 				
-			case 2:
-				stream.print(chanName
-						+ ", start={ " + String.format("%7.5g", startPoints[iB][iP][0]) + ", " + String.format("%7.5g", startPoints[iB][iP][1]) + ", " + String.format("%7.5g", startPoints[iB][iP][2]) + "}"
-						+ ", uVec={ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "}");
+			case JSON_LOS:
+				stream.print("{ \"id\" : \"" + chanName
+						+ "\", \"start\":[ " + String.format("%7.5g", startPoints[iB][iP][0]) + ", " + String.format("%7.5g", startPoints[iB][iP][1]) + ", " + String.format("%7.5g", startPoints[iB][iP][2]) + "]"
+						+ ", \"uVec\":[ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "]");
 				for(int jB=0; jB < approach.length; jB++){
 					if(approach[jB] != null)
-						stream.print(", approachQ"+(jB+1)+"={ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "}");
+						stream.print(", \"approachQ"+(jB+1)+"\":[ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "]");
 				}
 						
-				stream.println(", wall={ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
+				stream.println(", \"wallHit\":[ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
 									+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
-									+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "}"
-						);
+									+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "]"
+								+ "}" + (isLast ? "" : ", ")
+						);				
+				break;
+								
+			case TXT_LOS_MM:
+				stream.println(String.format("%7.3f", startPoints[iB][iP][0]*1e3) + " " + String.format("%7.3f", startPoints[iB][iP][1]*1e3) + " " + String.format("%7.3f", startPoints[iB][iP][2]*1e3) + " "
+							+ String.format("%7.3f", hitPoints[iB][iP][0]*1e3) + " " + String.format("%7.3f", hitPoints[iB][iP][1]*1e3) + " " + String.format("%7.3f", hitPoints[iB][iP][2]*1e3));
+						
 				break;
 		}
 		

@@ -16,6 +16,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsK41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsL41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_OP2;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolete;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem41.BeamEmissSpecAEM41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
@@ -75,7 +76,7 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
-	public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
+	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(false);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
@@ -109,7 +110,7 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 1000;
+	public final static int nAttempts = 5000;
 
 	public static String writeWRLForDesigner = null; //"20201216";
 	
@@ -118,8 +119,8 @@ public class FibreBacktrace {
 	public static void main(String[] args) throws FileNotFoundException {
 		makeFibreCyldSTL(); //		System.exit(0);
 
-		//sys.carriageOnly();
-		//outPath += "lens3Target/";
+		sys.carriageOnly();
+		outPath += "carriageOnly/";
 				
 		System.out.println(outPath);
 		
@@ -130,7 +131,7 @@ public class FibreBacktrace {
 		stlOut.drawOptic(sys);
 		stlOut.destroy();
 				
-		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 5.005);
+		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName() + ((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 5.005);
 		if((writeWRLForDesigner == null)){
 			vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 			//rotation to NI20
@@ -293,7 +294,7 @@ public class FibreBacktrace {
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 
 				for(Thing j : Thing.values())
-					outputInfo(System.out, startPoints, closestApproachPos, beamPlanePos, iB, iP, j, false);
+					outputInfo(System.out, startPoints, closestApproachPos, beamPlanePos, iB, iP, j);
 				
 				
 				intensityInfo.reset();
@@ -305,8 +306,8 @@ public class FibreBacktrace {
 		for(Thing j : Thing.values()){
 			for(int iB=0; iB < sys.channelR.length; iB++){
 				for(int iP=0; iP < sys.channelR[iB].length; iP++){					
-					outputInfo(System.out, startPoints, closestApproachPos, beamPlanePos, iB, iP, j, false);	
-					outputInfo(textOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, j, false);
+					outputInfo(System.out, startPoints, closestApproachPos, beamPlanePos, iB, iP, j);	
+					outputInfo(textOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, j);
 					
 				}
 			}
@@ -319,8 +320,7 @@ public class FibreBacktrace {
 				((new SimpleDateFormat()).format(new Date()))+" \", \"los\" : [");
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
-				boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
-				outputInfo(jsonOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.JSON_LOS, isLast);				
+				outputInfo(jsonOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.JSON_LOS);				
 			}
 		}
 		jsonOut.println("]}");
@@ -330,8 +330,7 @@ public class FibreBacktrace {
 				losOut.println("# x1 y2 z2 x2 y2 z2 [mm]");
 				for(int iB=0; iB < sys.channelR.length; iB++){
 					for(int iP=0; iP < sys.channelR[iB].length; iP++){		
-						boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
-						outputInfo(losOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.TXT_LOS_MM, isLast);				
+						outputInfo(losOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.TXT_LOS_MM);				
 					}
 				}
 				
@@ -388,7 +387,8 @@ public class FibreBacktrace {
 	}
 		
 	private static enum Thing { FreeCADHitPos, FreeCADLOS, JSON_LOS, TXT_LOS_MM };
-	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], double beamPlanePos[][][], int iB, int iP, Thing thing, boolean supressComma){
+	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], double beamPlanePos[][][], int iB, int iP, Thing thing){
+		boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
 
 		double extendLOSCylds = 0.400; // extend 200mm in each direction
 
@@ -444,7 +444,7 @@ public class FibreBacktrace {
 				stream.println(", \"beamPlaneHit\":[ "+ String.format("%7.5g", beamPlanePos[iB][iP][0]) 
 									+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][1]) 
 									+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][2]) + "]"
-								+ "}" + (supressComma ? "" : ", ")
+								+ "}" + (isLast ? "" : ", ")
 						);
 				break;
 				

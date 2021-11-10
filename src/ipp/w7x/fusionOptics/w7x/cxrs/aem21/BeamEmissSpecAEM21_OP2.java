@@ -36,8 +36,10 @@ import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
 
-/** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
+/** Beam Emission Spectroscopy / CXRS on AEM21 looking at AEK21 beams 
+ * All coordinates refreshed according to OP2 CAD 
+ * */
+public class BeamEmissSpecAEM21_OP2 extends Optic {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
@@ -45,26 +47,36 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	
 	// CAD from designer
 	
-	private boolean adjustedToLC3;
-		
-	//public double rotateLC3[][] = {	{ 1.009,  0.044,  0.004}, {0.061,  1.588, -0.001}, { -0.077, -0.759,  0.996} };
-	public double rotateLC3[][] = {	
-		{ 0.9999829389, 0.0002761317, -0.0058605577 },
-		{ -0.0002674291, 0.9999986685, 0.0016920161 },
-		{ 0.0058604423, -0.0016915735, 0.9999811728 } };
+	//LC3a OP2 two positions on tube edge
 
 	
-    public double offsetLC3[] = { 0.0063746567, 0.0039538344, 0.0025080040 };
-   	
-	public double portNormal[] = { 0.35536503, -0.14530594,  0.92336444 };
+	private double pointA_CAD[] = { -0.39097027587890626, 5.47667578125, 1.1955107421875 };
+	private double pointB_CAD[] = { 0.14401425170898438, 5.26243359375, 2.6447634277343752 };
+	
+	private double pointA_LC3a[] = { -0.40321734619140626, 5.4868388671875, 1.196421630859375 };
+	private double pointB_LC3a[] = {  0.14233308410644532, 5.2602412109375, 2.639848876953125 };
+
+	private boolean adjustedToLC3;
+	
+	
+    public double offsetLC3[] = { 0.0063746567, 0.0039538344, 0.0025080040 }; //old OP1.2
+	//public double offsetLC3[] = { 0.003110514907226525, 0.006157956093750805, 0.0017801479687500343 }; //OP2 STEP 20211105 LC3a - CAD
+
+	//public double portNormal[] = { 0.35536503, -0.14530594,  0.92336444 }; //old OP1.2b CAD
+	public double portNormal[] = { 0.34302035, -0.13736758,  0.92922935 }; //OP2 CAD
+	//public double portNormal[] = { 0.34979413,  -0.14528923, 0.92549182 }; //OP2 LC3a
+	
 	//should transform to 0.34990725,  -0.14383813, 0.9256757
 	//{ -0.23743994,  0.94225652,  0.23616716 } port left/right, parallel to front flange and tube plate, in LC3
 	//transformed window centre should be -0.4775350799560547, 5.39110546875, 1.1594251098632813
 	
 	public double virtualObsPos[] = { -0.5830873174901741,	5.362082222103293,	1.1250303063301719 }; //closest approach of all LOSs, from lightAssesment
-									  
-	public double windowCentre[] = { -0.47792361,  5.38480054,  1.17044202 };
+ 									  
+	//public double windowCentre[] = { -0.47792361,  5.38480054,  1.17044202 }; //old OP1.2b
+	public double windowBackPos0[] = { -0.46482278442382813, 5.382167724609375, 1.1727401733398437 }; // STEP 20211105 CAD coords
+	//public double windowCentre[] = { -0.4748130950927735, 5.39095849609375, 1.1722221679687501 }; //STEP 20211105 LC3a
 	
+
 	/***** Mirror/Shutter *****/
 	
 	public double mirrorDiameter = 0.120;
@@ -75,10 +87,20 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	
 	public double mirrorRingRotate = 0 * Math.PI / 180; //Adjustment of mirror mount ring
 	
-	public double mirrorCentrePos0[] = { -0.52209747,  5.40077637,  1.05967297 }; // shutter/mirror centre in default open position
+	/*public double mirrorCentrePos0[] = { -0.52209747,  5.40077637,  1.05967297 }; // shutter/mirror centre in default open position
 	public double mirrorNormal0[] = { 0.95671975,  0.18248719,  0.22668426 }; // shutter/mirror normal in default open position	
 	public double mirrorPivotCentre[] = { -0.53505125,  5.39330481,  1.07630972 }; //pivot of shutter/mirror to open/close -535 5393 1076
-	public double mirrorPivotVector[] = { -0.23614408,  0.94177839,  0.23935211 }; //pivot of shutter/mirror to open/close -2362, 9418, 2394
+	public double mirrorPivotVector[] = { -0.23614408,  0.94177839,  0.23935211 }; //pivot of shutter/mirror to open/close -2362, 9418, 2394*/
+	
+	// OP2
+	public double mirrorWindowDist = 0.128;
+	public double mirrorPivotCentre[] = { -0.5229530639648438, 5.391916015625, 1.0738038330078126 };
+	public double mirrorPivotVector[] = { -0.21197886, 0.9528862, 0.21696277 };
+	public double mirrorNormal0[] = { 0.95955426, 0.16322111, 0.22937851 };
+	public double mirrorDownwardsShift = 0.003;
+	
+	public double mirrorCentrePos0[] = Util.plus(Util.plus(windowBackPos0, Util.mul(portNormal, -mirrorWindowDist)),
+										Util.mul(Util.reNorm(Util.cross(mirrorNormal0, mirrorPivotVector)), mirrorDownwardsShift));
 	
 	//rotate around shutter pivot
 	public double mirrorCentrePos1[] = Util.plus(mirrorPivotCentre, 
@@ -87,9 +109,9 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public double mirrorNormal1[] = Algorithms.rotateVector(Algorithms.rotationMatrix(mirrorPivotVector, mirrorAngleAdjust), mirrorNormal0);
 	
 	//rotate around window (mouting ring)
-	public double mirrorCentrePos[] = Util.plus(windowCentre, 
+	public double mirrorCentrePos[] = Util.plus(windowBackPos0, 
 			Algorithms.rotateVector(Algorithms.rotationMatrix(portNormal, mirrorRingRotate), 
-					Util.minus(mirrorCentrePos1, windowCentre)));
+					Util.minus(mirrorCentrePos1, windowBackPos0)));
 
 	public double mirrorNormal[] = Algorithms.rotateVector(Algorithms.rotationMatrix(portNormal, mirrorRingRotate), mirrorNormal1);
 
@@ -113,12 +135,12 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	
 	public double windowDistBehindMirror = 0.170;
 	public double entryWindowDiameter = 0.095; // 
-	public double entryWindowThickness = 0.010; //
+	public double entryWindowThickness = 0.006; //
 	public double entryWindowShift = 0.000;
 	
-	public double entryWindowFrontPos[] = Util.plus(windowCentre, Util.mul(opticAxis, entryWindowShift));
-	public double entryWindowIrisPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness / 2));
-	private double entryWindowBackPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness));
+	public double entryWindowBackPos[] = Util.plus(windowBackPos0, Util.mul(opticAxis, entryWindowShift));
+	public double entryWindowFrontPos[] = Util.plus(entryWindowBackPos, Util.mul(opticAxis, -entryWindowThickness));
+	public double entryWindowIrisPos[] = Util.plus(entryWindowBackPos, Util.mul(opticAxis, -entryWindowThickness / 2));
 	
 	Medium windowMedium = new Medium(new Sapphire());
 	public Disc entryWindowFront = new Disc("entryWindowFront", entryWindowFrontPos, opticAxis, entryWindowDiameter/2, windowMedium, null, NullInterface.ideal());
@@ -134,7 +156,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 	public double lens1CurvatureRadius = 0.10336;
 	public double lens1ClearAperture = 0.0735;
 
-	public double lens1CentrePos[] = Util.plus(windowCentre, Util.mul(opticAxis, lens1DistBehindWindow + lens1CentreThickness));
+	public double lens1CentrePos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, lens1DistBehindWindow + lens1CentreThickness));
 	
 	//public Nikon50mmF11 objLens = new Nikon50mmF11(lensCentrePos, 0.100 / 0.050, opticAxis);
 	//public Iris objLensIris = new Iris("objLensIris", lensCentrePos, opticAxis, 0.100, objLens.getCaseRadius()*0.99, null, null, Absorber.ideal());
@@ -464,7 +486,7 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		}
 	}
 	
-	public BeamEmissSpecAEM21_postDesign_LC3(boolean adjustForLC3) {
+	public BeamEmissSpecAEM21_OP2(boolean adjustForLC3) {
 		super("beamSpec-aem21");
 		this.adjustedToLC3 = adjustForLC3;
 		
@@ -477,10 +499,10 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		}
 				
 		addElement(panelEdge);
-		addElement(mirrorBlock);
-		addElement(mirrorClampRing);
+		//addElement(mirrorBlock);
+		//addElement(mirrorClampRing);
 		//addElement(blockPlate);
-		addElement(colar);
+		//addElement(colar);
 				
 		addElement(mirror);
 		addElement(entryWindowIris);
@@ -516,25 +538,40 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		
 		System.out.print("Window centre posXYZ = "); OneLiners.dumpArray(entryWindowFront.getCentre());
 		
+		/*boolean adjustForOP2 = true;
+		if(adjustForOP2) {
+			shift(Util.mul(windowCentre, -1.0));
+			double rotVec[] = Util.reNorm(Util.cross(portNormal, portNormalOP2));
+			double rotAng = Math.acos(Util.dot(portNormal, portNormalOP2));
+			double rot[][] = Algorithms.rotationMatrix(rotVec, rotAng);			
+			rotate(new double[3], rot);
+			
+			shift(windowCentreOP2);
+		}*/
+		
 		if(adjustForLC3){
-			rotate(new double[3], rotateLC3);
-			shift(offsetLC3);
+			//rotate(new double[3], rotateLC3);
+			//shift(offsetLC3);
+			double lineAB_CAD[] = Util.reNorm(Util.minus(pointB_CAD, pointA_CAD));
+			double lineAB_LC3a[] = Util.reNorm(Util.minus(pointB_LC3a, pointA_LC3a));
 			
+			shift(Util.mul(pointA_CAD, -1.0));
 			
+			double rotVec[] = Util.reNorm(Util.cross(lineAB_CAD, lineAB_LC3a));
+			double rotAng = -Math.acos(Util.dot(lineAB_CAD, lineAB_LC3a));
+			double rotMat[][] = Algorithms.rotationMatrix(rotVec, rotAng);			
+			rotate(new double[3], rotMat);
+
+			shift(pointA_LC3a);
+
 			for(int iB=0;iB<fibreEndPos.length;iB++){
 				for(int iF=0; iF < fibreEndPos[iB].length; iF++){
 				
-					double newVec1[] = new double[3], newVec2[] = new double[3];
-					for(int j=0; j < 3; j++){
-						for(int k=0; k < 3; k++){
-							newVec1[j] += rotateLC3[j][k] * fibreEndNorm[iB][iF][k];
-							newVec2[j] += rotateLC3[j][k] * fibreEndPos[iB][iF][k];
-						}
-						
-						newVec2[j] += offsetLC3[j];
-					}
-					fibreEndNorm[iB][iF] = newVec1;
-					fibreEndPos[iB][iF] = newVec2;
+					fibreEndNorm[iB][iF] = OneLiners.rotateVectorAroundAxis(rotAng, rotVec, fibreEndNorm[iB][iF]);
+					fibreEndPos[iB][iF] = Util.plus(pointA_LC3a, 
+														OneLiners.rotateVectorAroundAxis(rotAng, rotVec, 
+															Util.minus(fibreEndPos[iB][iF], pointA_CAD)));
+					
 				}			
 			}
 		}
@@ -572,10 +609,11 @@ public class BeamEmissSpecAEM21_postDesign_LC3 extends Optic {
 		removeElement(mirrorBlock);
 		removeElement(mirrorClampRing);
 		
-		beamPlane.setCentre(Util.plus(lens1CentrePos, Util.mul(opticAxis , -1.500)));
+		beamPlane.setCentre(Util.plus(lens1CentrePos, Util.mul(opticAxis , -1.240)));
 		beamPlane.setNormal(opticAxis.clone());
 		
-		double upFinal[] = Util.reNorm(Util.cross(mirror.getNormal(), lensIris.getNormal())); //maybe adjuested to LC3 or other things
+		double rightFinal[] = Util.reNorm(Util.cross(mirror.getNormal(), lensIris.getNormal())); //maybe adjuested to LC3 or other things
+		double upFinal[] = Util.reNorm(Util.cross(lensIris.getNormal(), rightFinal));
 		beamPlane.setUp(upFinal);
 		
 		//outPath += "/carriageOnly/";	
