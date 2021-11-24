@@ -15,6 +15,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_asMeasuredOP12b;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7.Focus;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
@@ -63,11 +64,12 @@ public class BackgroundTargetting {
 	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
-	//public static SimpleBeamGeometry beams = W7xNBI.def();
+	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
-	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	public static SimpleBeamGeometry beams = W7XRudix.def();
+	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	//public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
 	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
@@ -92,7 +94,7 @@ public class BackgroundTargetting {
 	public static String writeWRLForDesigner = "20210817";
 	
 	public static double losCyldRadius = 0.005;
-	public static Surface startSurface = sys.entryWindowFront;
+	public static Surface startSurface = sys.entryTarget;
 		
 	public static void main(String[] args) throws FileNotFoundException {
 		System.out.println(outPath);

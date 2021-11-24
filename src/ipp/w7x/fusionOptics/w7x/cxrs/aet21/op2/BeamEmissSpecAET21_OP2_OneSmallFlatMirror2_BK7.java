@@ -159,7 +159,8 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	 */
 	
 	public double lens4FocalLength = 0.025;
-	public double lens4FromLens3 = 0.150;
+	//public double lens4FromLens3 = 0.150; //original as designed
+	public double lens4FromLens3 = 0.160; //adjusted to match final focal length OP2.1
 		
 	
 	/*** Positions/vectors ****/
@@ -223,11 +224,26 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	public double fibrePlanePos[] = Util.plus(lens4CentrePos, Util.mul(lensNormal, fibrePlaneFromLens4));
 	public double fibrePlaneSize = 0.040;
 	
+	/* Adjusts positions of fibres (not the fibre plane)
+	 * Equivalent to piezzo driven change of angle of fibres and lens4 */
+	
+	// Adjust to best hit the centre of the beams for beam power
+	// slightly low Q8, slightly high on Q7.
+	public double fibreAdjustX = 0.0003;
+	public double fibreAdjustY = -0.0008;
+	public double fibreRotation = -9 * Math.PI / 180;
+	//*/
+	
+	//original, aimed quite high on Q7, a bit high on Q8, nearer plasma axis
+	/*public double fibreAdjustX = 0.000;
+	public double fibreAdjustY = -0.000;
+	public double fibreRotation = -5 * Math.PI / 180;
+	//*/
+	
 	
 	public double fibrePlaneNormal[] = Util.mul(lensNormal, -1);
 	public double fibresXVec0[] = Util.reNorm(Util.cross(fibrePlaneNormal, globalUp));
 	public double fibresYVec0[] = Util.reNorm(Util.cross(fibresXVec0, fibrePlaneNormal));
-	public double fibreRotation = -5 * Math.PI / 180;
 	public double fibresXVec[] = Algorithms.rotateVector(Algorithms.rotationMatrix(fibrePlaneNormal, fibreRotation), fibresXVec0);
 	public double fibresYVec[] = Algorithms.rotateVector(Algorithms.rotationMatrix(fibrePlaneNormal, fibreRotation), fibresYVec0);
 	
@@ -249,6 +265,10 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	
 	public Element tracingTarget = entryTarget;
 	
+	public final String backgroundSTLFiles[] = {
+			"/work/cad/aet21/bg-targetting/target-m2-aet21-cxrs-cut.stl",
+			"/work/cad/aet21/bg-targetting/baffle-m2-aet21-cxrs-cut.stl"
+	};
 	
 	
 	/** Fibres */
@@ -298,7 +318,9 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 			double dX = -fibreSpacing;
 			double x0 = -(nFibres-1)/2 * dX; 
 			for(int iF=0; iF < nFibres; iF++){
-				fibreEndPos[iB][iF] = Util.plus(fibrePlanePos, Util.mul(fibresXVec, x0 + iF * dX));	
+				fibreEndPos[iB][iF] = Util.plus(Util.plus(fibrePlanePos, Util.mul(fibresXVec, x0 + iF * dX + fibreAdjustX)),
+												Util.mul(fibresYVec, fibreAdjustY));
+						
 						
 				fibreEndNorm[iB][iF] = fibrePlane.getNormal().clone();
 			}
@@ -470,7 +492,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 
 	public String getDesignName() { 
 		return (rotateToAET20 ? "aet20" : "aet21")
-				+ "-op2-oneFlat" 
+				+ "-op2-oneFlat-beamCentre" 
 				+ (adjustToLC3 ? "-lc3" : "");
 	}
 }

@@ -76,8 +76,8 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
-	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(false);
-	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
+	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(false);
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
@@ -110,7 +110,7 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 5000;
+	public final static int nAttempts = 1000;
 
 	public static String writeWRLForDesigner = null; //"20201216";
 	
@@ -119,8 +119,8 @@ public class FibreBacktrace {
 	public static void main(String[] args) throws FileNotFoundException {
 		makeFibreCyldSTL(); //		System.exit(0);
 
-		sys.carriageOnly();
-		outPath += "carriageOnly/";
+		//sys.carriageOnly();
+		//outPath += "carriageOnly/";
 				
 		System.out.println(outPath);
 		
