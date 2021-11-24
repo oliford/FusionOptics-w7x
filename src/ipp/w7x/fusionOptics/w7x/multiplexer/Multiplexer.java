@@ -24,10 +24,6 @@ public class Multiplexer extends Optic {
 	public double[] commonFibrePos = { 0, 0, 0 };
 	public double[] up = { 0, 0, 1 };
 
-	public double mirrorHeight = 0.018;
-	public double mirrorDiameter = 0.020;
-	
-
 	//public SimplePlanarConvexLens lens = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness("lens", lensPos, up, lensDiameter/2, lensFocalLength, lensThickness, lensMedium, IsoIsoInterface.ideal(), designWavelength);
 	final static double rescale = 1e-3; //everything here is in mm, we want m
 	
@@ -95,6 +91,10 @@ public class Multiplexer extends Optic {
 	public double inputFibreRadius = 0.0018;
 	public double inputFibreAngle = FastMath.asin(inputFibreRadius / lensFocalLength);
 	public double[] inputFibrePosition = { inputFibreRadius, 0, lensFocalLength * (1.0 - FastMath.cos(inputFibreAngle)) };
+	
+	// Thor labs PF05-03-G01 [https://www.thorlabs.de/newgrouppage9.cfm?objectgroup_id=264]
+	public double mirrorHeight = 0.018;
+	public double mirrorDiameter = 0.020;
 	
 	public double[] mirrorPos = { 0, 0, mirrorHeight };
 	
