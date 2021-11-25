@@ -301,18 +301,19 @@ public class FibreBacktrace {
 			}
 		}
 		
-		PrintStream textOut = new PrintStream(outPath + "/info.txt");
 		//spit out build commands and LOS definitions in blocks
-		for(Thing j : Thing.values()){
-			for(int iB=0; iB < sys.channelR.length; iB++){
-				for(int iP=0; iP < sys.channelR[iB].length; iP++){					
-					outputInfo(System.out, startPoints, closestApproachPos, beamPlanePos, iB, iP, j);	
-					outputInfo(textOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, j);
-					
+		PrintStream[] streams = {System.out, new PrintStream(outPath + "/info.txt") };
+		for(PrintStream stream : streams) {
+			for(Thing thing : Thing.values()){			
+				stream.println("Output " + thing + ":");
+				for(int iB=0; iB < sys.channelR.length; iB++){
+					for(int iP=0; iP < sys.channelR[iB].length; iP++){					
+						outputInfo(stream, startPoints, closestApproachPos, beamPlanePos, iB, iP, thing);						
+					}
 				}
 			}
 		}
-		textOut.close();
+		streams[1].close();
 		
 		//output JSON LOS info
 		PrintStream jsonOut = new PrintStream(outPath + "/lineOfSightDefs-"+sys.lightPathsSystemName+".json");
@@ -326,13 +327,13 @@ public class FibreBacktrace {
 		jsonOut.println("]}");
 
 		//output TXT LOS info in mm
-				PrintStream losOut = new PrintStream(outPath + "/lineOfSightDefs-"+sys.lightPathsSystemName+".txt");
-				losOut.println("# x1 y2 z2 x2 y2 z2 [mm]");
-				for(int iB=0; iB < sys.channelR.length; iB++){
-					for(int iP=0; iP < sys.channelR[iB].length; iP++){		
-						outputInfo(losOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.TXT_LOS_MM);				
-					}
-				}
+		PrintStream losOut = new PrintStream(outPath + "/lineOfSightDefs-"+sys.lightPathsSystemName+".txt");
+		losOut.println("# x1 y2 z2 x2 y2 z2 [mm]");
+		for(int iB=0; iB < sys.channelR.length; iB++){
+			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
+				outputInfo(losOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.TXT_LOS_MM);				
+			}
+		}
 				
 		
 		//spit out FreeCAD instructions to create fibre end block cylinders
@@ -386,7 +387,13 @@ public class FibreBacktrace {
 		vrmlOut.destroy();
 	}
 		
-	private static enum Thing { FreeCADHitPos, FreeCADLOS, JSON_LOS, TXT_LOS_MM };
+	private static enum Thing { 
+		FreeCADApproach, //FreeCAD python to make sphere at closest approach to beam
+		FreeCADBeamPlane, //FreeCAD python to make sphere at contact with beam plane
+		FreeCADLOS,  //FreeCAD python to make cylinder of LOS
+		JSON_LOS,   //JSON LOS definition (without end)
+		TXT_LOS_MM  //simple text LOS
+	};
 	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], double beamPlanePos[][][], int iB, int iP, Thing thing){
 		boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
 
@@ -419,13 +426,16 @@ public class FibreBacktrace {
 				+ ":" + String.format("%02d", iP+1);
 		
 		double p[] = Util.minus(startPoints[iB][iP], Util.mul(u, extendLOSCylds/2));
-		
 		switch(thing){
-			case FreeCADHitPos:		
-				stream.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iB][iP][0]*1e3+","+hitPoints[iB][iP][1]*1e3+","+hitPoints[iB][iP][2]*1e3 + ")));"
-						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"beamApproach_"+sys.getDesignName()+"_"+chanName+"\";");
-				break;
+			case FreeCADApproach:		
+				stream.println(freecadMakeSphere("beamApproach_Q"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, hitPoints[iB][iP], rad));
 				
+				break;
+		
+			case FreeCADBeamPlane:
+				stream.println(freecadMakeSphere("beamPlane_"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, beamPlanePos[iB][iP], rad));				
+				break;
+		
 			case FreeCADLOS:
 				stream.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+(losLen + extendLOSCylds)*1e3 +","										
 						+"FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3+"), "
@@ -454,6 +464,11 @@ public class FibreBacktrace {
 						
 				break;
 		}
+	}
+	
+	private static String freecadMakeSphere(String name, double[] pos, double radius) {
+		return "Part.show(Part.makeSphere("+radius*1e3+",FreeCAD.Vector("+pos[0]*1e3+","+pos[1]*1e3+","+pos[2]*1e3 + ")));"
+				+ " FreeCAD.ActiveDocument.ActiveObject.Label=\""+name+"\";";
 	}
 	
 	private static void makeFibreCyldSTL() {

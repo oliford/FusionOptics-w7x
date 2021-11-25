@@ -229,7 +229,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	
 	// Adjust to best hit the centre of the beams for beam power
 	// slightly low Q8, slightly high on Q7.
-	public double fibreAdjustX = 0.0003;
+	public double fibreAdjustX = 0.0004;
 	public double fibreAdjustY = -0.0008;
 	public double fibreRotation = -9 * Math.PI / 180;
 	//*/
