@@ -260,6 +260,9 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 	
 	public Square strayPlane = null;
 	public Cylinder rod = null;
+
+	//at which surface the LOS should 'start'. This should be the last physical surface before the plasma
+	public Surface losStartSurface = entryTarget;
 		
 	public STLMesh panelEdge = new STLMesh("panel", "/work/cad/aet21/conflicting-panel-aet21.stl");
 	
