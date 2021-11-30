@@ -47,19 +47,41 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 	
 	// CAD from designer
 	
-	//LC3a OP2 two positions on tube edge
-
-	
+	//LC3a OP2 two positions on tube edge	
 	private double pointA_CAD[] = { -0.39097027587890626, 5.47667578125, 1.1955107421875 };
 	private double pointB_CAD[] = { 0.14401425170898438, 5.26243359375, 2.6447634277343752 };
+	private double pointC_CAD[] = { -0.46271923828125, 5.29344091796875, 1.157767333984375 };
+
+	private double pointA_AsBuilt[] = { -0.4024186706542969, 5.485111328125, 1.1998590087890626 };
+	private double pointB_AsBuilt[] = { 0.14293978881835936, 5.26099609375, 2.643819091796875 };
+	private double pointC_AsBuilt[] = { -0.46964956665039065, 5.3007685546875, 1.1593525390625001};
 	
 	private double pointA_LC3a[] = { -0.40321734619140626, 5.4868388671875, 1.196421630859375 };
 	private double pointB_LC3a[] = {  0.14233308410644532, 5.2602412109375, 2.639848876953125 };
+	private double pointC_LC3a[] = { -0.4705886535644531, 5.30258935546875, 1.155668701171875 };
+	
+	//determined from above points by findRot.py (but -ve):
+	// basically:
+	//    H = (B-<B>) . (A-<A>).T
+	//    s,u,v.T = svd(H)
+	//    R = v.T . u
+	//    t = <B> - R.<A>
+	//  
+	//   B = R.A + t
+	double[][] rotateLC3 = {
+			{ 0.9996915276098964, -0.024611006139654168, 0.0033388623490157032 },
+			{ 0.02454796041320792, 0.9995407876457488, -0.01776545727158653 },
+			{ -0.0037745548801611517, 0.017678014857752333, 0.9998366069144229 }};
 
-	private boolean adjustedToLC3;
+	double[] offsetLC3 = { 0.11891970036549551, 0.038796395011902796, -0.09780174088159965 };
+
+	double[][] rotateAsBuilt = {{0.9996750054721966,-0.025301758625827064,0.003115195756871969 },
+							{0.025247744976224895, 0.9995482673865392, -0.016303758406655572 },
+							{ -0.003526302281250282, 0.016219808106370137, 0.9998622320185985 }};
 	
+	double[] offsetAsBuilt = { 0.12373751318603388, 0.03568461278106394, -0.08618283268257132 };
 	
-    public double offsetLC3[] = { 0.0063746567, 0.0039538344, 0.0025080040 }; //old OP1.2
+    //public double offsetLC3[] = { 0.0063746567, 0.0039538344, 0.0025080040 }; //old OP1.2
 	//public double offsetLC3[] = { 0.003110514907226525, 0.006157956093750805, 0.0017801479687500343 }; //OP2 STEP 20211105 LC3a - CAD
 
 	//public double portNormal[] = { 0.35536503, -0.14530594,  0.92336444 }; //old OP1.2b CAD
@@ -81,9 +103,11 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 	
 	public double mirrorDiameter = 0.120;
 	
-	public double mirrorAngleAdjust = +3 * Math.PI / 180; // Adjust of shutter open angle. 0 is default open, -60 is closed, +3deg gives best throughput and direct light mitigation
+	//public double mirrorAngleAdjust = +3 * Math.PI / 180; // Adjust of shutter open angle. 0 is default open, -60 is closed, +3deg gives best throughput and direct light mitigation
 	//front plate seems to be good for ang=+3 in LC3
-	//public double mirrorAngleAdjust = +0.72 * Math.PI / 180; // Furthest we could get due to shutter housing 
+	//public double mirrorAngleAdjust = +0.72 * Math.PI / 180; // OP1.2b: Furthest we could get due to shutter hitting the 'blech' housing
+	
+	public double mirrorAngleAdjust = +3.0 * Math.PI / 180; // OP2.1 pre-alignment in NBI hall done to the wrong numbers for +3°, so ended up at +0.1°
 	
 	public double mirrorRingRotate = 0 * Math.PI / 180; //Adjustment of mirror mount ring
 	
@@ -93,11 +117,15 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 	public double mirrorPivotVector[] = { -0.23614408,  0.94177839,  0.23935211 }; //pivot of shutter/mirror to open/close -2362, 9418, 2394*/
 	
 	// OP2
-	public double mirrorWindowDist = 0.128;
+	//public double mirrorWindowDist = 0.130;
 	public double mirrorPivotCentre[] = { -0.5229530639648438, 5.391916015625, 1.0738038330078126 };
 	public double mirrorPivotVector[] = { -0.21197886, 0.9528862, 0.21696277 };
 	public double mirrorNormal0[] = { 0.95955426, 0.16322111, 0.22937851 };
+	
+	//positioning as CAD (no LC3), mirror is at 58.68deg
+	public double mirrorWindowDist = 0.128;
 	public double mirrorDownwardsShift = 0.003;
+	
 	
 	public double mirrorCentrePos0[] = Util.plus(Util.plus(windowBackPos0, Util.mul(portNormal, -mirrorWindowDist)),
 										Util.mul(Util.reNorm(Util.cross(mirrorNormal0, mirrorPivotVector)), mirrorDownwardsShift));
@@ -261,7 +289,7 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 	public double beamObsPerp[] = Util.reNorm(Util.cross(Util.minus(lens1CentrePos, targetObsPos), beamAxis));
 	public double beamObsPlaneNormal[] = Util.reNorm(Util.cross(beamAxis, beamObsPerp));
 	
-	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 1.500, 2.000, NullInterface.ideal());
+	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 0.800, 1.200, NullInterface.ideal());
 	
 	double strayPos[] = Util.plus(mirrorCentrePos, Util.mul(portNormal, -0.250)); 
 	
@@ -301,16 +329,19 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 		
 	public Element tracingTarget = mirror;
 	public Surface checkSurface = mirror;
+
+	//at which surface the LOS should 'start'. This should be the last physical surface before the plasma
+	public Surface losStartSurface = mirror;		
 	
 	public final String backgroundSTLFiles[] = {
-			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/baffles-cut.stl",
-		//"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/panel1.stl",
-			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/panel2-smallArea.stl",
-			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/panel3.stl",
-			//"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/panel4.stl",
-			//"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/panel5.stl",
-			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/shield-cut-smallArea.stl",
-			"/home/oliford/rzg/w7x/cad/aem21/bg-targetting/target-cut-smallArea.stl",
+			"/work/cad/aem21/bg-targetting/baffles-cut.stl",
+		//"/work/cad/aem21/bg-targetting/panel1.stl",
+			"/work/cad/aem21/bg-targetting/panel2-smallArea.stl",
+			"/work/cad/aem21/bg-targetting/panel3.stl",
+			//"/work/cad/aem21/bg-targetting/panel4.stl",
+			//"/work/cad/aem21/bg-targetting/panel5.stl",
+			"/work/cad/aem21/bg-targetting/shield-cut-smallArea.stl",
+			"/work/cad/aem21/bg-targetting/target-cut-smallArea.stl",
 	};
 			
 	/** Set fibre positions according to design sent to Ceramoptec.
@@ -338,7 +369,8 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 	private double rodCentre[] = Util.plus(rodEndPos, Util.mul(rodAxis, rodLength/2));
 	public Cylinder rod = new Cylinder("rod", rodCentre, rodAxis, 0.005, rodLength, NullInterface.ideal());
 	
-	private double ferruleAngleToUp = 56.5 * Math.PI / 180;
+	//private double ferruleAngleToUp = 56.5 * Math.PI / 180;
+	private double ferruleAngleToUp = 55.0 * Math.PI / 180; //adjusted to improve tracking of beam in as-built,+3deg
 	private double ferruleRight0[] = Util.reNorm(Util.cross(globalUp, rodAxis));
 	private double ferruleUp0[] = Util.reNorm(Util.cross(rodAxis, ferruleRight0));
 	
@@ -365,12 +397,23 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 	//private double ferruleAdjustRight = 0.001;
 	//private double ferruleAdjustFocus = 0.014;
 	
+	// adjusted focus for 30mm l1-l2 distance instead of nominal 40mm
+	// for ang=+0.1
+	/*private double ferruleAdjustUp = 0.009; 
+	private double ferruleAdjustRight = 0.0003;
+	private double ferruleAdjustFocus = 0.014;
+	//*/
 
 	// adjusted focus for 30mm l1-l2 distance instead of nominal 40mm
 	//good for ang=3.0
-	private double ferruleAdjustUp = 0.001; 
-	private double ferruleAdjustRight = 0.001;
+	/*private double ferruleAdjustUp = -0.0012;
+	private double ferruleAdjustRight = -0.003;
 	private double ferruleAdjustFocus = 0.014;
+	//*/
+	
+	private double ferruleAdjustUp = (mirrorAngleAdjust < 1*Math.PI/180) ? 0.009 : -0.0012; 
+	private double ferruleAdjustRight = (mirrorAngleAdjust < 1*Math.PI/180) ? 0.0053 : 0.002; //0.0003 : -0.003;
+	private double ferruleAdjustFocus = (mirrorAngleAdjust < 1*Math.PI/180) ? 0.014 : 0.014;
 	
 	private void setupFibrePositions() {
 		int nBeams = ferruleRowNFibres.length;
@@ -417,7 +460,7 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 			}
 		}
 		
-		for(int iX=0; iX < 2; iX++){
+		for(int iX=0; iX < Math.min(2, nBeams-2); iX++){
 			int nFibres = ferruleRowNFibres[2+iX];
 			fibreEndPos[2+iX] = new double[nFibres][];
 			fibreEndNorm[2+iX] = new double[nFibres][];
@@ -486,9 +529,12 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 		}
 	}
 	
-	public BeamEmissSpecAEM21_OP2(boolean adjustForLC3) {
+	public static enum CoordState { CAD, AsBuilt, LC3a };
+	public CoordState coordSate;
+	
+	public BeamEmissSpecAEM21_OP2(CoordState coordSate) {
 		super("beamSpec-aem21");
-		this.adjustedToLC3 = adjustForLC3;
+		this.coordSate = coordSate;
 		
 		for(Surface s : blockPlate.getSurfaces())
 			s.setInterface(Reflector.ideal());
@@ -549,39 +595,36 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 			shift(windowCentreOP2);
 		}*/
 		
-		if(adjustForLC3){
-			//rotate(new double[3], rotateLC3);
-			//shift(offsetLC3);
-			double lineAB_CAD[] = Util.reNorm(Util.minus(pointB_CAD, pointA_CAD));
-			double lineAB_LC3a[] = Util.reNorm(Util.minus(pointB_LC3a, pointA_LC3a));
+		if(coordSate != CoordState.CAD){
+			double[][] rotate = (coordSate == CoordState.LC3a) ? rotateLC3 : rotateAsBuilt;
+			double[] offset = (coordSate == CoordState.LC3a) ? offsetLC3 : offsetAsBuilt;
 			
-			shift(Util.mul(pointA_CAD, -1.0));
+			shift(offset);			
+			rotate(new double[3], rotate);
 			
-			double rotVec[] = Util.reNorm(Util.cross(lineAB_CAD, lineAB_LC3a));
-			double rotAng = -Math.acos(Util.dot(lineAB_CAD, lineAB_LC3a));
-			double rotMat[][] = Algorithms.rotationMatrix(rotVec, rotAng);			
-			rotate(new double[3], rotMat);
-
-			shift(pointA_LC3a);
-
 			for(int iB=0;iB<fibreEndPos.length;iB++){
 				for(int iF=0; iF < fibreEndPos[iB].length; iF++){
 				
-					fibreEndNorm[iB][iF] = OneLiners.rotateVectorAroundAxis(rotAng, rotVec, fibreEndNorm[iB][iF]);
-					fibreEndPos[iB][iF] = Util.plus(pointA_LC3a, 
-														OneLiners.rotateVectorAroundAxis(rotAng, rotVec, 
-															Util.minus(fibreEndPos[iB][iF], pointA_CAD)));
+					fibreEndNorm[iB][iF] = Algorithms.rotateVector(rotate, fibreEndNorm[iB][iF]);
+					fibreEndPos[iB][iF] = Util.plus( 
+												Algorithms.rotateVector(rotate, fibreEndPos[iB][iF]),
+												offset);
 					
 				}			
 			}
 		}
+		
 		double portNormFinal[] = lensIris.getNormal(); //maybe adjuested to LC3
 		System.out.println("Mirror deflection angle: " + 2*Math.acos(Util.dot(mirror.getNormal(), portNormFinal))*180/Math.PI + " deg");
 		
 		
 	}
 
-	public String getDesignName() { return "aem21" + (adjustedToLC3 ? "-lc3" : "");	}
+	public String getDesignName() { 
+		return "aem21" 
+				+ "-" + coordSate
+				+ ((mirrorAngleAdjust != 0) ? "-mAng_" + String.format("%.1f", mirrorAngleAdjust*180/Math.PI) : "");
+	}
 
 	public List<Element> makeSimpleModel() {
 		ArrayList<Element> elements = new ArrayList<Element>();

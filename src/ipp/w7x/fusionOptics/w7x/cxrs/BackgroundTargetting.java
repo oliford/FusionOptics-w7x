@@ -8,7 +8,9 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsK41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsL41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolete;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_OP2.CoordState;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem41.BeamEmissSpecAEM41;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_OP2;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
@@ -64,8 +66,8 @@ public class BackgroundTargetting {
 	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
-	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
-	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
+	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.LC3a);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
@@ -94,7 +96,6 @@ public class BackgroundTargetting {
 	public static String writeWRLForDesigner = "20210817";
 	
 	public static double losCyldRadius = 0.005;
-	public static Surface startSurface = sys.entryTarget;
 		
 	public static void main(String[] args) throws FileNotFoundException {
 		System.out.println(outPath);
@@ -195,7 +196,7 @@ public class BackgroundTargetting {
 							sumIX2[j] += p[j]*p[j];
 						}
 						
-						Intersection startSurfaceHit = hits.get(0).incidentRay.findFirstEarlierIntersection(startSurface);						
+						Intersection startSurfaceHit = hits.get(0).incidentRay.findFirstEarlierIntersection(sys.losStartSurface);						
 						for(int j=0; j < 3; j++){
 							sumIXsp[j] += startSurfaceHit.pos[j];						
 						}
@@ -311,7 +312,7 @@ public class BackgroundTargetting {
 		switch(thing){
 			case FreeCADHitPos:		
 				stream.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iB][iP][0]*1e3+","+hitPoints[iB][iP][1]*1e3+","+hitPoints[iB][iP][2]*1e3 + ")));"
-						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+chanName+"\";");
+						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+chanName+"\"; g.addObject(FreeCAD.ActiveDocument.ActiveObject);");
 				break;
 				
 			case FreeCADLOS:

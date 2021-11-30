@@ -17,6 +17,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsK41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsL41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_OP2;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_OP2.CoordState;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolete;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem41.BeamEmissSpecAEM41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
@@ -76,8 +77,8 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
-	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(false);
-	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
+	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.AsBuilt);
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
 	public static SimpleBeamGeometry beams = W7xNBI.def();
@@ -110,7 +111,7 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 1000;
+	public final static int nAttempts = 500;
 
 	public static String writeWRLForDesigner = null; //"20201216";
 	
@@ -258,7 +259,7 @@ public class FibreBacktrace {
 							startPoints[iB][iP][j] += hitRay.startPos[j];
 						}
 						
-						sumDistToBeam += OneLiners.length(OneLiners.minus(p2, p1));
+						sumDistToBeam += OneLiners.length(OneLiners.minus(p2, p1)) * ((p1[2] > p2[2]) ? 1 : -1); //+ve is above
 						nHit++;
 					}
 					
@@ -346,7 +347,7 @@ public class FibreBacktrace {
 				 						
 				System.out.println("Part.show(Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +","										
 						+"FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3+"), "
-						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"FibreEnd_"+sys.getDesignName()+"_"+i+"\";");
+						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"FibreEnd_"+sys.getDesignName()+"_"+i+"\"; g.addObject(FreeCAD.ActiveDocument.ActiveObject);");
 				
 			}
 		}
@@ -468,7 +469,7 @@ public class FibreBacktrace {
 	
 	private static String freecadMakeSphere(String name, double[] pos, double radius) {
 		return "Part.show(Part.makeSphere("+radius*1e3+",FreeCAD.Vector("+pos[0]*1e3+","+pos[1]*1e3+","+pos[2]*1e3 + ")));"
-				+ " FreeCAD.ActiveDocument.ActiveObject.Label=\""+name+"\";";
+				+ " FreeCAD.ActiveDocument.ActiveObject.Label=\""+name+"\"; g.addObject(FreeCAD.ActiveDocument.ActiveObject);";
 	}
 	
 	private static void makeFibreCyldSTL() {
