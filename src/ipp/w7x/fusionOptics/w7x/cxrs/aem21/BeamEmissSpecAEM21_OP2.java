@@ -400,14 +400,14 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 	// adjusted focus for 30mm l1-l2 distance instead of nominal 40mm
 	// for ang=+0.1
 	/*private double ferruleAdjustUp = 0.009; 
-	private double ferruleAdjustRight = 0.0003;
+	private double ferruleAdjustRight = 0.0053;
 	private double ferruleAdjustFocus = 0.014;
 	//*/
 
 	// adjusted focus for 30mm l1-l2 distance instead of nominal 40mm
 	//good for ang=3.0
 	/*private double ferruleAdjustUp = -0.0012;
-	private double ferruleAdjustRight = -0.003;
+	private double ferruleAdjustRight = -0.002;
 	private double ferruleAdjustFocus = 0.014;
 	//*/
 	
