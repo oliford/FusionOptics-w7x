@@ -77,7 +77,7 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
-	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.AsBuilt);
+	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.LC3a);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
@@ -111,7 +111,7 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 500;
+	public final static int nAttempts = 2000;
 
 	public static String writeWRLForDesigner = null; //"20201216";
 	
@@ -361,21 +361,29 @@ public class FibreBacktrace {
 		
 		//target plane hit positions, in target plane coords
 		//		// );
-		System.out.println("a=array([");
+		PrintStream targPyOut = new PrintStream(outPath + "/makeTargetPlot-"+sys.lightPathsSystemName+".py");
+		targPyOut.println("a=[");
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){
 				String chanName = sys.lightPathsSystemName 
 						+ (sys.lightPathRowName != null ? ("_"+sys.lightPathRowName[iB]) : "")
 						+ ":" + String.format("%02d", iP+1);
 				double planeXY[] = sys.beamPlane.posXYZToPlaneRU(beamPlanePos[iB][iP]);
-				System.out.println("[" + planeXY[0] + "," +  planeXY[1] + "], # '" + chanName + "'");				
+				targPyOut.println("{ 'id': '" + chanName + "', 'pos': array([" + planeXY[0] + "," +  planeXY[1] + "])},");				
 			}
 		}
-		System.out.println("]);");
-		System.out.println("clf(); plot(a[:,0]*100,a[:,1]*100,\".\"); ax=gca(); ax.grid(); "
-				+ "ax.set_aspect(1.0); ax.set_xlim(-10,10); ax.set_ylim(-10,10);"
+		targPyOut.println("];");
+		targPyOut.println("clf();\n"
+				+ "for i in a :\n"
+				+ "   plot(i['pos'][0]*100,i['pos'][1]*100,\".\");\n"
+				+ "   annotate(i['id'],(i['pos'][0], i['pos'][1]));\n"
+				+ "ax=gca();\n"
+				+ "ax.grid();\n"
+				+ "ax.set_aspect(1.0);\n"
+				+ "ax.set_xlim(-50,50);\n"
+				+ "ax.set_ylim(-30,30);\n"
 				+ "savefig(\""+outPath+"/carriage-align-cxrs-targetPlane.svg\");");
-		
+		targPyOut.close();
 		
 		//windowHits.destroy();
 		
