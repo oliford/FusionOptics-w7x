@@ -62,7 +62,7 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 	public void start() {
 		
 		inPath = "/work/cad/aea21/radExposure4";
-		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure4-open-morePipe/";
+		outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/radExposure4-open-op2/";
 		
 		//powerAngularDensity = 15e3 / 2 / Math.PI;  //reradiation from 450°C at emissivity=1
 		
@@ -81,7 +81,9 @@ public class RadiationExposureAEA21_Triangles extends RadiationExposureTriangles
 				new STLMesh(inPath + "/portCatch.stl"),
 				new STLMesh(inPath + "/ringClamp.stl"),
 				new STLMesh(inPath + "/tube.stl"),
-				new STLMesh(inPath + "/window.stl"),
+				//new STLMesh(inPath + "/window.stl"),
+				new STLMesh(inPath + "/window-outer.stl"),
+				new STLMesh(inPath + "/window-inner.stl"),
 				
 				//closed
 				/*new STLMesh(inPath + "/shutter.stl"),
