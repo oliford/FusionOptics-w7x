@@ -154,6 +154,11 @@ public class BeamEmissSpecAET21_OP2_Parabolic extends Optic {
 	
 	public Element tracingTarget = entryTarget;
 	
+	public int beamIdx[] = { W7xNBI.BEAM_Q7 };
+	public double fibreNA = 0.22; // As AUG	
+	public double fibreEndDiameter = 0.000470; // from ceramOptec offer, with polymide jacket (470µm), without Tefzel (550µm)
+	public double overrideObsPositions[][][] = null;
+	
 	public BeamEmissSpecAET21_OP2_Parabolic() {
 		super("beamSpec-aet21-op2");
 		
