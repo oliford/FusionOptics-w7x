@@ -786,7 +786,8 @@ public class BeamEmissSpecAEA21 extends Optic {
 	private double smseFirstColumnLeftOfRodCentre = 8.52e-3;
 	
 	private int[][] smseSkipFibres = {{15, 5}, {15, 6}, {15, 7}, { 14, 8 }, {15, 8}};
-		
+
+	public Surface losStartSurface = mirror;		
 	
 	private void setupFibrePositionsSMSE() {
 		int nBeams = 1;
@@ -878,6 +879,17 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 			}
 		}
 	}
-		
+
+
+	/** Remove tube components for alignment of carriage */
+	public void carriageOnly() {
+		//removing tube stuff for in-lab alignment 
+		removeElement(mirror);	
+		removeElement(strayPlane);
+		beamPlane.setCentre(Util.plus(entryWindowFront.getCentre(), Util.mul(opticAxis, -2.050)));
+		beamPlane.setNormal(opticAxis.clone());
+				
+	}
+
 
 }
