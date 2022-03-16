@@ -9,12 +9,10 @@
 		<artifactId>common-pom</artifactId>
 		<version>1.0.0</version>
 	</parent>
-
-	<scm>
-		<connection>scm:svn:https://svn.seed-escience.org/public/FusionOptics</connection>
-		<developerConnection>scm:svn:https://svn.seed-escience.org/public/FusionOptics</developerConnection>
-		<url>https://svn.seed-escience.org</url>
-		<tag>HEAD</tag>
+    <scm>
+		<connection>scm:git:ssh://git@git.ipp-hgw.mpg.de/FusionOptics/${project.name}.git</connection>
+    	<developerConnection>scm:git:ssh://git@git.ipp-hgw.mpg.de/FusionOptics/${project.name}.git</developerConnection>    	
+		<url>https://gitlab.ipp-hgw.mpg.de/FusionOptics/${project.name}/tree/master</url>
 	</scm>
 
 	<distributionManagement>
@@ -40,15 +38,15 @@
 			<version>1.0.4</version>
 		</dependency>
 		<dependency>
-			<groupId>oliford</groupId>
-			<artifactId>FusionGeomDefs</artifactId>
-			<version>1.0.11</version>
-		</dependency>
-		<dependency>
 			<groupId>javaOneLineUtils</groupId>
 			<artifactId>JavaOneLineUtils</artifactId>
 			<version>1.4.50</version>
 		</dependency>
+		<dependency>
+			<groupId>oliford</groupId>
+			<artifactId>ImageProc-support</artifactId>
+			<version>1.1.2</version>
+		</dependency>		
 	</dependencies>
 	<version>1.0.3</version>
 </project>

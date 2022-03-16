@@ -5,12 +5,16 @@ import java.util.List;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.drawing.VRMLDrawer;
+import fusionOptics.interfaces.NullInterface;
+import fusionOptics.surfaces.CyldDish;
+import fusionOptics.surfaces.Cylinder;
 import fusionOptics.tracer.Tracer;
 import fusionOptics.types.Intersection;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
 import ipp.w7x.fusionOptics.w7x.augSpec.AugSpec4;
 import net.jafama.FastMath;
+import oneLiners.OneLiners;
 import otherSupport.ColorMaps;
 import otherSupport.RandomManager;
 
@@ -19,11 +23,13 @@ public class MultiplexerDev {
 
 	public static Surface mustHitToDraw = sys.mirror;
 	public static double traceWavelength = sys.designWavelength;
-	public static int nAttempts = 50000;
+	public static int nAttempts = 200000;
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/multiplexer/";
 	
 	public static void main(String[] args) {
+		System.out.println(outPath);
+		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/augSpecTrace.vrml", 0.010);
 		
 		//if((writeWRLForDesigner == null)){
@@ -33,8 +39,15 @@ public class MultiplexerDev {
 		vrmlOut.setSkipRays(nAttempts / 5000);
 
 		double col[][] = ColorMaps.jet(nAttempts);
+		
+		//find average position and vector of all rays reaching fibre or it's iris,
+		//for finding best pos/angle of fibre
+		double avgPosAtSurface[] = new double[3];
+		double avgVecAtSurface[] = new double[3];
 
-		int nHits = 0;
+		int nHits = 0; //hitting fibre or iris
+		int nHitsInFibre = 0; //hitting fibre
+		int nRaysInFibre = 0; //hitting fibre and inside it's NA
 		for(int i=0; i < nAttempts; i++){
 					
 			double startPos[] = sys.commonFibrePos.clone();
@@ -83,8 +96,22 @@ public class MultiplexerDev {
 
 			
 			List<Intersection> hits = ray.getIntersections(sys.inputFibreEnds[0]);
-			if(hits.size() > 0)
-				nHits++;		
+			if(hits.size() > 0) {
+				nHitsInFibre++;
+				double cosAngle = FastMath.abs(Util.dot(hits.get(0).normal, hits.get(0).incidentRay.dir));
+				double angle = FastMath.acos(cosAngle);
+				if(angle < FastMath.atan(sys.fibreEffectiveNA)) {
+					nRaysInFibre++;
+				}
+			}
+			hits.addAll(ray.getIntersections(sys.fibreEndIris[0]));
+			if(hits.size() > 0) {
+				nHits++;
+				for(int j=0;j < 3; j++) {
+					avgPosAtSurface[j] += hits.get(0).pos[j];
+					avgVecAtSurface[j] += hits.get(0).incidentRay.dir[j];
+				}
+			}
 			
 			if(mustHitToDraw == null){
 				vrmlOut.drawRay(ray, col[i]);
@@ -96,7 +123,20 @@ public class MultiplexerDev {
 			}					
 		}
 		
-		System.out.println(0 + ": " + nHits + "/" + nAttempts);	
+		System.out.println("Near fibre = " + nHits + "/" + nAttempts);
+		System.out.println("At fibre = " + nHitsInFibre + "/" + nAttempts 
+							+ " = " + ((int)(100*nHitsInFibre/nAttempts)) + "%");
+		System.out.println("In fibre = " + nRaysInFibre + "/" + nAttempts 
+				+ " = " + ((int)(100*nRaysInFibre/nAttempts)) + "%");
+
+		avgPosAtSurface = Util.mul(avgPosAtSurface, 1.0/nHits);
+		avgVecAtSurface = Util.reNorm(avgVecAtSurface);
+		double angle = FastMath.atan(avgVecAtSurface[0]/avgVecAtSurface[2]);
+		
+		OneLiners.dumpArray(avgPosAtSurface);
+		OneLiners.dumpArray(avgVecAtSurface);
+		System.out.println(angle*180/Math.PI);
+		vrmlOut.drawElement(new Cylinder("inputCalc",avgPosAtSurface,avgVecAtSurface,sys.fibreDiameter/2,0.500,NullInterface.ideal()));
 	
 		vrmlOut.drawOptic(sys);
 		vrmlOut.destroy();

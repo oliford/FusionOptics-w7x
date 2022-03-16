@@ -491,7 +491,12 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double beamObsPerp[] = Util.reNorm(Util.cross(Util.minus(lens1CentrePos, targetObsPos), beamAxis));
 	public double beamObsPlaneNormal[] = Util.reNorm(Util.cross(beamAxis, beamObsPerp));
 	
-	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 0.500, 1.600, NullInterface.ideal());
+	//best match plane to beam/box axis, for simplified calculation of points
+	//public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 0.500, 1.600, NullInterface.ideal());
+	
+	//target plane to setup in lab for in-tube alignment. Vertical and up is up
+	public double targetPlaneNormal[] = Util.reNorm(Util.cross(globalUp, Util.cross(beamObsPlaneNormal, globalUp)));	
+	public Square beamPlane = new Square("beamPlane", targetObsPos, targetPlaneNormal, globalUp, 0.500, 1.600, NullInterface.ideal());
 
 	/** Plasma radiating surface for heat-load analysis */
 	public double[] radSurfaceCentre = { 1.68544196,  5.98435327,  0.43004889 };
@@ -528,6 +533,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 		CXRS,
 		Lamp,
 		SMSE,
+		TubeAxis,
 	}
 	public Subsystem subsystem;
 			
@@ -551,7 +557,8 @@ public class BeamEmissSpecAEA21 extends Optic {
 		
 		switch(subsystem) {
 			case CXRS: setupFibrePositionsCXRS(); break;
-			case Lamp: makeLampFibre(); break;
+			case Lamp: makeLED(); break;
+			case TubeAxis: makeAxisLaser(); break;
 			case SMSE: setupFibrePositionsSMSE(); break;
 		}
 		setupFibrePlanes();
@@ -629,6 +636,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 			case CXRS: return "aea21";
 			case Lamp: return "aea21-led";
 			case SMSE: return "aea21-smse";
+			case TubeAxis: return "tube-axis";
 			default: throw new IllegalArgumentException();
 		}
 	}
@@ -834,31 +842,47 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 	
 
 	/** Adds an effetive 'fibre' for a LED light source near the head */
-	private void makeLampFibre() {
+	private void makeLED() {
+		
+		int fibreIdx = fibreEndPos[0].length / 2; //make LED above this fibre
+		double offsetY = 0.015;
+		
 		int n = channelR.length;		
 		channelR = new double[][] { { 5.5 }};
 		beamIdx = new int[] { W7xNBI.BEAM_BOXAVG };
 		lightPathRowName = new String[] {  "LED" };
 		fibreEndPos = Arrays.copyOf(fibreEndPos, n + 1);
 		fibreEndNorm = Arrays.copyOf(fibreEndNorm, n + 1);
-		
-		int i = fibreEndPos[0].length / 2;
-		
-		double x[] = Util.minus(fibreEndPos[0][i], fibreEndPos[0][i-1]);
-		double y[] = Util.reNorm(Util.cross(x, portNormal));
+		double[] x = Util.minus(fibreEndPos[0][fibreIdx], fibreEndPos[0][fibreIdx-1]);
+		double[] y = Util.reNorm(Util.cross(x, portNormal));
 		
 		fibreEndPos = new double[][][] {{ 
-			Util.plus(
-					Util.plus(fibreEndPos[0][i], Util.mul(portNormal,-0.040)),
-					Util.mul(y, 0.015)
+				Util.plus(
+						Util.plus(fibreEndPos[0][fibreIdx], Util.mul(portNormal,-0.040)),
+						Util.mul(y, offsetY)
 					)
-		}};
-		fibreEndNorm = new double[][][] {{
-			fibreEndNorm[0][i].clone()
-		}};
+			}};
+			
+		fibreEndNorm = new double[][][] {{ fibreEndNorm[0][fibreIdx].clone() }};
 		fibreNA = 0.6;
 		fibreEndDiameter = 0.019;
-			
+		
+	}
+	
+	/** Adds an effetive 'fibre' for a LED light source near the head */
+	private void makeAxisLaser() {
+
+		channelR = new double[][] { { 5.5 }};
+		beamIdx = new int[] { W7xNBI.BEAM_BOXAVG };
+		lightPathRowName = new String[] {  "Axis" };
+		
+		fibreEndPos = new double[][][] {{ rodEndPos }};			
+		fibreEndNorm = new double[][][] {{ Util.mul(opticAxis, -1) }};
+		this.fibreNA = 0.001;
+		fibreEndDiameter = 0.001;
+		
+		//remove catch plane, since it stops the laser
+		catchPlane.setInterface(NullInterface.ideal());
 	}
 	
 	private void setupFibrePlanes() {
@@ -880,16 +904,26 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 		}
 	}
 
-
 	/** Remove tube components for alignment of carriage */
 	public void carriageOnly() {
 		//removing tube stuff for in-lab alignment 
-		removeElement(mirror);	
+		removeElement(mirror);
+		removeElement(catchPlane);
 		removeElement(strayPlane);
-		beamPlane.setCentre(Util.plus(entryWindowFront.getCentre(), Util.mul(opticAxis, -2.050)));
-		beamPlane.setNormal(opticAxis.clone());
-				
-	}
+		
+		beamPlane.setCentre(Util.plus(lens1CentrePos, Util.mul(opticAxis , -2.12))); 
+		//beamPlane - lens1CentrePos = -2.12 is what is needed to get p40 - p1 to be 65.5mm which is what it is on the carriage only target sheet I printed
+		//for OP2 alignment in NBI PINI room
+		double[] opticAxis2 = Util.reNorm(Util.cross(globalUp, Util.cross(opticAxis, globalUp)));
+		beamPlane.setNormal(opticAxis2.clone());
+		
+		//double rightFinal[] = Util.reNorm(Util.cross(mirror.getNormal(), lensIris.getNormal())); //maybe adjuested to LC3 or other things
+		//double upFinal[] = Util.reNorm(Util.cross(lensIris.getNormal(), rightFinal));
+		beamPlane.setUp(globalUp);
+		
+		//outPath += "/carriageOnly/";	
 
+	}
+		
 
 }

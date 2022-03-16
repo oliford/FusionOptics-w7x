@@ -435,6 +435,8 @@ public double[][][] fibreEndNorm = { {
 		fibrePlaneNormal,
 	},*/ 	};
 
+	public Surface losStartSurface = entryTarget;
+
 	//*/
 
 	public BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7() {

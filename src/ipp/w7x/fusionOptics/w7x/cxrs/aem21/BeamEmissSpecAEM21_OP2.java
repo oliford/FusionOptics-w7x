@@ -107,7 +107,10 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 	//front plate seems to be good for ang=+3 in LC3
 	//public double mirrorAngleAdjust = +0.72 * Math.PI / 180; // OP1.2b: Furthest we could get due to shutter hitting the 'blech' housing
 	
-	public double mirrorAngleAdjust = +3.0 * Math.PI / 180; // OP2.1 pre-alignment in NBI hall done to the wrong numbers for +3°, so ended up at +0.1°
+	// OP2.1 pre-alignment in NBI hall done to the wrong numbers for +3°, so ended up at +0.1°, but then it was adjusted in vessel 
+	// by setting the fibre head to point at where the raytracer said it would be for +3, but with +0.1 (i.e. totally wrong)
+	// and then adjusting the mirror to match the target points for (+3, really at +3).
+	public double mirrorAngleAdjust = +3.0 * Math.PI / 180; 
 	
 	public double mirrorRingRotate = 0 * Math.PI / 180; //Adjustment of mirror mount ring
 	
@@ -347,7 +350,7 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 	/** Set fibre positions according to design sent to Ceramoptec.
 	 * The design was set to match Q7 and Q8 in LC3 with the mirror at +3' (and does)
 	 */
-	private final int ferruleRowNFibres[] = { 54, 54, 8, 9 }; 
+	private final int ferruleRowNFibres[] = { 54, 54, 8, 9, 9, 9 }; 
 	private final double ferruleRowSidewaysOffset[] = { 0.00225, 0.00326 };
 	private final double ferruleRowUpwardsOffset[] = { -0.0122, -0.002, -0.080, 0.040 };
 	private final double ferruleRowAngle[] = { -9.22*Math.PI/180, 0, Math.PI, Math.PI /2};
@@ -361,6 +364,7 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 				{ -5.0, -4.0, -3.0,    -1.0, 0.0, 1.0,   3.0, 4.0, 5.0 }
 			};	
 				
+	private int ferruleHPPSelectCrossFibre[][] = { { 2, 2 }, { 5, 6 } };
 	
 	
 	private double rodAxis[] = opticAxis.clone();
@@ -418,8 +422,8 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 	private void setupFibrePositions() {
 		int nBeams = ferruleRowNFibres.length;
 		channelR = new double[nBeams][];
-		lightPathRowName = new String[]{ "S7", "S8", "X1", "X2" };
-		beamIdx = new int[] { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 , W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q7 };
+		lightPathRowName = new String[]{ "S7", "S8", "X1", "X2", "HPPS7", "HPPS8" };
+		beamIdx = new int[] { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 , W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
 		fibreEndPos = new double[nBeams][][];
 		fibreEndNorm = new double[nBeams][][];
 		
@@ -461,26 +465,55 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 		}
 		
 		for(int iX=0; iX < Math.min(2, nBeams-2); iX++){
-			int nFibres = ferruleRowNFibres[2+iX];
-			fibreEndPos[2+iX] = new double[nFibres][];
-			fibreEndNorm[2+iX] = new double[nFibres][];
-			channelR[2+iX] = new double[nFibres];
+			int iB = 2+iX;
+			int nFibres = ferruleRowNFibres[iB];
+			fibreEndPos[iB] = new double[nFibres][];
+			fibreEndNorm[iB] = new double[nFibres][];
+			channelR[iB] = new double[nFibres];
 		
 			int iXR1 = ferruleCrossFibreCrossSelect[iX][0], iXR2 = ferruleCrossFibreCrossSelect[iX][1];
 			double columnOrigin[] = Util.mul(Util.plus(fibreEndPos[1][iXR2], fibreEndPos[0][iXR1]), 0.5);
 			double columnVector[] = Util.reNorm(Util.minus(fibreEndPos[1][iXR2], fibreEndPos[0][iXR1]));
 			
 			for(int iF=0; iF < nFibres; iF++){
-				channelR[2+iX][iF] = 5.4 + iF/100;
+				channelR[iB][iF] = 5.4 + iF/100;
 				
 				double distFromColOrigin = ferruleCrossFibreRelDists[iX][iF] * ferruleCrossFibreSpacing[iX];
 				
-				fibreEndPos[2+iX][iF] = Util.plus(columnOrigin, Util.mul(columnVector, distFromColOrigin));	
+				fibreEndPos[iB][iF] = Util.plus(columnOrigin, Util.mul(columnVector, distFromColOrigin));	
 
-				fibreEndNorm[2+iX][iF] = Util.mul(fibrePlane.getNormal(), -1.0);
+				fibreEndNorm[iB][iF] = Util.mul(fibrePlane.getNormal(), -1.0);
 			}
 	
 		}
+		
+		//HPP fibres are extrap/interpolated between specific cross fibres
+		for(int iX=0; iX < Math.min(2, nBeams-4); iX++){		
+			int iB = 4 + iX;
+			int nFibres = ferruleRowNFibres[iB];
+			fibreEndPos[iB] = new double[nFibres][];
+			fibreEndNorm[iB] = new double[nFibres][];
+			channelR[iB] = new double[nFibres];
+		
+			double p0[] = fibreEndPos[2][ferruleHPPSelectCrossFibre[iX][0]];
+			double p1[] = fibreEndPos[3][ferruleHPPSelectCrossFibre[iX][1]];
+			double dp[] = Util.minus(p1, p0);
+			double di = 1.0 / (nFibres - 1);
+								 	
+			for(int iF=0; iF < nFibres; iF++) {
+				channelR[iB][iF] = 5.4 + iF/100;
+				
+				double l =  iF * di;
+				//first and last are not /on/ the cross fibres, but one step before/after
+				if(iF == 0) l = -1 * di;
+				if(iF == (nFibres-1)) l = nFibres * di;
+				
+				fibreEndPos[iB][iF] = Util.plus(p0, Util.mul(dp, l));	
+
+				fibreEndNorm[iB][iF] = Util.mul(fibrePlane.getNormal(), -1.0);
+			}			
+		}	
+		
 	}
 	
 	private void setupFibrePlanes() {

@@ -48,7 +48,7 @@ public class Multiplexer extends Optic {
 	
 	// Thor Labs AL1210-A (S-LAH64)
 		public double lensFocalLength = 0.010;
-		public double lensHeight = lensFocalLength + 0.004;
+		public double lensHeight = lensFocalLength + 0.0037;
 		public double lensDiameter = 0.0125;
 		public double lensThickness = 0.0043;	
 		public double[] lensPos = { 0, 0, lensHeight };
@@ -100,7 +100,7 @@ public class Multiplexer extends Optic {
 	
 	public double[] inputFibreNormal = Util.reNorm(Util.minus(lensPos, inputFibrePosition));
 	
-	public double mirrorAngle = inputFibreAngle / 2 + 0.09*Math.PI/180;
+	public double mirrorAngle = inputFibreAngle / 2 + 0.20*Math.PI/180;
 	public double[] mirrorNormal = { -FastMath.sin(mirrorAngle), 0, FastMath.cos(mirrorAngle) };
 	
 	public Disc mirror = new Disc("mirror", mirrorPos, mirrorNormal, mirrorDiameter/2, null, null, Reflector.ideal());
@@ -110,6 +110,7 @@ public class Multiplexer extends Optic {
 	
 	
 	public Disc[] inputFibreEnds;
+	public Iris[] fibreEndIris;
 	public Cylinder[] fibreCylds;
 	public double fibreCyldLength = 0.040;
 	
@@ -126,6 +127,7 @@ public class Multiplexer extends Optic {
 		addElement(returnCatch);
 		
 		inputFibreEnds = new Disc[nInputFibres];
+		fibreEndIris = new Iris[nInputFibres];
 		fibreCylds = new Cylinder[nInputFibres];
 		for(int i=0; i < nInputFibres; i++) {
 			double theta = i * 2*Math.PI / nInputFibres;
@@ -134,14 +136,14 @@ public class Multiplexer extends Optic {
 							lensFocalLength * (1.0 - FastMath.cos(inputFibreAngle)) };
 			double[] normal = Util.reNorm(Util.minus(lensPos, pos));
 			inputFibreEnds[i] = new Disc("inputFibreEnd_"+i, pos, normal, fibreDiameter/2, null, null, NullInterface.ideal());
-			Iris fibreEndIris = new Iris("fibreEndIris_"+i, pos, normal, fibreDiameter, fibreDiameter/2, Absorber.ideal());
-			addElement(fibreEndIris);
+			fibreEndIris[i] = new Iris("fibreEndIris_"+i, pos, normal, fibreDiameter, fibreDiameter/2, NullInterface.ideal());
 			
 			double[] cyldPos = Util.plus(pos, Util.mul(normal, -fibreCyldLength/2));
-			fibreCylds[i] = new Cylinder("fibreCyld_"+i, cyldPos, normal, fibreDiameter/2, fibreCyldLength, Absorber.ideal());
+			fibreCylds[i] = new Cylinder("fibreCyld_"+i, cyldPos, normal, fibreDiameter/2, fibreCyldLength, NullInterface.ideal());
 
 			addElement(inputFibreEnds[i]);
-			addElement(fibreCylds[i]);
+			addElement(fibreEndIris[i]);
+			//addElement(fibreCylds[i]);
 		}
 		
 		
