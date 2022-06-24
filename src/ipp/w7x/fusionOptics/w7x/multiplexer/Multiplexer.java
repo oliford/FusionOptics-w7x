@@ -24,6 +24,7 @@ import fusionOptics.types.Optic;
  * Measured (from ray tracing) angle and position of input fibres then fixed to optimum and used now as design
  * 
  * Ideal model gives ~77% hitting fibres with 74% captured (due to fibre NA)
+ * Without the angled input fibres (so parallel to barrel), that drops to 63%, which isn't terrible.
  * Tolerancing: 
  *   - Height of mirror doesn't do much, when > +/-2mm starts to push coma pattern to inside or outside,
  *   - Height of fibre block (input and common fibres together) has a huge effect on capture (due to focusing). Needs to be +/-300µm
@@ -105,7 +106,7 @@ public class Multiplexer extends Optic {
 	public double inputFibreRadius = 0.00181;
 	//public double inputFibreAngle = FastMath.asin(inputFibreRadius / lensFocalLength); //original design
 	public double inputFibreAngle = 3.46 * Math.PI / 180; //measured from original design	
-	public double[] inputFibrePosition = { inputFibreRadius, 0, lensFocalLength * (1.0 - FastMath.cos(inputFibreAngle)) };
+	//public double[] inputFibrePosition = { inputFibreRadius, 0, lensFocalLength * (1.0 - FastMath.cos(inputFibreAngle)) };
 	
 	// Thor labs PF05-03-G01 [https://www.thorlabs.de/newgrouppage9.cfm?objectgroup_id=264]
 	public double mirrorHeight = 0.018;
@@ -113,7 +114,7 @@ public class Multiplexer extends Optic {
 	
 	public double[] mirrorPos = { 0, 0, mirrorHeight };
 	
-	public double[] inputFibreNormal = Util.reNorm(Util.minus(lensPos, inputFibrePosition));
+	//public double[] inputFibreNormal = Util.reNorm(Util.minus(lensPos, inputFibrePosition));
 	
 	//public double mirrorAngle = inputFibreAngle / 2 + 0.20*Math.PI/180; //original design
 	public double mirrorAngle = 5.38487990273871 * Math.PI / 180; //fixed to original design
