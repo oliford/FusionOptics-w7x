@@ -18,6 +18,20 @@ import fusionOptics.surfaces.Iris;
 import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
 
+/** Design for multiplexer
+ * 
+ * Initial design done with some first order geometry.
+ * Measured (from ray tracing) angle and position of input fibres then fixed to optimum and used now as design
+ * 
+ * Ideal model gives ~77% hitting fibres with 74% captured (due to fibre NA)
+ * Tolerancing: 
+ *   - Height of mirror doesn't do much, when > +/-2mm starts to push coma pattern to inside or outside,
+ *   - Height of fibre block (input and common fibres together) has a huge effect on capture (due to focusing). Needs to be +/-300µm
+ *   - Mirror angle changes radius (i.e. position of spot) which misses input fibre. +/-0.3° drops to 60%
+ * 
+ * @author oliford
+ *
+ */
 public class Multiplexer extends Optic {
 	public double designWavelength = 656e-9;
 
@@ -88,8 +102,9 @@ public class Multiplexer extends Optic {
 	public double fibreDiameter = 400e-6;
 	public double fibreEffectiveNA = 0.22;
 
-	public double inputFibreRadius = 0.0018;
-	public double inputFibreAngle = FastMath.asin(inputFibreRadius / lensFocalLength);
+	public double inputFibreRadius = 0.00181;
+	//public double inputFibreAngle = FastMath.asin(inputFibreRadius / lensFocalLength); //original design
+	public double inputFibreAngle = 3.46 * Math.PI / 180; //measured from original design	
 	public double[] inputFibrePosition = { inputFibreRadius, 0, lensFocalLength * (1.0 - FastMath.cos(inputFibreAngle)) };
 	
 	// Thor labs PF05-03-G01 [https://www.thorlabs.de/newgrouppage9.cfm?objectgroup_id=264]
@@ -100,7 +115,8 @@ public class Multiplexer extends Optic {
 	
 	public double[] inputFibreNormal = Util.reNorm(Util.minus(lensPos, inputFibrePosition));
 	
-	public double mirrorAngle = inputFibreAngle / 2 + 0.20*Math.PI/180;
+	//public double mirrorAngle = inputFibreAngle / 2 + 0.20*Math.PI/180; //original design
+	public double mirrorAngle = 5.38487990273871 * Math.PI / 180; //fixed to original design
 	public double[] mirrorNormal = { -FastMath.sin(mirrorAngle), 0, FastMath.cos(mirrorAngle) };
 	
 	public Disc mirror = new Disc("mirror", mirrorPos, mirrorNormal, mirrorDiameter/2, null, null, Reflector.ideal());
@@ -133,19 +149,26 @@ public class Multiplexer extends Optic {
 			double theta = i * 2*Math.PI / nInputFibres;
 			double[] pos = { inputFibreRadius * FastMath.cos(theta), 
 							inputFibreRadius * FastMath.sin(theta), 
-							lensFocalLength * (1.0 - FastMath.cos(inputFibreAngle)) };
-			double[] normal = Util.reNorm(Util.minus(lensPos, pos));
+							//lensFocalLength * (1.0 - FastMath.cos(inputFibreAngle)) };
+							(0.0018 - 0.00054) * FastMath.tan(inputFibreAngle) } ;
+			//double[] normal = Util.reNorm(Util.minus(lensPos, pos));
+			double[] normal = { 
+					-FastMath.sin(inputFibreAngle) * FastMath.cos(theta), 
+					-FastMath.sin(inputFibreAngle) * FastMath.sin(theta), 
+					FastMath.cos(inputFibreAngle) };
 			inputFibreEnds[i] = new Disc("inputFibreEnd_"+i, pos, normal, fibreDiameter/2, null, null, NullInterface.ideal());
-			fibreEndIris[i] = new Iris("fibreEndIris_"+i, pos, normal, fibreDiameter, fibreDiameter/2, NullInterface.ideal());
+			fibreEndIris[i] = new Iris("fibreEndIris_"+i, pos, normal, fibreDiameter*1.2, fibreDiameter/2, NullInterface.ideal());
 			
 			double[] cyldPos = Util.plus(pos, Util.mul(normal, -fibreCyldLength/2));
 			fibreCylds[i] = new Cylinder("fibreCyld_"+i, cyldPos, normal, fibreDiameter/2, fibreCyldLength, NullInterface.ideal());
 
 			addElement(inputFibreEnds[i]);
 			addElement(fibreEndIris[i]);
-			//addElement(fibreCylds[i]);
+			addElement(fibreCylds[i]);
 		}
 		
+		System.out.println("Input fibre angle = " + inputFibreAngle*180/Math.PI);
+		System.out.println("Mirror angle = " + mirrorAngle*180/Math.PI);
 		
 	}
 }

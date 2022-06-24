@@ -23,14 +23,14 @@ public class MultiplexerDev {
 
 	public static Surface mustHitToDraw = sys.mirror;
 	public static double traceWavelength = sys.designWavelength;
-	public static int nAttempts = 200000;
+	public static int nAttempts = 1000000;
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/multiplexer/";
 	
 	public static void main(String[] args) {
 		System.out.println(outPath);
 		
-		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/augSpecTrace.vrml", 0.010);
+		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/multiplexer.vrml", 0.010);
 		
 		//if((writeWRLForDesigner == null)){
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});			
@@ -133,9 +133,10 @@ public class MultiplexerDev {
 		avgVecAtSurface = Util.reNorm(avgVecAtSurface);
 		double angle = FastMath.atan(avgVecAtSurface[0]/avgVecAtSurface[2]);
 		
-		OneLiners.dumpArray(avgPosAtSurface);
-		OneLiners.dumpArray(avgVecAtSurface);
-		System.out.println(angle*180/Math.PI);
+		System.out.println("avgPosAtSurface:"); OneLiners.dumpArray(avgPosAtSurface);
+		System.out.println("avgVecAtSurface:"); OneLiners.dumpArray(avgVecAtSurface);
+		System.out.println("Measured angle = " + angle*180/Math.PI + "°");
+		System.out.println("Measured radius = " + avgPosAtSurface[0]*1e3 + " mm");
 		vrmlOut.drawElement(new Cylinder("inputCalc",avgPosAtSurface,avgVecAtSurface,sys.fibreDiameter/2,0.500,NullInterface.ideal()));
 	
 		vrmlOut.drawOptic(sys);
