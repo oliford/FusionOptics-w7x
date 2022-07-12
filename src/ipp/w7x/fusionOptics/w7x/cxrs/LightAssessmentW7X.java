@@ -67,14 +67,14 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true; //telecentric-ish
 	
-	public static BeamEmissSpecAET21_OP2_Parabolic sys = new BeamEmissSpecAET21_OP2_Parabolic();
+	//public static BeamEmissSpecAET21_OP2_Parabolic sys = new BeamEmissSpecAET21_OP2_Parabolic();
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);	
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
@@ -87,11 +87,11 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static Surface mustHitToDraw = sys.entryWindowFront;
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	//public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076
 	//public static boolean forcePerpFibres = false; //AEM41 has only one lens, so is not at all telecentric
 	
@@ -99,6 +99,7 @@ public class LightAssessmentW7X {
 	public static List<Surface> interestedSurfaces = new ArrayList<Surface>();
 	
 	public static Surface fibrePlane = sys.fibrePlane;
+	public static Surface firstSurface = sys.entryWindowFront; //or sys.mirror usually
 
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q7 };  
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q8 }; //for AEM21, 6 and 8 are the extremes	
@@ -126,15 +127,21 @@ public class LightAssessmentW7X {
 	//public static double pointR[] = OneLiners.linSpace(5.13, 6.05, 10); //AEM41 10x for RUDIX-AEM41
 	//public static double pointR[] = OneLiners.linSpace(6.05, 5.2, 10); //AEM41 10x for RUDIX-AEM41
 	public static double pointR[] = { 
-		6.1  , 6.094, 6.086, 6.076, 6.065, 6.054, 6.041, 6.028, 6.015, 6.001, 5.986, 5.971, 5.955, 5.94 , 5.923, 5.907, 5.89 , 5.873, 5.855, 5.837, 5.819, 5.801, 5.782, 5.763, 5.744, 5.725, 5.705,
-	    5.685, 5.665, 5.645, 5.624, 5.604, 5.583, 5.562, 5.54 , 5.519, 5.497, 5.475, 5.453, 5.431, 5.409, 5.386, 5.363, 5.341, 5.318, 5.294, 5.271, 5.247, 5.224, 5.2
-    }; 
+			6.05, 5.993, 5.918, 5.836, 5.748, 5.655, 5.558, 5.458, 5.355, 5.25
+		};
+	/*public static double pointR[] = { 		// AEM41 50x, more towards edge, roughtly pos^1.2
+			6.1  , 6.094, 6.086, 6.076, 6.065, 6.054, 6.041, 6.028, 6.015, 6.001, 
+			5.986, 5.971, 5.955, 5.94 , 5.923, 5.907, 5.89 , 5.873, 5.855, 5.837, 
+			5.819, 5.801, 5.782, 5.763, 5.744, 5.725, 5.705, 5.685, 5.665, 5.645, 
+			5.624, 5.604, 5.583, 5.562, 5.54 , 5.519, 5.497, 5.475, 5.453, 5.431, 
+			5.409, 5.386, 5.363, 5.341, 5.318, 5.294, 5.271, 5.247, 5.224, 5.2
+    };*/ 
 	
 	//public final static int nAttempts = 5000;
 	
 	public static boolean writeSolidAngeInfo = true;
 	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 20000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
@@ -142,14 +149,11 @@ public class LightAssessmentW7X {
 	//public static double wavelength = 530e-9; //C_VI
 	//public static double wavelength = 656e-9; //HAlpha
 	
-	public static int nRaysToDraw = 2000;
+	public static int nRaysToDraw = 10000;
 	// For calc
 	/*public static double pointR[] = sys.channelR;
 	public final static int nAttempts = 20000;
 	//*/
-	
-	public static double fibreCoreDiameter = sys.fibreEndDiameter;
-	public static double fibreNA = sys.fibreNA;
 		
 	public static class FibreInfo{		
 		double R;
@@ -176,7 +180,7 @@ public class LightAssessmentW7X {
 	
 	public static int nPointsPerBeam = pointR.length;
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName();
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "_x10_RUDIX";
 			
 	public static void main(String[] args) {
 		int nBeams = beamSelection.length;
@@ -223,8 +227,15 @@ public class LightAssessmentW7X {
 			int beamSel = beamSelection[iB];
 			
 			for(int iP=0; iP < nPointsPerBeam; iP++){
-				fibre[iB][iP] = new FibreInfo();
 				
+				fibre[iB][iP] = new FibreInfo();
+				/*if(iP!=35) {
+					fibre[iB][iP].beamPos = new double[] { Double.NaN, Double.NaN, Double.NaN };
+					fibre[iB][iP].viewPos = new double[] { Double.NaN, Double.NaN, Double.NaN };
+					fibre[iB][iP].fibrePos = new double[] { Double.NaN, Double.NaN, Double.NaN };
+					fibre[iB][iP].fibreMeanVec = new double[] { Double.NaN, Double.NaN, Double.NaN };					
+					continue;
+				}//*/
 				//double R = R0 + iP * (R1 - R0) / (nPoints - 1.0);
 				double R = pointR[iP];
 				fibre[iB][iP].R = R;
@@ -242,6 +253,7 @@ public class LightAssessmentW7X {
 				}
 				
 				int nHit = 0;
+				int nViewPos = 0;
 				
 				fibre[iB][iP].viewPos = new double[3];
 				for(int i=0; i < nAttempts; i++){
@@ -261,14 +273,15 @@ public class LightAssessmentW7X {
 					if(hits.size() > 0){
 						Intersection fibrePlaneHit = hits.get(0);
 						
-						//Intersection mirrorHit = fibrePlaneHit.incidentRay.findFirstEarlierIntersection(sys.mirror);						
-						//if(mirrorHit == null){
-							//System.err.println("WTF: Hit fibre plane without hitting mirror");
-						//}else{
-							fibre[iB][iP].viewPos[0] += ray.endHit.pos[0];
-							fibre[iB][iP].viewPos[1] += ray.endHit.pos[1];
-							fibre[iB][iP].viewPos[2] += ray.endHit.pos[2];
-						//}						
+						Intersection mirrorHit = fibrePlaneHit.incidentRay.findFirstEarlierIntersection(firstSurface);						
+						if(mirrorHit == null){
+							System.err.println("WTF: Hit fibre plane without hitting mirror");
+						}else{
+							fibre[iB][iP].viewPos[0] += mirrorHit.pos[0];
+							fibre[iB][iP].viewPos[1] += mirrorHit.pos[1];
+							fibre[iB][iP].viewPos[2] += mirrorHit.pos[2];			
+							nViewPos++;
+						}						
 						nHit++;
 					}
 					
@@ -280,10 +293,9 @@ public class LightAssessmentW7X {
 				}
 
 				fibre[iB][iP].nHitPlane = nHit;
-				fibre[iB][iP].viewPos[0] /= nHit;
-				fibre[iB][iP].viewPos[1] /= nHit;
-				
-				fibre[iB][iP].viewPos[2] /= nHit;
+				fibre[iB][iP].viewPos[0] /= nViewPos;
+				fibre[iB][iP].viewPos[1] /= nViewPos;				
+				fibre[iB][iP].viewPos[2] /= nViewPos;
 				
 				double dir[] = Tracer.generateRandomRayTowardSurface(fibre[iB][iP].beamPos, sys.tracingTarget, true);
 				fibre[iB][iP].solidAngleFiring = Util.length(dir);
@@ -299,8 +311,8 @@ public class LightAssessmentW7X {
 					//BinaryMatrixFile.mustWrite(outPath + "/angles-p_" + iP + "-R_" + R + ".bin", lightConeInfo.getRayAngles());
 					
 					fillNA = FastMath.asin(lightConeInfo.getCapturingAngle(0.90));					
-					fibre[iB][iP].fracInPerpCone = lightConeInfo.getFractionInPlanePerpCone(FastMath.asin(fibreNA));
-					fibre[iB][iP].fracInMeanCone = lightConeInfo.getFractionInMeanCone(FastMath.asin(fibreNA));
+					fibre[iB][iP].fracInPerpCone = lightConeInfo.getFractionInPlanePerpCone(FastMath.asin(sys.getFibreNA(iB, iP)));
+					fibre[iB][iP].fracInMeanCone = lightConeInfo.getFractionInMeanCone(FastMath.asin(sys.getFibreNA(iB, iP)));
 				}else{
 					fibre[iB][iP].fibrePos = new double[]{ Double.NaN, Double.NaN, Double.NaN };
 					fibre[iB][iP].fibreMeanVec = new double[]{ Double.NaN, Double.NaN, Double.NaN };
@@ -398,7 +410,9 @@ public class LightAssessmentW7X {
 
 	private static void processImaging(FibreInfo fibre[][]) {
 		NumberFormat fmt = new DecimalFormat("##.#####");
-		
+
+		double fibreCoreDiameter = sys.getFibreDiameter(-1, -1);
+		double fibreNA = sys.getFibreNA(-1, -1);
 
 		double fibreEtendue = FastMath.pow2(FastMath.PI * fibreCoreDiameter * fibreNA) /4;
 		System.out.println("Fibre: d=" + fmt.format(fibreCoreDiameter/1e-6) + "µm, NA=" + fibreNA + ", étendue="+ fmt.format(fibreEtendue*1e12) + " µm² SR");
@@ -457,7 +471,7 @@ public class LightAssessmentW7X {
 
 	private static void addLosSolids(FibreInfo fibre[][]) {
 		//LOS Cylinders
-		double cyldRadius = 0.01;
+		double cyldRadius = 0.002;
 		for(int iB=0; iB < fibre.length; iB++){
 			int beamSel = beamSelection[iB];
 			for(int iP=0; iP < nPointsPerBeam; iP++){
@@ -468,19 +482,24 @@ public class LightAssessmentW7X {
 						Util.mul(Util.plus(fibre[iB][iP].beamPos, fibre[iB][iP].viewPos), 0.5),
 						Util.reNorm(Util.minus(fibre[iB][iP].viewPos, fibre[iB][iP].beamPos)),
 						0.002, 5.0, NullInterface.ideal());
+				//OneLiners.dumpArray(fibre[iB][iP].beamPos);
 				
-				sys.addElement(losCyld);
+				//sys.addElement(losCyld);
 				
 				double u[] = Util.minus(fibre[iB][iP].beamPos, fibre[iB][iP].viewPos);
-				double cyldLen = Util.length(u) * 1.2;
+				double cyldLen = Util.length(u) * 1.0;
 				u = Util.reNorm(u);
 				//double p[] = Util.mul(Util.plus(fibre[iB][iP].beamPos, fibre[iB][iP].viewPos), 0.5);
-				double p[] = Util.plus(fibre[iB][iP].viewPos, Util.mul(u, -0.2));
+				double p[] = Util.plus(fibre[iB][iP].viewPos, Util.mul(u, -0.0));
 				 		
-				System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Cylinder\", \"FibreEnd"+iB+"_"+iP+"\"); "+
-						"o.Shape = Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
-						",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
-						"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
+				//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Cylinder\", \"FibreEnd"+iB+"_"+iP+"\"); "+
+				//		"o.Shape = Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +
+				//		",FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3 +
+				//		"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
+				System.out.println("Part.show(Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +","										
+						+"FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3+"), "
+						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"FibreEnd_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"; g.addObject(FreeCAD.ActiveDocument.ActiveObject);");
+				
 			}		
 		}
 		

@@ -77,11 +77,11 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
-	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.LC3a);
+	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.LC3a);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
 	//public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
@@ -93,8 +93,8 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41();
 	//public static SimpleBeamGeometry beams = W7XPelletsL41.def();
 		
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -111,7 +111,7 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 2000;
+	public final static int nAttempts = 5000;
 
 	public static String writeWRLForDesigner = null; //"20201216";
 	
@@ -189,7 +189,7 @@ public class FibreBacktrace {
 				beamPlanePos[iB][iP] = new double[3];
 				
 				for(int i=0; i < nAttempts; i++){
-					double x, y, rMax = sys.fibreEndDiameter / 2;
+					double x, y, rMax = sys.getFibreDiameter(iB, iP) / 2;
 					do{
 						x = RandomManager.instance().nextUniform(-rMax, rMax);
 						y = RandomManager.instance().nextUniform(-rMax, rMax);				
@@ -208,7 +208,7 @@ public class FibreBacktrace {
 					double bV[] = sys.fibrePlanes[iB][iP].getRight();
 					
 					//double sinMaxTheta = sys.fibreNA[iB];
-					double sinMaxTheta = sys.fibreNA;
+					double sinMaxTheta = sys.getFibreNA(iB, iP);
 					if(sys.channelR[iB][iP] == -1.234)
 						sinMaxTheta = 0; //laser alignment					
 					double cosMaxTheta = FastMath.cos(FastMath.asin(sinMaxTheta)); //probably just 1-sinTheta, but... meh
@@ -339,9 +339,10 @@ public class FibreBacktrace {
 		
 		//spit out FreeCAD instructions to create fibre end block cylinders
 		double cyldLen = 0.030;
-		double cyldRadius = 0.000110;		
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int i=0; i < sys.channelR[iB].length; i++){
+				double cyldRadius = sys.getFibreDiameter(iB, i) / 2;		
+				
 				double u[] = sys.fibreEndNorm[iB][i];
 				 double p[] = Util.plus(sys.fibreEndPos[iB][i], Util.mul(u, -cyldLen));
 				 						
@@ -406,9 +407,9 @@ public class FibreBacktrace {
 	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], double beamPlanePos[][][], int iB, int iP, Thing thing){
 		boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
 
-		double extendLOSCylds = 0.400; // extend 200mm in each direction
+		double extendLOSCylds = 1.000; // extend 200mm in each direction
 
-		double rad = hitPoints[iB][iP][3] / 4;
+		double rad = hitPoints[iB][iP][3];
 		
 		double u[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
 		double losLen = Util.length(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
@@ -446,9 +447,7 @@ public class FibreBacktrace {
 				break;
 		
 			case FreeCADLOS:
-				stream.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+(losLen + extendLOSCylds)*1e3 +","										
-						+"FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3+"), "
-						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+chanName+"\";");
+				stream.println(freecadMakeCylinder("los_"+sys.getDesignName()+"_"+chanName, p, u, rad, (losLen + extendLOSCylds)));		
 				break;
 				
 			case JSON_LOS:
@@ -475,6 +474,14 @@ public class FibreBacktrace {
 		}
 	}
 	
+	private static String freecadMakeCylinder(String name, double[] pos, double[] unitVec, double radius, double length) {
+		return "Part.show(Part.makeCylinder("+radius*1e3+","+length*1e3 +","										
+				+ "FreeCAD.Vector("+pos[0]*1e3+","+pos[1]*1e3+","+pos[2]*1e3+"), "
+				+ "FreeCAD.Vector("+unitVec[0]*1e3+","+unitVec[1]*1e3+","+unitVec[2]*1e3+ ")));"
+				+ "FreeCAD.ActiveDocument.ActiveObject.Label=\""+name+"\"; "
+				+ "g.addObject(FreeCAD.ActiveDocument.ActiveObject);";
+	}
+
 	private static String freecadMakeSphere(String name, double[] pos, double radius) {
 		return "Part.show(Part.makeSphere("+radius*1e3+",FreeCAD.Vector("+pos[0]*1e3+","+pos[1]*1e3+","+pos[2]*1e3 + ")));"
 				+ " FreeCAD.ActiveDocument.ActiveObject.Label=\""+name+"\"; g.addObject(FreeCAD.ActiveDocument.ActiveObject);";
@@ -487,13 +494,23 @@ public class FibreBacktrace {
 			for(int iF=0; iF < sys.channelR[iB].length; iF++){
 
 				double c[] = Util.plus(sys.fibreEndPos[iB][iF], Util.mul(sys.fibreEndNorm[iB][iF], -l/2));
-				fibreCylds.addElement(new Cylinder("fibre_"+iB+"_"+iF, c, sys.fibreEndNorm[iB][iF], sys.fibreEndDiameter/2, l, NullInterface.ideal()));
+				fibreCylds.addElement(new Cylinder("fibre_"+iB+"_"+iF, c, sys.fibreEndNorm[iB][iF], sys.getFibreDiameter(iB, iF)/2, l, NullInterface.ideal()));
 			}
 		}
 		
 		STLDrawer stlDrawer = new STLDrawer(outPath + "/fibreCylds-"+sys.getDesignName()+".stl");		
 		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
 		stlDrawer.drawOptic(fibreCylds);
+		stlDrawer.destroy();
+
+		stlDrawer = new STLDrawer(outPath + "/lens1-"+sys.getDesignName()+".stl");		
+		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
+		stlDrawer.drawOptic(sys.lens1);
+		stlDrawer.destroy();
+
+		stlDrawer = new STLDrawer(outPath + "/lens2-"+sys.getDesignName()+".stl");		
+		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
+		stlDrawer.drawOptic(sys.lens2);
 		stlDrawer.destroy();
 		
 		stlDrawer = new STLDrawer(outPath + "/rodCyld-"+sys.getDesignName()+".stl");		

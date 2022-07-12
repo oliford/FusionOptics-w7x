@@ -194,11 +194,13 @@ public class BeamEmissSpecAEM41 extends Optic {
 
 	//public double shift[] = new double[nFibres]; //set to 0 for optimisation
 
-	public int beamIdx[] = { 0 };
+	public int beamIdx[] = { 0, 0 };
 	
-	// ----------- Oct2021 for OP2 passive ------------- 
+	// ----------- Oct2021 for OP2 passive -------------
+	//50x 400um fibres in straight array
 	public double[][] channelR = { 
-			{ 6.1, 6.094, 6.086, 6.076, 6.065, 6.054, 6.041, 6.028, 6.015, 6.001, 5.986, 5.971, 5.955, 5.94, 5.923, 5.907, 5.89, 5.873, 5.855, 5.837, 5.819, 5.801, 5.782, 5.763, 5.744, 5.725, 5.705, 5.685, 5.665, 5.645, 5.624, 5.604, 5.583, 5.562, 5.54, 5.519, 5.497, 5.475, 5.453, 5.431, 5.409, 5.386, 5.363, 5.341, 5.318, 5.294, 5.271, 5.247, 5.224, 5.2, }, 
+			{ 6.1, 6.094, 6.086, 6.076, 6.065, 6.054, 6.041, 6.028, 6.015, 6.001, 5.986, 5.971, 5.955, 5.94, 5.923, 5.907, 5.89, 5.873, 5.855, 5.837, 5.819, 5.801, 5.782, 5.763, 5.744, 5.725, 5.705, 5.685, 5.665, 5.645, 5.624, 5.604, 5.583, 5.562, 5.54, 5.519, 5.497, 5.475, 5.453, 5.431, 5.409, 5.386, 5.363, 5.341, 5.318, 5.294, 5.271, 5.247, 5.224, 5.2, },
+			{ 6.05, 5.993, 5.918, 5.836, 5.748, 5.655, 5.558, 5.458, 5.355, 5.25, }, 
 		}; 
 		public double[][][] fibreEndPos = { { 
 					{ -2.8493004725039275, -4.506494259433065, 1.4225712263181869 },
@@ -251,7 +253,18 @@ public class BeamEmissSpecAEM41 extends Optic {
 					{ -2.8903544848637948, -4.550532711047177, 1.4315710594571651 },
 					{ -2.891569930772904, -4.552045286415267, 1.4315026819262198 },
 					{ -2.8927033714389707, -4.553690065603098, 1.4311753449427025 },
-				}, 	}; 
+				}, { 
+					{ -2.8500899031955997, -4.507965928802268, 1.4217131033936747 },
+					{ -2.85203299844313, -4.5091645129217035, 1.4234732671427024 },
+					{ -2.855165059073376, -4.511235979762206, 1.4261694993034213 },
+					{ -2.8589233801573104, -4.514387945332718, 1.4283539967288525 },
+					{ -2.863303950722654, -4.518364798715294, 1.4304699834777364 },
+					{ -2.8682365849986233, -4.523320550043452, 1.4320908687652993 },
+					{ -2.8736269078717833, -4.5291918364023696, 1.4331409135755924 },
+					{ -2.8792078530975136, -4.53598497738618, 1.4331007227733257 },
+					{ -2.8846642620208476, -4.543480685178386, 1.4317277563527815 },
+					{ -2.8896763752271255, -4.551206512577184, 1.4291393615764727 },
+				} }; 
 		public double[][][] fibreEndNorm = { { 
 				{ 0.33199416967021966, -0.15541247060593388, -0.9303906895950438 },
 				{ 0.35965241578424556, -0.18257186716392187, -0.9150506287309109 },
@@ -303,7 +316,19 @@ public class BeamEmissSpecAEM41 extends Optic {
 				{ 0.2533986606529275, -0.2704063600982982, -0.9288000426344155 },
 				{ 0.25347199091209377, -0.2657875862808177, -0.9301123097788118 },
 				{ 0.2612918959185039, -0.2697044395295274, -0.9268150087398117 },
-				}, 	};
+				},{ 
+					{ 0.2979844694816753, -0.2191558044077775, -0.9290726501959383 },
+					{ 0.24221873118713183, -0.2897161700336521, -0.9259560610974626 },
+					{ 0.15647354023296825, -0.3783143820101308, -0.9123564323066148 },
+					{ 0.1655919043135133, -0.3680767016373465, -0.9149310700471354 },
+					{ 0.18219796355930412, -0.3556435661725476, -0.9166905453395466 },
+					{ 0.19435612001378325, -0.33795513016281464, -0.9208756857523294 },
+					{ 0.22482533651554262, -0.3072180281524845, -0.9247003034706824 },
+					{ 0.24331814025670961, -0.2886069267393152, -0.9260142139622393 },
+					{ 0.25554266930889663, -0.26462526743333376, -0.9298770951036059 },
+					{ 0.281945454129101, -0.24044739096323242, -0.9288120439975515 },
+			},
+		};
 
 		//*/
 
@@ -311,12 +336,11 @@ public class BeamEmissSpecAEM41 extends Optic {
 	public double[][] Z;
 	
 	//public double fibreEndPos[][];
-	//public double fibreNA = 0.28; // [ written on the fibre bundle packing reel ]
+	//public double fibreNA = 0.28; // RUDIX-AEM41 [ written on the fibre bundle packing reel ]	
+	//public double fibreEndDiameter = 0.001; // RUDIX-AEM41 roughly 1mm diameter [ looking at the fibres, and it agrees with 540x total / 10 = 54x per bundle. 54x * jacket size = ~1mm area ]
 	
-	//public double fibreEndDiameter = 0.001; // roughly 1mm diameter [ looking at the fibres, and it agrees with 540x total / 10 = 54x per bundle. 54x * jacket size = ~1mm area ]
-	
-	public double fibreNA = 0.22; // [ written on the fibre bundle packing reel ]
-	public double fibreEndDiameter = 0.0004; // roughly 1mm diameter [ looking at the fibres, and it agrees with 540x total / 10 = 54x per bundle. 54x * jacket size = ~1mm area ]
+	private double fibreNA[] = { 0.22, 0.28 }; // [ written on the fibre bundle packing reel ]
+	private double fibreEndDiameter[] = { 0.000400, 0.001000 }; // 400um fibres, patched via XFER-AEM21
 			
 	public double fibresXVec[] = Util.reNorm(Util.minus(fibre10EndPos, fibre1EndPos));
 	public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, portNormal));
@@ -424,7 +448,8 @@ public class BeamEmissSpecAEM41 extends Optic {
 	}
 
 	public String getDesignName() { return "aem41";	}
-	
-	
 
+	public double getFibreNA(int iB, int iP) { return fibreNA[iB];	}
+	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter[iB]; }
+	
 }
