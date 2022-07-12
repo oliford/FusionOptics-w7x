@@ -111,7 +111,8 @@ public abstract class BeamEmissSpecAEK41_base extends Optic {
 	public double[][] channelZ;
 	
 	//public double fibreEndPos[][];
-	public double fibreNA = 0.22; // As AUG
+	public double fibreNA = 0.22; // standard
+	public double fibreDiameter = 0.000400; // standard
 	
 	
 	public double fibrePlaneBehindLens = 0.200;
@@ -149,9 +150,14 @@ public abstract class BeamEmissSpecAEK41_base extends Optic {
 
 	public Square radSurface = new Square("radSurface", radSurfaceCentre, radSurfaceNormal, radUp, radSurfHeight, radSurfWidth, NullInterface.ideal()); 
 	
-			
+	public double overrideObsPositions[][][] = null;
+	
+	public double getFibreNA(int iB, int iP) { return fibreNA;	}
+	public double getFibreDiameter(int iB, int iP) { return fibreDiameter; }
+		
 	protected abstract void setupFibrePositions();
-			
+	
+	public Surface strayPlane = null;
 		
 	private void setupFibrePlanes() {
 		int nBeams = channelR.length;

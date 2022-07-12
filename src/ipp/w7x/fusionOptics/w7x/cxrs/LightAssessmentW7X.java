@@ -4,6 +4,7 @@ import fusionDefs.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U_CISDual;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeUV;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsK41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsL41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_LC3_tilt3;
@@ -19,6 +20,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFl
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_Parabolic;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_TwoFlatAndLenses;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEW21;
+import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import net.jafama.FastMath;
@@ -74,12 +76,16 @@ public class LightAssessmentW7X {
 	//public static boolean forcePerpFibres = true;
 	
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	
+	public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
+	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);	
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
-	public static Surface mustHitToDraw = sys.lens1.getSurfaces().get(0);
-	//public static Surface mustHitToDraw = sys.entryWindowFront;	
+	//public static Surface mustHitToDraw = sys.lens1.getSurfaces().get(0);
+	public static Surface mustHitToDraw = sys.entryWindowFront;
+	
 	public static boolean forcePerpFibres = false;
 
 		
@@ -91,7 +97,7 @@ public class LightAssessmentW7X {
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static Surface mustHitToDraw = sys.entryWindowFront;
-	public static SimpleBeamGeometry beams = W7XRudix.def();
+	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	//public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076
 	//public static boolean forcePerpFibres = false; //AEM41 has only one lens, so is not at all telecentric
 	

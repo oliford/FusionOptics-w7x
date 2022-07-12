@@ -13,7 +13,8 @@ public class BeamEmissSpecAEK41_edgeVIS extends BeamEmissSpecAEK41_base {
 	
 	public double fibreEndDiameter = 0.000400; // Standard CXRS (as AUG)
 	
-	public String lightPathsSystemName = "AEK41_EdgeVIS";
+	public String lightPathsSystemName = "AEK41";	
+	public String lightPathRowName[] = { "EdgeVIS" };
 	
 	/** Set fibre positions equal spacing in holder */
 	protected void setupFibrePositions() {
@@ -65,4 +66,7 @@ public class BeamEmissSpecAEK41_edgeVIS extends BeamEmissSpecAEK41_base {
 
 	
 	public String getDesignName() { return "aek41-edgeVIS";	}
+	
+	public double getFibreNA(int iB, int iP) { return fibreNA;	}
+	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter; }
 }
