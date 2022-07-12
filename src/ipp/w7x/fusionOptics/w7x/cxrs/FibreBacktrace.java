@@ -85,6 +85,7 @@ public class FibreBacktrace {
 	
 	//public static BeamEmissSpecAEK41_edgeUV sys = new BeamEmissSpecAEK41_edgeUV();
 	public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
+	//public static BeamEmissSpecAEK41_pelletsK41 sys = new BeamEmissSpecAEK41_pelletsK41();
 	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAEK21_pelletsK41 sys = new BeamEmissSpecAEK21_pelletsK41();

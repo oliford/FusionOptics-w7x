@@ -39,7 +39,8 @@ import fusionOptics.types.Surface;
 public abstract class BeamEmissSpecAEK41_base extends Optic {
 	public double globalUp[] = {0,0,1};
 		
-	public double flangeCentre[] = { -5.1112919921875, -6.455993896484375, 0.05283078002929688 };
+	//public double flangeCentre[] = { -5.1112919921875, -6.455993896484375, 0.05283078002929688 };
+	public double flangeCentre[] = { -5.1113217773437, -6.455943603515625, 0.05281460571289063 };
 	public double portNormal[] = { -0.62109906,  -0.74825539,  -0.23313049 };
 	
 	public double virtualObsPos[] = { -5.123078546180935,	-6.470663860518723,	0.048767601107390174 }; //closest approach of all LOSs, from lightAssesment
@@ -48,8 +49,12 @@ public abstract class BeamEmissSpecAEK41_base extends Optic {
 	
 	
 	/** Optic axis tilt to match spatial calibration images (18.08.2017)*/
-	public double tiltVertical = 0.20 * Math.PI / 180;
-	public double tiltHorizontal = -0.22 * Math.PI / 180;
+	//public double tiltVertical = 0.20 * Math.PI / 180;
+	//public double tiltHorizontal = -0.22 * Math.PI / 180;
+	
+	// Design OP2.1, tilted to get out of the way of future QHW, but only just clip port liner
+	public double tiltVertical = 0.0 * Math.PI / 180;
+	public double tiltHorizontal = 0.0 * Math.PI / 180;
 	
 	public double rotVert[] = Util.reNorm(Util.cross(portNormal, globalUp));
 	public double opticAxis0[] = OneLiners.rotateVectorAroundAxis(tiltVertical, rotVert, portNormal);
