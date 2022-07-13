@@ -53,8 +53,9 @@ public abstract class BeamEmissSpecAEK41_base extends Optic {
 	//public double tiltHorizontal = -0.22 * Math.PI / 180;
 	
 	// Design OP2.1, tilted to get out of the way of future QHW, but only just clip port liner
-	public double tiltVertical = 0.0 * Math.PI / 180;
-	public double tiltHorizontal = 0.0 * Math.PI / 180;
+	public double tiltVertical = 0.5 * Math.PI / 180;
+	public double tiltHorizontal = 2.0 * Math.PI / 180;
+	public double tiltInPlane = 20.0 * Math.PI / 180;
 	
 	public double rotVert[] = Util.reNorm(Util.cross(portNormal, globalUp));
 	public double opticAxis0[] = OneLiners.rotateVectorAroundAxis(tiltVertical, rotVert, portNormal);
@@ -129,8 +130,11 @@ public abstract class BeamEmissSpecAEK41_base extends Optic {
 	
 	
 	public double fibrePlanePos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, fibrePlaneBehindLens)); 
-	public double fibresXVec[] = Util.reNorm(new double[]{ 0.0208466796875, 0.02511328125, -0.13614230346679687 });
-	public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, opticAxis));	
+	public double fibresXVec0[] = Util.reNorm(new double[]{ 0.0208466796875, 0.02511328125, -0.13614230346679687 });
+	public double fibresYVec0[] = Util.reNorm(Util.cross(fibresXVec0, opticAxis));
+	
+	public double fibresXVec[] = Algorithms.rotateVector(Algorithms.rotationMatrix(opticAxis, tiltInPlane), fibresXVec0);
+	public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, opticAxis));
 	
 	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, opticAxis, fibresYVec, 0.300, 0.300, NullInterface.ideal());
 	public Square fibrePlanes[][];

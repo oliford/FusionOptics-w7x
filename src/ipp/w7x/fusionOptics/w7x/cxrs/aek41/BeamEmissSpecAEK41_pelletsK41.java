@@ -2,6 +2,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs.aek41;
 
 import net.jafama.FastMath;
 import oneLiners.OneLiners;
+import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
 import fusionOptics.Util;
 import fusionOptics.interfaces.NullInterface;
@@ -86,12 +87,17 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 	}
 	
 
-	public double targetObsPos[] = W7XPelletsK41.def().getPosOfBeamAxisAtR(0, 5.9);
-	public double beamAxis[] = W7XPelletsK41.def().uVec(0);
+	//plane through pellets line (OP1.2)
+	//public double targetObsPos[] = W7XPelletsK41.def().getPosOfBeamAxisAtR(0, 5.9);
+	//public double beamAxis[] = W7XPelletsK41.def().uVec(0);
 	
+	//plane from edge penetration
+	public double targetObsPos[] = EdgePenetrationAEK41.def().start(0);
+	public double beamAxis[] = EdgePenetrationAEK41.def().uVec(0);
+		
 	public double beamObsPerp[] = Util.reNorm(Util.cross(Util.minus(lensCentrePos, targetObsPos), beamAxis));
 	public double beamObsPlaneNormal[] = Util.reNorm(Util.cross(beamAxis, beamObsPerp));
-	
+			
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 1.500, 2.000, NullInterface.ideal());
 
 	public final String backgroundSTLFiles[] = {
