@@ -144,7 +144,7 @@ public class BackgroundTargetting {
 				double sumI=0, sumIX[]={0,0,0}, sumIX2[] = {0,0,0};
 				double sumIXsp[]={0,0,0};
 				for(int i=0; i < nAttempts; i++){
-					double x, y, rMax = sys.fibreEndDiameter / 2;
+					double x, y, rMax = sys.getFibreDiameter(iB, iP) / 2;
 					do{
 						x = RandomManager.instance().nextUniform(-rMax, rMax);
 						y = RandomManager.instance().nextUniform(-rMax, rMax);				
@@ -247,8 +247,8 @@ public class BackgroundTargetting {
 		
 
 		//output JSON LOS info
-		PrintStream jsonOut = new PrintStream(outPath + "/lineOfSightDefs-"+sys.lightPathsSystemName+".json");
-		jsonOut.println("{ \"system\" : \""+sys.lightPathsSystemName+"\", \"info\" : \"From raytracer "+sys.getDesignName()+" on "+
+		PrintStream jsonOut = new PrintStream(outPath + "/lineOfSightDefs-"+sys.lightPathsSystemName()+".json");
+		jsonOut.println("{ \"system\" : \""+sys.lightPathsSystemName()+"\", \"info\" : \"From raytracer "+sys.getDesignName()+" on "+
 				((new SimpleDateFormat()).format(new Date()))+" \", \"los\" : [");
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
@@ -305,9 +305,7 @@ public class BackgroundTargetting {
 		
 		//double start[] = sys.lens1.getBackSurface().getCentre();
 		double uVec[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
-		String chanName = sys.lightPathsSystemName 
-				+ (sys.lightPathRowName != null ? ("_"+sys.lightPathRowName[iB]) : "")
-				+ ":" + String.format("%02d", iP+1);
+		String chanName = sys.getChanName(iB, iP);
 	
 		switch(thing){
 			case FreeCADHitPos:		

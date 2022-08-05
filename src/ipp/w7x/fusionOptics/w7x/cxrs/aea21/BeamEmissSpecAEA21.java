@@ -1,5 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.cxrs.aea21;
 
+import ipp.w7x.fusionOptics.w7x.cxrs.ObservationSystem;
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
 
@@ -29,9 +30,9 @@ import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public class BeamEmissSpecAEA21 extends Optic {
+public class BeamEmissSpecAEA21 extends ObservationSystem {
 	
-	public String lightPathsSystemName = "AEA21";
+	public String lightPathsSystemName() { return "AEA21"; }
 	
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ He_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
@@ -456,9 +457,8 @@ public class BeamEmissSpecAEA21 extends Optic {
 	public double[] channelZ;
 	
 	//public double fibreEndPos[][];
-	public double fibreNA = 0.22; // [ written on the fibre bundle packing reel ]
-	
-	public double fibreEndDiameter = 0.0004; // 400um AUG-like fibres
+	//public double fibreNA = 0.22; // [ written on the fibre bundle packing reel ]	
+	//public double fibreEndDiameter = 0.0004; // 400um AUG-like fibres
 	public double fibrePlaneBehindLens2 = 0.100;
 	
 	//public double fibresXVec[] = Util.reNorm(Util.minus(fibre10EndPos, fibre1EndPos));
@@ -794,6 +794,7 @@ public class BeamEmissSpecAEA21 extends Optic {
 	private double smseFirstColumnLeftOfRodCentre = 8.52e-3;
 	
 	private int[][] smseSkipFibres = {{15, 5}, {15, 6}, {15, 7}, { 14, 8 }, {15, 8}};
+	private String[] smseFibreID;
 
 	public Surface losStartSurface = mirror;		
 	
@@ -804,9 +805,10 @@ public class BeamEmissSpecAEA21 extends Optic {
 		lightPathRowName = new String[]{ "SMSE" };
 		fibreEndPos = new double[nBeams][][];
 		fibreEndNorm = new double[nBeams][][];
+		int nFibres = smseCols * smseRows - smseSkipFibres.length;
+		smseFibreID = new String[nFibres];
 		
 		for(int iB=0; iB < nBeams; iB++){
-			int nFibres = smseCols * smseRows - smseSkipFibres.length;
 			fibreEndPos[iB] = new double[nFibres][];
 			fibreEndNorm[iB] = new double[nFibres][];
 			channelR[iB] = new double[nFibres];
@@ -825,6 +827,8 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 						if(smseSkipFibres[i][0] == iX && smseSkipFibres[i][1] == iY)
 							continue nextFibre;
 					}
+					
+					smseFibreID[iF] = (char)('A' + iX) + "" + iY;
 					
 					channelR[iB][iF] = 5.4 + iX/100;
 					double x = -smseFirstColumnLeftOfRodCentre + iX * smseSpacingW;
@@ -864,8 +868,6 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 			}};
 			
 		fibreEndNorm = new double[][][] {{ fibreEndNorm[0][fibreIdx].clone() }};
-		fibreNA = 0.6;
-		fibreEndDiameter = 0.019;
 		
 	}
 	
@@ -878,8 +880,7 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 		
 		fibreEndPos = new double[][][] {{ rodEndPos }};			
 		fibreEndNorm = new double[][][] {{ Util.mul(opticAxis, -1) }};
-		this.fibreNA = 0.001;
-		fibreEndDiameter = 0.001;
+		
 		
 		//remove catch plane, since it stops the laser
 		catchPlane.setInterface(NullInterface.ideal());
@@ -925,5 +926,34 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 
 	}
 		
+	public double getFibreNA(int iB, int iP) { 
+		switch(subsystem) {
+			case CXRS: return 0.22; 
+			case Lamp: return 0.6;
+			case TubeAxis: return 0.001;
+			case SMSE: return 0.22;
+			default: return Double.NaN;
+		}
+	}
+	
+	public double getFibreDiameter(int iB, int iP)  { 
+		switch(subsystem) {
+			case CXRS: return 0.22e-3; 
+			case Lamp: return 0.019e-3;
+			case TubeAxis: return 0.001e-3;
+			case SMSE: return 0.22e-3;
+			default: return Double.NaN;
+		}
+	}
 
+	@Override
+	protected String[] lightPathRowNames() { return lightPathRowName; }
+
+
+	public String getChanName(int iB, int iP) {
+		if(subsystem == Subsystem.SMSE) {
+			return "SMSE_AEA21:" + smseFibreID[iP];
+		}
+		return super.getChanName(iB, iP);
+	}
 }

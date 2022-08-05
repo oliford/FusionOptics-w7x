@@ -11,7 +11,6 @@ public class BeamEmissSpecAEA21U extends BeamEmissSpecAEA21 {
 	public BeamEmissSpecAEA21U() {
 		super(Subsystem.CXRS);
 		
-		lightPathsSystemName = "AEA21u";
 				
 		//now rotate everything around centre of A port
 		double module2centreAng = 2 * Math.PI / 5;
@@ -29,6 +28,9 @@ public class BeamEmissSpecAEA21U extends BeamEmissSpecAEA21 {
 		}
 		
 	}
+	
+	@Override
+	public String lightPathsSystemName() { return "AEA21u";	}
 
 	public String getDesignName() { return "aea21u";	}
 }
