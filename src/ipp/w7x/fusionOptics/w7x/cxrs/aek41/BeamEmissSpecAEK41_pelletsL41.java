@@ -21,8 +21,8 @@ public class BeamEmissSpecAEK41_pelletsL41 extends BeamEmissSpecAEK41_base {
 	
 	public static double focusAdjust = -0.012;
 	
-	public String lightPathsSystemName = "AEK41";
-	public String lightPathRowName[] = { "PelletsL" };
+	public String lightPathsSystemName() { return "AEK41"; };	
+	public String[] lightPathRowNames() { return new String[]{ "PelletsL" }; };
 	
 	@Override
 	protected void setupFibrePositions() {

@@ -18,8 +18,8 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 	public static double fibre0U = 0.0185;
 	public static double axisAngleToUp = 0;// 1.625 * Math.PI / 180; 
 
-	public String lightPathsSystemName = "AEK41";	
-	public String lightPathRowName[] = { "PelletsK" };
+	public String lightPathsSystemName() { return "AEK41"; };	
+	public String[] lightPathRowNames() { return new String[]{ "PelletsK" }; };
 	
 	@Override
 	protected void setupFibrePositions() {

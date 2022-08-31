@@ -64,23 +64,23 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
+	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.AsBuilt);
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
-	//public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
+	//public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
 	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
 	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();	
 	
-	//public static BeamEmissSpecAEK21_pelletsK41 sys = new BeamEmissSpecAEK21_pelletsK41();
-	//public static SimpleBeamGeometry beams = W7XPelletsK41.def();
+	public static BeamEmissSpecAEK41_pelletsK41 sys = new BeamEmissSpecAEK41_pelletsK41();
+	public static SimpleBeamGeometry beams = W7XPelletsK41.def();
 	
 	//public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41(); //need baffels and a panel
 	//public static SimpleBeamGeometry beams = W7XPelletsL41.def();

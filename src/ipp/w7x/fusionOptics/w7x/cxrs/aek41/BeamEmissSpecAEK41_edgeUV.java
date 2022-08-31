@@ -13,8 +13,8 @@ public class BeamEmissSpecAEK41_edgeUV extends BeamEmissSpecAEK41_base {
 	
 	public double fibreEndDiameter = 0.003000; // Bundle end in square case, plugged in 5.5mm round hole
 
-	public String lightPathsSystemName = "AEK41";	
-	public String lightPathRowName[] = { "EdgeUV" };
+	public String lightPathsSystemName() { return "AEK41"; };	
+	public String[] lightPathRowNames() { return new String[]{ "EdgeUV" }; };
 	
 	/** Set fibre positions equal spacing in holder */
 	protected void setupFibrePositions() {
