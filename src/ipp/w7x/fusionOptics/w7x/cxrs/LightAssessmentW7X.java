@@ -76,10 +76,10 @@ public class LightAssessmentW7X {
 	//public static boolean forcePerpFibres = true;
 	
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	
-	public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
-	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
+	//public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
+	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);	
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
@@ -97,7 +97,7 @@ public class LightAssessmentW7X {
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static Surface mustHitToDraw = sys.entryWindowFront;
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	//public final static double R0 = 5.2, R1 = 5.9; //as sightlines in fromDesigner-201511076
 	//public static boolean forcePerpFibres = false; //AEM41 has only one lens, so is not at all telecentric
 	
@@ -132,16 +132,16 @@ public class LightAssessmentW7X {
 	//public static double pointR[] = OneLiners.linSpace(5.15, 6.02, 50); //AEM41 50x for AEM41
 	//public static double pointR[] = OneLiners.linSpace(5.13, 6.05, 10); //AEM41 10x for RUDIX-AEM41
 	//public static double pointR[] = OneLiners.linSpace(6.05, 5.2, 10); //AEM41 10x for RUDIX-AEM41
-	public static double pointR[] = { 
+	/*public static double pointR[] = { 
 			6.05, 5.993, 5.918, 5.836, 5.748, 5.655, 5.558, 5.458, 5.355, 5.25
-		};
-	/*public static double pointR[] = { 		// AEM41 50x, more towards edge, roughtly pos^1.2
+		};*/
+	public static double pointR[] = { 		// AEM41 50x, more towards edge, roughtly pos^1.2
 			6.1  , 6.094, 6.086, 6.076, 6.065, 6.054, 6.041, 6.028, 6.015, 6.001, 
 			5.986, 5.971, 5.955, 5.94 , 5.923, 5.907, 5.89 , 5.873, 5.855, 5.837, 
 			5.819, 5.801, 5.782, 5.763, 5.744, 5.725, 5.705, 5.685, 5.665, 5.645, 
 			5.624, 5.604, 5.583, 5.562, 5.54 , 5.519, 5.497, 5.475, 5.453, 5.431, 
 			5.409, 5.386, 5.363, 5.341, 5.318, 5.294, 5.271, 5.247, 5.224, 5.2
-    };*/ 
+    };//*/ 
 	
 	//public final static int nAttempts = 5000;
 	
@@ -186,10 +186,10 @@ public class LightAssessmentW7X {
 	
 	public static int nPointsPerBeam = pointR.length;
 	
-	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "_x10_RUDIX";
+	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName();// + "_x10_RUDIX";
 			
 	public static void main(String[] args) {
-		int nBeams = beamSelection.length;
+		int nBeams = 1;//beamSelection.length;
 		
 		
 		/* // For LOS finding for Maciej's high iota halpha
@@ -246,8 +246,13 @@ public class LightAssessmentW7X {
 				double R = pointR[iP];
 				fibre[iB][iP].R = R;
 				
+				double shiftVec[] = Util.reNorm(Util.cross(beams.uVecBox((-beamSel)-1), new double[] { 0, 0, 1 }));
 				if(sys.overrideObsPositions == null) {
 					fibre[iB][iP].beamPos = (beamSel < 0) ? beams.getPosOfBoxAxisAtR((-beamSel)-1, R) : beams.getPosOfBeamAxisAtR(beamSel, R);
+					fibre[iB][iP].beamPos = Util.plus(fibre[iB][iP].beamPos, Util.mul(shiftVec, 0.04));
+					
+					//toroidal shift for two sets on AEM41
+					
 				
 					// For LOS finding for Maciej's high iota halpha
 					//fibre[iB][iP].beamPos = new double[] { FastMath.cos(divTargetPhi) * R, FastMath.sin(divTargetPhi) * R, divTargetZ };
