@@ -85,8 +85,8 @@ public class FibreBacktrace {
 	
 	//public static BeamEmissSpecAEK41_edgeUV sys = new BeamEmissSpecAEK41_edgeUV();
 	//public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
-	public static BeamEmissSpecAEK41_pelletsK41 sys = new BeamEmissSpecAEK41_pelletsK41();
-	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
+	//public static BeamEmissSpecAEK41_pelletsK41 sys = new BeamEmissSpecAEK41_pelletsK41();
+	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAEK21_pelletsK41 sys = new BeamEmissSpecAEK21_pelletsK41();
 	//public static SimpleBeamGeometry beams = W7XPelletsK41.def();
@@ -94,8 +94,8 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41();
 	//public static SimpleBeamGeometry beams = W7XPelletsL41.def();
 		
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -112,9 +112,9 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 10000;
+	public final static int nAttempts = 2000;
 
-	public static String writeWRLForDesigner = null;//"20220720";
+	public static String writeWRLForDesigner = null; //"20220915";
 	
 	static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm/"; // /laserAlign
 	

@@ -1,5 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.cxrs.aem41;
 
+import ipp.w7x.fusionOptics.w7x.cxrs.ObservationSystem;
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
@@ -24,14 +25,14 @@ import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
 
 /** Passive Spectroscopy on AEM41, in principle looking at RuDIX beam */
-public class BeamEmissSpecAEM41 extends Optic {
+public class BeamEmissSpecAEM41 extends ObservationSystem {
 	
-	public String lightPathsSystemName = "AEM41";	
-	
-	public String lightPathRowName[] = { "A", "B" };
+	public String lightPathsSystemName() { return "AEM41"; };	
+
+	@Override
+	protected String[] lightPathRowNames() { return new String[]{ "A", "B" };	}
 	
 	public Element strayPlane = null;
-	
 	
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
@@ -451,5 +452,5 @@ public class BeamEmissSpecAEM41 extends Optic {
 
 	public double getFibreNA(int iB, int iP) { return fibreNA[iB];	}
 	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter[iB]; }
-	
+
 }
