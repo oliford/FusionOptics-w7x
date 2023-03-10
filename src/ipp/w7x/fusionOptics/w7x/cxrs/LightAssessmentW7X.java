@@ -69,7 +69,7 @@ public class LightAssessmentW7X {
 	private static BeamEmissSpecAEA21U_CISDual beamEmissSpecAEA21U_CISDual2;
 
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	public static BeamEmissSpecAEA21U_CISDual sys = new BeamEmissSpecAEA21U_CISDual();
+	//public static BeamEmissSpecAEA21U_CISDual sys = new BeamEmissSpecAEA21U_CISDual();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true; //telecentric-ish
 	
@@ -88,7 +88,7 @@ public class LightAssessmentW7X {
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);	
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
 	//public static Surface mustHitToDraw = sys.lens1.getSurfaces().get(0);
-	public static Surface mustHitToDraw = sys.fibrePlane2;
+	public static Surface mustHitToDraw = sys.fibrePlane;
 	
 	public static boolean forcePerpFibres = false;
 
@@ -97,7 +97,7 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static Surface mustHitToDraw = sys.entryWindowFront;
@@ -108,8 +108,7 @@ public class LightAssessmentW7X {
 	
 	public static List<Surface> interestedSurfaces = new ArrayList<Surface>();
 	
-	public static Surface fibrePlane = sys.fibrePlane2;
-	public static Surface firstSurface = sys.mirror; //or sys.mirror usually
+	public static Surface firstSurface = sys.entryWindowFront; //or sys.mirror usually
 
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q7 };  
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q8 }; //for AEM21, 6 and 8 are the extremes	
@@ -284,7 +283,7 @@ public class LightAssessmentW7X {
 					ray.processIntersections(null, intensityInfo, lightConeInfo);
 					
 
-					List<Intersection> hits = ray.getIntersections(fibrePlane);
+					List<Intersection> hits = ray.getIntersections(sys.fibrePlane);
 					if(hits.size() > 0){
 						Intersection fibrePlaneHit = hits.get(0);
 						
