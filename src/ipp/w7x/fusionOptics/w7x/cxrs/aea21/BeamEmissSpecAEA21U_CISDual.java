@@ -41,7 +41,7 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 	/***** Observation target ****/
 	//public int targetBeamIdx = 6; // 6 = Q7 = K21 lower radial   
 	public double targetBeamR = 5.55;
-	public double targetAboveBeam = -0.100; //reversed to K20, because we setup on K21 and flip
+	public double targetAboveBeam = -0.200; //reversed to K20, because we setup on K21 and flip
 	//public double targetObsPos[] = W7xNBI.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
 	public double targetObsPos0[] = W7xNBI.def().getPosOfBoxAxisAtR(1, targetBeamR);
 	public double targetObsPos[] = Util.plus(targetObsPos0, Util.mul(globalUp, targetAboveBeam));	
@@ -53,6 +53,8 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 				{ 2.690, 4.430, -0.215}, //right
 				{ 3.278, 4.578,  0.323}, //top
 				{ 4.066, 3.249, -0.700}, //bottom
+				{ 3.777, 4.341, 0.450 }, //behind top bar - shield
+				{ 4.059, 4.544, 0.550 }, //behind top bar - divertor
 			}
 		};
 	
@@ -149,13 +151,34 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 
 	/*** Fibres ****/
 	public int beamIdx[] = null;
-	public double[][] channelR = null;
-	public double[][][] fibreEndPos = null;
-	public double[][][] fibreEndNorm = null;
+	//public double[][] channelR = null;
+	//public double[][][] fibreEndPos = null;
+	//public double[][][] fibreEndNorm = null;
 	public String lightPathRowName[] = null;
 	
 
 	public double[] channelZ;
+	
+	public double[][] channelR = { 
+			{ 6.05, 5.993, 5.918, 5.836, 5.748, 5.655, 5.558, 5.458, 5.355, 5.25, }, 
+		}; 
+		public double[][][] fibreEndPos = { { 
+					{ 1.9273085953931133, 6.271372078363657, -0.39277190173415544 },
+					{ 1.9197759826273333, 6.274334091455761, -0.3941205010000625 },
+					{ 1.9248054643441062, 6.272229602817867, -0.39671195489784744 },
+					{ Double.NaN, Double.NaN, Double.NaN },
+					{ 1.9259890420237753, 6.271824984624961, -0.39616445692243085 },
+					{ 1.9279623116357727, 6.271196346066052, -0.39616486181085797 },
+				}, 	}; 
+		public double[][][] fibreEndNorm = { { 
+				{ -0.4670049493194494, -0.8831826235894602, -0.04352965312033171 },
+				{ -0.38765055496194895, -0.9188393612666179, -0.07390044265663502 },
+				{ -0.3575467782563375, -0.9276293361750503, 0.10800053715583505 },
+				{ Double.NaN, Double.NaN, Double.NaN },
+				{ -0.3993079176219959, -0.9123096041011269, 0.09079853076581391 },
+				{ -0.5021555414781882, -0.8580089552447342, 0.10798353986875683 },
+				}, 	};
+
 	
 	//public double fibreEndPos[][];
 	//public double fibreNA = 0.53; // F/0.95
@@ -377,6 +400,9 @@ public class BeamEmissSpecAEA21U_CISDual extends Optic {
 			}
 		}
 	}
-		
+
+	public double getFibreNA(int iB, int iP) { return 0.3; }
+
+	public double getFibreDiameter(int i, int j) { return 0.000065; }		
 
 }

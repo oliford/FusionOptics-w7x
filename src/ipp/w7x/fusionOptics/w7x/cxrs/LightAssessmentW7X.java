@@ -64,8 +64,12 @@ import fusionOptics.types.Surface;
 /** Basic pictures for BeamEmissSpecAET21 model */
 public class LightAssessmentW7X {
 	
+	private static BeamEmissSpecAEA21U_CISDual beamEmissSpecAEA21U_CISDual;
+
+	private static BeamEmissSpecAEA21U_CISDual beamEmissSpecAEA21U_CISDual2;
+
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	//public static BeamEmissSpecAEA21U_CISDual sys = new BeamEmissSpecAEA21U_CISDual();
+	public static BeamEmissSpecAEA21U_CISDual sys = new BeamEmissSpecAEA21U_CISDual();
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true; //telecentric-ish
 	
@@ -78,13 +82,13 @@ public class LightAssessmentW7X {
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	
-	public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
-	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
+	//public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
+	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);	
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror();
 	//public static Surface mustHitToDraw = sys.lens1.getSurfaces().get(0);
-	public static Surface mustHitToDraw = sys.entryWindowFront;
+	public static Surface mustHitToDraw = sys.fibrePlane2;
 	
 	public static boolean forcePerpFibres = false;
 
@@ -93,7 +97,7 @@ public class LightAssessmentW7X {
 	//public static Surface mustHitToDraw = sys.fibrePlane;
 	//public static boolean forcePerpFibres = true;
 	
-	//public static SimpleBeamGeometry beams = W7xNBI.def();
+	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static Surface mustHitToDraw = sys.entryWindowFront;
@@ -104,8 +108,8 @@ public class LightAssessmentW7X {
 	
 	public static List<Surface> interestedSurfaces = new ArrayList<Surface>();
 	
-	public static Surface fibrePlane = sys.fibrePlane;
-	public static Surface firstSurface = sys.entryWindowFront; //or sys.mirror usually
+	public static Surface fibrePlane = sys.fibrePlane2;
+	public static Surface firstSurface = sys.mirror; //or sys.mirror usually
 
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q7 };  
 	//public static int beamSelection[] = { beams.BEAM_Q6, beams.BEAM_Q8 }; //for AEM21, 6 and 8 are the extremes	
@@ -146,8 +150,8 @@ public class LightAssessmentW7X {
 	//public final static int nAttempts = 5000;
 	
 	public static boolean writeSolidAngeInfo = true;
-	public static String writeWRLForDesigner = null;//"-20160826";
-	public final static int nAttempts = 20000;
+	public static String writeWRLForDesigner = "-20230213";
+	public final static int nAttempts = 200000;
 	//*/
 	
 	public static double wavelength = sys.designWavelenth;
@@ -155,7 +159,7 @@ public class LightAssessmentW7X {
 	//public static double wavelength = 530e-9; //C_VI
 	//public static double wavelength = 656e-9; //HAlpha
 	
-	public static int nRaysToDraw = 10000;
+	public static int nRaysToDraw = 100000;
 	// For calc
 	/*public static double pointR[] = sys.channelR;
 	public final static int nAttempts = 20000;
@@ -504,7 +508,7 @@ public class LightAssessmentW7X {
 				//		"), FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+"), 360);");
 				System.out.println("Part.show(Part.makeCylinder("+cyldRadius*1e3+","+cyldLen*1e3 +","										
 						+"FreeCAD.Vector("+p[0]*1e3+","+p[1]*1e3+","+p[2]*1e3+"), "
-						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"FibreEnd_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"; g.addObject(FreeCAD.ActiveDocument.ActiveObject);");
+						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"LOS_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"; g.addObject(FreeCAD.ActiveDocument.ActiveObject);");
 				
 			}		
 		}
