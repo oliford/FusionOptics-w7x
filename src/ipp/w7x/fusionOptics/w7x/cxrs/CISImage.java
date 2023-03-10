@@ -86,10 +86,10 @@ public class CISImage {
 		
 	public static String[] meshesToImage = {
 			"/work/cad/wendel/stl/panel-m11.stl",
-			"/work/cad/wendel/stl/baffel-m1.stl",
+			"/work/cad/wendel/stl/baffle-m1.stl",
 			"/work/cad/w7xBeams/Q4.stl",
 			"/work/cad/wendel/stl/target-m2.stl",
-			"/work/cad/wendel/stl/baffel-m2.stl",
+			"/work/cad/wendel/stl/baffle-m2.stl",
 			"/work/cad/wendel/stl/panel-m20.stl",
 			"/work/cad/wendel/stl/shield-m1.stl",
 			"/work/cad/wendel/stl/shield-m2.stl",
@@ -116,7 +116,8 @@ public class CISImage {
 		stlDraw.setTransformationMatrix(new double[][] {{ 1000,0,0 },{0,1000,0},{0,0,1000}});
 		stlDraw.drawElement(sys.mirror);
 		stlDraw.destroy();
-		System.exit(0);
+				
+		System.out.println(outPath);
 		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/image-"+sys.getDesignName()+ ((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 1.005);
 		if((writeWRLForDesigner == null)){
