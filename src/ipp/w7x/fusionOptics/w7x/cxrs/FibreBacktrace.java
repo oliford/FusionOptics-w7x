@@ -112,7 +112,7 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 2000;
+	public final static int nAttempts = 500;
 
 	public static String writeWRLForDesigner = null; //"20220915";
 	
