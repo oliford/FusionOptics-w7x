@@ -469,7 +469,7 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 			int nFibres = channelR[iB].length;
 			
 			//shift fibres of 10-channel system and 50-channel systems in opposite directions
-			double outOfPlaneShift = (nFibres <= 10 ? 1 : 1) * 0.025;
+			double outOfPlaneShift = (nFibres <= 10 ? 1 : -1) * 0.003;
 			
 			fibrePlanes[iB] = new Square[nFibres];
 			for(int iF=0; iF < nFibres; iF++){
