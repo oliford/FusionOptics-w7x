@@ -44,7 +44,7 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 		
 		for(int iF=0; iF < nFibres; iF++){
 			double u = -fibre0U - (iF - (nFibres-1.0)/2)  * dR;
-			double r = -fibre0R - (iF - (nFibres-1.0)/2)  * dU;
+			double r = -fibre0R - (iF - (nFibres-1.0)/2)  * dU + 0.0015;
 			
 			fibreEndPos[iB][iF] = Util.plus(Util.plus(fibrePlanePos, Util.mul(fibresXVec, u)),
 									 Util.mul(fibresYVec, r));
