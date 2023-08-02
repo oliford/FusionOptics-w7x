@@ -28,7 +28,7 @@ public class WavelengthScan {
 	
 	public static double slitWidth = 100e-6;
 	
-	public static double wavelengths[] = OneLiners.linSpace(sys.designWavelenth-6e-9, sys.designWavelenth+6e-9, 50);
+	public static double wavelengths[] = OneLiners.linSpace(sys.designWavelenth-1.8e-9, sys.designWavelenth+1.8e-9, 5);
 	
 	public static void main(String[] args) {
 		
@@ -39,12 +39,13 @@ public class WavelengthScan {
 		//}
 		vrmlOut.setSkipRays(nAttempts*wavelengths.length / 10000);
 			
-		double col[][] = ColorMaps.jet(wavelengths.length);
+		double col[][] = ColorMaps.jet(wavelengths.length*2);
 			
 		BinaryMatrixWriter out = new BinaryMatrixWriter(outPath + "/wavelengthScan.bin", 4); 
 		//int iF = sys.nFibres / 2;
-		for(int iiF=0; iiF < 3; iiF++) {
-			int iF = iiF * (sys.nFibres - 1) / 2;
+		//for(int iiF=0; iiF < 3; iiF++) {
+			//int iF = iiF * (sys.nFibres - 1) / 2;
+		for(int iF=0; iF < sys.nFibres; iF+=1) {
 		for(int iL=0; iL < wavelengths.length; iL+=1){
 			
 			int nHits = 0;
@@ -95,14 +96,16 @@ public class WavelengthScan {
 				ray.up = Util.createPerp(ray.dir);
 						
 				Tracer.trace(sys, ray, 100, 0, false);
+				
+				int iC = (iF % 2) * wavelengths.length + iL;
 	
 				if(mustHitToDraw == null){
-					vrmlOut.drawRay(ray, col[iL]);
+					vrmlOut.drawRay(ray, col[iC]);
 					nHits++;
 				}else{
 					List<Intersection> hits = ray.getIntersections(mustHitToDraw);
 					if(hits.size() > 0){
-						vrmlOut.drawRay(ray, col[iL]);
+						vrmlOut.drawRay(ray, col[iC]);
 						double ccdPos[] = sys.ccd.posXYZToPlaneRU(hits.get(0).pos);
 						pos[0] += ccdPos[0];
 						pos[1] += ccdPos[1];
@@ -111,7 +114,7 @@ public class WavelengthScan {
 				}					
 			}
 		
-			System.out.println(iL + ": l=" + wavelengths[iL]*1e9 + ", " + nHits + "/" + nAttempts);
+			System.out.println(iF + ", " + iL + ": l=" + wavelengths[iL]*1e9 + ", " + nHits + "/" + nAttempts);
 			out.writeRow(wavelengths[iL], pos[0]/nHits, pos[1]/nHits, (double)nAttempts / nHits);
 		}
 		}

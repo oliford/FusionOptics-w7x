@@ -24,7 +24,7 @@ import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
 import net.jafama.FastMath;
 
-public class SpexM750 extends Optic {
+public class SpexM750_PassiveCarbon_CylindricalLenses extends Optic {
 	public double designWavelenth = 529e-9;
 	
 	
@@ -199,7 +199,7 @@ public class SpexM750 extends Optic {
 	public Square blockingStrip = new Square("blockingStrip", blockingStripPos, outputAxis, globalUp, 0.050, blockingStripWidth, Absorber.ideal());
 	//public Square blockingStrip = new Square("blockingStrip", blockingStripPos, outputAxis, globalUp, 0.050, 0.006, Absorber.ideal());
 			
-	public SpexM750() {
+	public SpexM750_PassiveCarbon_CylindricalLenses() {
 		super("SpexM750");
 		//gratingAngle=0;
 		System.out.println("Grating angle = " + gratingAngle * 180 / Math.PI + " deg");
