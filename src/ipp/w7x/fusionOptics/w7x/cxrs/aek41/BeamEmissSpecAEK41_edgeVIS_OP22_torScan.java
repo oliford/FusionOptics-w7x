@@ -8,7 +8,9 @@ import fusionOptics.interfaces.NullInterface;
 import fusionOptics.surfaces.Square;
 
 /** Jürgens 5-channel edge 'passive CXRS' */ 
-public class BeamEmissSpecAEK41_edgeVIS_OP22b extends BeamEmissSpecAEK41b {
+public class BeamEmissSpecAEK41_edgeVIS_OP22_torScan extends BeamEmissSpecAEK41b {
+	public String getDesignName() { return "aek41-torScan2";	}
+
 	public double designWavelenth = 530e-9; // VIS centre
 	
 	public double fibreEndDiameter = 0.000400; // Standard CXRS (as AUG)
@@ -35,10 +37,13 @@ public class BeamEmissSpecAEK41_edgeVIS_OP22b extends BeamEmissSpecAEK41b {
 			
 			double dY = -0.001600; //Fibre spacing, roughly what we got in the AET2x head 
 			
-			double dX = 0.000;			
-			double x0 = 0.003;//-(nFibres-1.0)/2 * dX;
-			//double dX = 0.013;
-			//double x0 = 0.000;//-(nFibres-1.0)/2 * dX; 
+			//torScan1
+			//double dX = 0.000;			
+			//double x0 = 0.003;//-(nFibres-1.0)/2 * dX;
+			
+			//torScan2
+			double dX = 0.013;
+			double x0 = 0.000;//-(nFibres-1.0)/2 * dX; 
 			for(int iF=0; iF < nFibres; iF++){
 				fibreEndPos[iB][iF] = Util.plus(fibrePlanePos, Util.mul(fibresXVec, dX));				
 				fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(fibresYVec, x0 + iF * dY));
@@ -68,7 +73,6 @@ public class BeamEmissSpecAEK41_edgeVIS_OP22b extends BeamEmissSpecAEK41b {
 	};
 
 	
-	public String getDesignName() { return "aek41-torScan";	}
 	
 	public double getFibreNA(int iB, int iP) { return fibreNA;	}
 	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter; }

@@ -7,8 +7,11 @@ import fusionOptics.Util;
 import fusionOptics.interfaces.NullInterface;
 import fusionOptics.surfaces.Square;
 
-/** Jürgens 5-channel edge 'passive CXRS' */ 
+/** 40 "EdgeVIS" line during OP1.2, OP2.1 and OP2.2  (change the dY in setupFibrePositions() and the design name appropriately) */ 
 public class BeamEmissSpecAEK41_edgeVIS extends BeamEmissSpecAEK41_base {
+	
+	public String getDesignName() { return "aek41-edgeVIS-op2.2";	}
+
 	public double designWavelenth = 530e-9; // VIS centre
 	
 	public double fibreEndDiameter = 0.000400; // Standard CXRS (as AUG)
@@ -33,7 +36,7 @@ public class BeamEmissSpecAEK41_edgeVIS extends BeamEmissSpecAEK41_base {
 			fibreEndNorm[iB] = new double[nFibres][];
 			
 			double dX = 0.000500; //Fibre spacing, roughly what we got in the AET2x head
-			double dY = -0.007; // Plate design. +ve for OP1.2, -ve for OP2.1 to avoid portliner (turned plate upside down) 
+			double dY = 0.007; // Plate design. +ve for OP1.2, -ve for OP2.1 to avoid portliner (turned plate upside down) 
 			double x0 = -(nFibres-1.0)/2 * dX; 
 			for(int iF=0; iF < nFibres; iF++){
 				fibreEndPos[iB][iF] = Util.plus(fibrePlanePos, Util.mul(fibresXVec, x0 + iF * dX));
@@ -65,7 +68,6 @@ public class BeamEmissSpecAEK41_edgeVIS extends BeamEmissSpecAEK41_base {
 	};
 
 	
-	public String getDesignName() { return "aek41-edgeVIS";	}
 	
 	public double getFibreNA(int iB, int iP) { return fibreNA;	}
 	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter; }

@@ -7,8 +7,12 @@ import fusionOptics.Util;
 import fusionOptics.interfaces.NullInterface;
 import fusionOptics.surfaces.Square;
 
-/** Jürgens 5-channel edge 'passive CXRS' */ 
-public class BeamEmissSpecAEK41_edgeVIS_OP22a extends BeamEmissSpecAEK41_base {
+/** EdgeVIS lines in OP2.2
+ * @deprecated  This seems to be wrong, maybe an idea to try to change the backplate for OP2.2
+ * The final OP2.2 design seems to be using the original backplate.
+ *  
+ * */ 
+public class BeamEmissSpecAEK41_edgeVIS_OP22 extends BeamEmissSpecAEK41_base {
 	public double designWavelenth = 530e-9; // VIS centre
 	
 	public double fibreEndDiameter = 0.000400; // Standard CXRS (as AUG)
@@ -66,7 +70,7 @@ public class BeamEmissSpecAEK41_edgeVIS_OP22a extends BeamEmissSpecAEK41_base {
 	};
 
 	
-	public String getDesignName() { return "aek41-edgeVIS";	}
+	public String getDesignName() { return "aek41-edgeVIS-op2.2";	}
 	
 	public double getFibreNA(int iB, int iP) { return fibreNA;	}
 	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter; }

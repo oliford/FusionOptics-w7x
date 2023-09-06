@@ -37,7 +37,7 @@ import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
+public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {	
 	public double globalUp[] = {0,0,1};
 		
 	//public double flangeCentre[] = { -5.1112919921875, -6.455993896484375, 0.05283078002929688 };
@@ -55,15 +55,15 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 	//public double tiltInPlane = 0.0 * Math.PI / 180;
 	
 	/** OP2.1 Tilted up a bit to compensate for swtiching sides of edgeVIS on backplate and to miss the portliner */
-	public double tiltVertical = -0.2 * Math.PI / 180;
-	public double tiltHorizontal = 0 * Math.PI / 180; //put this back at 0, otherwise we clip the protliner
-	public double tiltInPlane = 0.0 * Math.PI / 180;
+	//public double tiltVertical = -0.2 * Math.PI / 180;
+	//public double tiltHorizontal = 0 * Math.PI / 180; //put this back at 0, otherwise we clip the protliner
+	//public double tiltInPlane = 0.0 * Math.PI / 180;
 	
 	
 	// Design OP2.2, tilted to get out of the way of future QHW, but only just clip port liner
-	//public double tiltVertical = 0.5 * Math.PI / 180;
-	//public double tiltHorizontal = 2.0 * Math.PI / 180;
-	//public double tiltInPlane = 20.0 * Math.PI / 180;
+	public double tiltVertical = 0.5 * Math.PI / 180;
+	public double tiltHorizontal = 2.0 * Math.PI / 180;
+	public double tiltInPlane = 20.0 * Math.PI / 180;
 	
 	public double rotVert[] = Util.reNorm(Util.cross(portNormal, globalUp));
 	public double opticAxis0[] = OneLiners.rotateVectorAroundAxis(tiltVertical, rotVert, portNormal);

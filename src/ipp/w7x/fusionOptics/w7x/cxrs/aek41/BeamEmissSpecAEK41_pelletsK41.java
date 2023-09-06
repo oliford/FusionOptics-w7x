@@ -106,5 +106,5 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 	};
 
 	
-	public String getDesignName() { return "aek41-pelletsK41";	}
+	public String getDesignName() { return "aek41-pelletsK41-op2.1";	}
 }
