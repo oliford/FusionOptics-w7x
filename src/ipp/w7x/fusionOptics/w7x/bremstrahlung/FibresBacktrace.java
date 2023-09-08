@@ -83,7 +83,9 @@ public class FibresBacktrace {
 		double windowPoints[][] = new double[f.length][];
 		double testPoints[][] = new double[f.length][];
 		double radius[] = new double[f.length];
-							
+					
+		System.out.println("Create a group, select it and run in python:  g=Gui.Selection.getSelection()[0]");
+		
 		for(int iF=0; iF < f.length; iF++){
 		//for(int iF : new int[]{ 0,  3,  6,  9, 12, 14, 17, 20, 23, 26 }){
 			
@@ -191,6 +193,7 @@ public class FibresBacktrace {
 
 		double u[] = Util.reNorm(Util.minus(testPoints[iF], startPoints[iF]));
 		double losLen = Util.length(Util.minus(testPoints[iF], startPoints[iF]));
+		
 		
 		//double start[] = sys.lens1.getBackSurface().getCentre();
 		double uVec[] = Util.reNorm(Util.minus(testPoints[iF], startPoints[iF]));
