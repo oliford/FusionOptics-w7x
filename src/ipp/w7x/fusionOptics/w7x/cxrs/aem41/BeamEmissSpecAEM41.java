@@ -23,6 +23,7 @@ import fusionOptics.surfaces.Square;
 import fusionOptics.types.Element;
 import fusionOptics.types.Medium;
 import fusionOptics.types.Optic;
+import fusionOptics.types.Surface;
 
 /** Passive Spectroscopy on AEM41, in principle looking at RuDIX beam */
 public class BeamEmissSpecAEM41 extends ObservationSystem {
@@ -30,7 +31,7 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	public String lightPathsSystemName() { return "AEM41"; };	
 
 	@Override
-	protected String[] lightPathRowNames() { return new String[]{ "A", "B" };	}
+	protected String[] lightPathRowNames() { return new String[]{ "_A", "_B" };	}
 	
 	public Element strayPlane = null;
 	
@@ -38,6 +39,9 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
 	public double portNormal[] = { -0.20192623, 0.32638819, 0.92341569 };  // [fromDesigner-20151106] lens back plane normal, matches rod axis, pointing out of machine
+	
+	public double beamAxis[] = W7XRudix.def().uVec(0);
+	
 	//public double entryWindowFrontPos[] = { -2.821, -4.604, 1.218 }; // [ Jürgen's sim 'Mittelpunkt des Fensters im AEM41' ]
 	public double entryWindowFrontPos[] = {-2.8316212158203125, -4.585900146484375, 1.2615272827148438 }; // CAD
 	
@@ -170,6 +174,28 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	
 	public double fibre1EndPos[] = { -2.89649, -4.54998, 1.44268 }; // core channel, [fromDesigner-20151106] 
 	public double fibre10EndPos[] = { -2.85912, -4.50896, 1.43616 }; // edge channel,  [fromDesigner-20151106]
+	
+	//centre of the forward surface of the carriage centre plate (from CAD)
+	public double[] midPlateFrontCentre = { -2.9893, -4.3317, 1.9812 };
+	
+	// distance from carriage mid plate to finger base plate back edge [photo IMG_20230324_170403.jpg in CX lab]
+	public double midPlateToBasePlate = 0.390; 
+	
+	public double basePlateWidth = 0.067;
+	public double basePlateLength = 0.200;
+	public double basePlateBelowRodCentre = 0.0135 + 0.0015/2;
+	
+	public double[] basePlateLongAxis = portNormal;
+	public double[] basePlateUpAxis = Util.reNorm(Util.cross(portNormal, beamAxis));
+	public double[] basePlateSideAxis = Util.reNorm(Util.cross(portNormal, basePlateUpAxis));
+	
+	public double[] basePlateCentrePos = Util.plus(midPlateFrontCentre,
+												Util.plus(
+														Util.mul(portNormal, -(midPlateToBasePlate + basePlateLength/2)),
+														Util.mul(basePlateUpAxis, basePlateBelowRodCentre)));
+	
+	public Square basePlate = new Square("basePlate", basePlateCentrePos, basePlateUpAxis, basePlateLongAxis, basePlateLength, basePlateWidth, NullInterface.ideal());
+	
 		
 	//with 100mm lens
 	//public double[] R = { 5.263, 5.316, 5.372, 5.432, 5.495, 5.561, 5.631, 5.705, 5.783, 5.864, }; 
@@ -418,7 +444,6 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	public int targetBeamIdx = 0; 
 	public double targetBeamR = 5.6;
 	public double targetObsPos[] = W7XRudix.def().getPosOfBeamAxisAtR(targetBeamIdx, targetBeamR);
-	public double beamAxis[] = W7XRudix.def().uVec(0);
 	
 	public double beamObsPerp[] = Util.reNorm(Util.cross(Util.minus(lens1CentrePos, targetObsPos), beamAxis));
 	public double beamObsPlaneNormal[] = Util.reNorm(Util.cross(beamAxis, beamObsPerp));
@@ -426,6 +451,7 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 0.500, 1.200, NullInterface.ideal());
 
 	public Element tracingTarget = lens1;
+	public Surface losStartSurface = entryWindowFront;
 		
 	public BeamEmissSpecAEM41() {
 		super("beamSpec-aem41");
@@ -443,6 +469,7 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 		//addElement(lens3Iris);
 		//addElement(lens3);
 		addElement(fibrePlane);
+		addElement(basePlate);
 		addElement(beamPlane);
 		
 		/*fibreEndPos = new double[nFibres][];
@@ -472,22 +499,76 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 			double outOfPlaneShift = (nFibres <= 10 ? 1 : -1) * 0.003;
 			
 			fibrePlanes[iB] = new Square[nFibres];
-			for(int iF=0; iF < nFibres; iF++){
-						//double norm[] = Util.reNorm(Util.minus(lensCentrePos, fibreEndPos[i]));
+			if(iB == 0) { 
+				//AEM21 row A
+				//build according to Peter's freecad design of the head fingers
+				int fingerFibres[] = { 10, 10, 10, 10, 10 };
+				double fingerWidthMM[] = { 10.2, 10.2, 13.1, 14.7, 18.8 };
+				double fingerOffsetLongMM[] = { 1.02, 6.22, 8.38, 7.99, 3.00 };
+				double fingerFibreSpacingMM[] = { 0.8, 0.8, 1.3, 1.3, 2.00 };
+				double rowHeightFromBaseplateMM = 10.0;
+				int nFingers = 5;
 				
-				fibreEndNorm[iB][iF] = Util.mul(portNormal, -1);
-				double norm[] = fibreEndNorm[iB][iF];
-				double x[] = Util.reNorm(Util.cross(norm, fibresYVec));
-				double y[] = Util.reNorm(Util.cross(x, norm));
+				double focusAdjustAll = 0.010;
 				
-				//shift away from Y=0, to get multiple rows in
+				//start bottom-right coordinate relative to baseplate centre (looking down onto fingers)
+				double fingerRight = basePlateWidth/2;
+					
+				int iF = 0;
+				for(int iFn=0; iFn < nFingers; iFn++) {
+					
+					double fingerX0 = fingerRight - fingerWidthMM[iFn]/1000 /2;
+					
+					
+					int n = fingerFibres[iFn];
+					double dx = fingerFibreSpacingMM[iFn]/1000;
+					for(int iFF=0; iFF < fingerFibres[iFn]; iFF++) {
+						
+						double x = fingerX0 - (iFF - (n - 1.0)/2.0) * dx;
+						double y = basePlateLength/2 - fingerOffsetLongMM[iFn]/1000
+										+ focusAdjustAll
+										+ (iFF * 1e-6); //offset to avoid multiple surfaces
+						double z = rowHeightFromBaseplateMM/1000;
+						
+						fibreEndPos[iB][iF] = Util.plus(basePlateCentrePos,
+												Util.plus(Util.plus(
+														Util.mul(basePlateSideAxis, -x),
+														Util.mul(basePlateLongAxis, -y)),
+														Util.mul(basePlateUpAxis, -z)));
+						fibreEndNorm[iB][iF] = Util.mul(portNormal, -1);
+						
+						fibrePlanes[iB][iF] = new Square("fibrePlane_" + iB + "_" + iF, fibreEndPos[iB][iF], fibreEndNorm[iB][iF], basePlateUpAxis, 0.007, 0.007, NullInterface.ideal());
+						addElement(fibrePlanes[iB][iF]);
+						
+						iF++;
+					}
+
+					//next finger is spaced by the width of this one
+					fingerRight -= fingerWidthMM[iFn]/1000;
+				}
 				
-				fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(fibresYVec, outOfPlaneShift));
 				
-				fibrePlanes[iB][iF] = new Square("fibrePlane_" + iB + "_" + iF, fibreEndPos[iB][iF], norm, y, 0.007, 0.007, NullInterface.ideal());
-				addElement(fibrePlanes[iB][iF]);
+				
+				
+			}else {
+				for(int iF=0; iF < nFibres; iF++){
+							//double norm[] = Util.reNorm(Util.minus(lensCentrePos, fibreEndPos[i]));
+					
+					fibreEndNorm[iB][iF] = Util.mul(portNormal, -1);
+					double norm[] = fibreEndNorm[iB][iF];
+					double x[] = Util.reNorm(Util.cross(norm, fibresYVec));
+					double y[] = Util.reNorm(Util.cross(x, norm));
+					
+					//shift away from Y=0, to get multiple rows in
+					
+					fibreEndPos[iB][iF] = Util.plus(fibreEndPos[iB][iF], Util.mul(fibresYVec, outOfPlaneShift));
+					
+					fibrePlanes[iB][iF] = new Square("fibrePlane_" + iB + "_" + iF, fibreEndPos[iB][iF], norm, y, 0.007, 0.007, NullInterface.ideal());
+					addElement(fibrePlanes[iB][iF]);
+				}
 			}
 		}
+		
 			
 		addElement(catchPlane);
 		

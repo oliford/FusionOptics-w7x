@@ -72,13 +72,13 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.AsBuilt);
 	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	
-	public static BeamEmissSpecAEK41_edgeVIS_OP22_torScan sys = new BeamEmissSpecAEK41_edgeVIS_OP22_torScan();
+	//public static BeamEmissSpecAEK41_edgeVIS_OP22_torScan sys = new BeamEmissSpecAEK41_edgeVIS_OP22_torScan();
 	//public static BeamEmissSpecAEK41_edgeVIS_OP22 sys = new BeamEmissSpecAEK41_edgeVIS_OP22();	
 	//public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
-	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
+	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
 	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();	
@@ -92,12 +92,13 @@ public class BackgroundTargetting {
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
 	public final static int nAttempts = 200;
-
+	public static int nRaysToDraw = 500;
+	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/background/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
-	public static String writeWRLForDesigner = "20210817";
+	public static String writeWRLForDesigner = null;//"20210817";
 	
 	public static double losCyldRadius = 0.005;
 		
@@ -112,7 +113,7 @@ public class BackgroundTargetting {
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
 		int totalFibres = sys.channelR.length*sys.channelR[0].length;
-		vrmlOut.setSkipRays(nAttempts*totalFibres / 5000);
+		vrmlOut.setSkipRays(nAttempts*totalFibres / nRaysToDraw);
 		double col[][] = ColorMaps.jet(sys.channelR[0].length);
 		
 		BinaryMatrixWriter hitInfoOut = new BinaryMatrixWriter(outPath + "/hitInfo.bin", 12);
@@ -148,6 +149,8 @@ public class BackgroundTargetting {
 				double sumI=0, sumIX[]={0,0,0}, sumIX2[] = {0,0,0};
 				double sumIXsp[]={0,0,0};
 				for(int i=0; i < nAttempts; i++){
+					//if((iP % 5) > 0)
+						//continue;
 					double x, y, rMax = sys.getFibreDiameter(iB, iP) / 2;
 					do{
 						x = RandomManager.instance().nextUniform(-rMax, rMax);
