@@ -1,5 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2;
 
+import ipp.w7x.fusionOptics.w7x.cxrs.ObservationSystem;
 import ipp.w7x.neutralBeams.W7xNBI;
 import oneLiners.OneLiners;
 
@@ -31,9 +32,11 @@ import fusionOptics.types.Optic;
 import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
-public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
-	public String lightPathsSystemName = "AET21";
+public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationSystem {
+	private String lightPathsSystemName = "AET21"; //maybe modified to AET20 in constructor
+	public String lightPathsSystemName() { return  lightPathsSystemName; }
 	
+	protected String[] lightPathRowNames() { return new String[]{ "" };	}
 	
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9;
@@ -498,4 +501,8 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends Optic {
 				+ "-op2-oneFlat-beamCentre" 
 				+ (adjustToLC3 ? "-lc3" : "");
 	}
+
+	public double getFibreNA(int iB, int iP) { return fibreNA;	}
+	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter; }
+
 }
