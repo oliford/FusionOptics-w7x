@@ -3,6 +3,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs;
 import fusionDefs.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21.Subsystem;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_baffleW;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS_OP22;
@@ -72,13 +73,15 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.AsBuilt);
 	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
-	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	public static SimpleBeamGeometry beams = W7XRudix.def();
+	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	//public static BeamEmissSpecAEK41_edgeVIS_OP22_torScan sys = new BeamEmissSpecAEK41_edgeVIS_OP22_torScan();
 	//public static BeamEmissSpecAEK41_edgeVIS_OP22 sys = new BeamEmissSpecAEK41_edgeVIS_OP22();	
+	public static BeamEmissSpecAEK41_baffleW sys = new BeamEmissSpecAEK41_baffleW();
 	//public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
-	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
+	//public static BeamEmissSpecAEK41_pelletsK41 sys = new BeamEmissSpecAEK41_pelletsK41();
+	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
 	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();	
@@ -91,8 +94,8 @@ public class BackgroundTargetting {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 200;
-	public static int nRaysToDraw = 500;
+	public final static int nAttempts = 500;
+	public static int nRaysToDraw = 50;
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/background/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models

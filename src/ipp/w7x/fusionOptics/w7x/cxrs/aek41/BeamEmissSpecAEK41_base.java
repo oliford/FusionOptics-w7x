@@ -62,8 +62,8 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 	
 	// Design OP2.2, tilted to get out of the way of future QHW, but only just clip port liner
 	public double tiltVertical = 0.5 * Math.PI / 180;
-	public double tiltHorizontal = 2.0 * Math.PI / 180;
-	public double tiltInPlane = 20.0 * Math.PI / 180;
+	public double tiltHorizontal = 1.6 * Math.PI / 180; //moved from 2.0 to 1.8 to stop pelK hitting QHW mirror box
+	public double tiltInPlane = 23.0 * Math.PI / 180;
 	
 	public double rotVert[] = Util.reNorm(Util.cross(portNormal, globalUp));
 	public double opticAxis0[] = OneLiners.rotateVectorAroundAxis(tiltVertical, rotVert, portNormal);

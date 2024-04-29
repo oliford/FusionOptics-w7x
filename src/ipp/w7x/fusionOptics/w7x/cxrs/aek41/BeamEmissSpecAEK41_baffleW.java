@@ -8,22 +8,34 @@ import fusionOptics.Util;
 import fusionOptics.interfaces.NullInterface;
 import fusionOptics.surfaces.Square;
 
-public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
+public class BeamEmissSpecAEK41_baffleW extends BeamEmissSpecAEK41_base {
 	public double designWavelenth = 530e-9; // VIS centre
 
 	public static double fibreEndDiameter = 0.000400; // as AUG
-	public static double fibreSpacing = 0.000500;
+	public static double fibreSpacing = 0.005;
 	
-	public static double fibre0R = -0.0013; //plate design, not arbitrary!
-	public static double fibre0U = 0.0185; //plate design, not arbitrary!
-	public static double axisAngleToUp = 0;// 1.625 * Math.PI / 180; 
+	public static double fibre0R = 0.0100;
+	public static double fibre0U = 0.0245;
+	public static double axisAngleToUp = -55 * Math.PI / 180; 
 
 	public String lightPathsSystemName() { return "AEK41"; };	
-	public String[] lightPathRowNames() { return new String[]{ "PelletsK" }; };
+	public String[] lightPathRowNames() { return new String[]{ "BaffleW" }; };
+	
+	public double overrideObsPositions[][][] = {
+			{ //red
+				{-3.12250537109375, -3.871598876953125, 0.4270995788574219 },
+				{-3.027144775390625, -3.89112841796875, 0.4087387390136719 },
+				{-3.14693994140625, -3.89616357421875, 0.3238131103515625 },
+				{-3.05343310546875, -3.913257568359375, 0.3027521667480469 },			
+			}
+	};
+	
 	
 	@Override
 	protected void setupFibrePositions() {
-		int nChans = 10;
+		int nRows = 4;
+		int nCols = 6;
+		int nChans = nRows * nCols;
 		
 		beamIdx = new int[]{ 0 };
 		channelR = new double[][]{ OneLiners.linSpace(5.4, 5.5, nChans) }; // Nonsense
@@ -42,14 +54,18 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 		double dR = fibreSpacing * FastMath.cos(axisAngleToUp);
 		double dU = fibreSpacing * FastMath.sin(axisAngleToUp);
 		
-		for(int iF=0; iF < nFibres; iF++){
-			double u = -fibre0U - (iF - (nFibres-1.0)/2)  * dR;
-			double r = -fibre0R - (iF - (nFibres-1.0)/2)  * dU;
-			
-			fibreEndPos[iB][iF] = Util.plus(Util.plus(fibrePlanePos, Util.mul(fibresXVec, u)),
-									 Util.mul(fibresYVec, r));
+		for(int iR=0; iR < nRows; iR++){
+			for(int iC=0; iC < nCols; iC++){
+				int iF = iR * nCols + iC; 
 					
-			fibreEndNorm[iB][iF] = Util.mul(fibrePlane.getNormal().clone(), -1);
+				double u = -fibre0U  -(iR - (nRows-1.0)/2) * -dU -(iC - (nCols-1.0)/2) * dR;
+				double r = -fibre0R -(iR - (nRows-1.0)/2) * dR -(iC - (nCols-1.0)/2) * dU;
+				
+				fibreEndPos[iB][iF] = Util.plus(Util.plus(fibrePlanePos, Util.mul(fibresXVec, u)),
+										 Util.mul(fibresYVec, r));
+						
+				fibreEndNorm[iB][iF] = Util.mul(fibrePlane.getNormal().clone(), -1);
+			}
 		}
 		
 		if(fibreFocus != null){
@@ -58,32 +74,6 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 			}	
 		}
 	
-		
-		/*beamIdx = new int[]{ 0 };
-		channelR = new double[][] { 
-				{ 5.6, 5.657, 5.714, 5.771, 5.829, 5.886, 5.943, 6, }, 
-			}; 
-			fibreEndPos = new double[][][] { { 
-						{ -5.267306621477559, -6.642337278598608, 0.0190039435014635 },
-						{ -5.267568578459989, -6.6426410809177865, 0.017972987397021332 },
-						{ -5.267733091045658, -6.6427872289601675, 0.016902224938181967 },
-						{ -5.26832737715623, -6.643451712777317, 0.015716382224422665 },
-						{ -5.268386152566512, -6.643473714121546, 0.014561906352033353 },
-						{ -5.268759837096962, -6.6438911613874785, 0.013290131143042706 },
-						{ -5.2690309789246745, -6.644162986087092, 0.011982911344008331 },
-						{ -5.26934029524865, -6.644479094223474, 0.010590691458417463 },
-					}, 	}; 
-			fibreEndNorm = new double[][][] { { 
-					{ 0.62109906, 0.74825539, 0.23313049 },
-					{ 0.62109906, 0.74825539, 0.23313049 },
-					{ 0.62109906, 0.74825539, 0.23313049 },
-					{ 0.62109906, 0.74825539, 0.23313049 },
-					{ 0.62109906, 0.74825539, 0.23313049 },
-					{ 0.62109906, 0.74825539, 0.23313049 },
-					{ 0.62109906, 0.74825539, 0.23313049 },
-					{ 0.62109906, 0.74825539, 0.23313049 },
-					}, 	};
-			//*/
 	}
 	
 
@@ -102,9 +92,11 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 
 	public final String backgroundSTLFiles[] = {
 			"/work/ipp/w7x/cad/passive/bg-targetting/pumpslot-m4.off-aek41-cut.stl",
-			"/work/ipp/w7x/cad/passive/bg-targetting/target-m4.off-aek41-cut.stl"
+			"/work/ipp/w7x/cad/passive/bg-targetting/target-m4.off-aek41-cut.stl",
+			"/work/ipp/w7x/cad/passive/bg-targetting/baffle-m4.off-aek41-cut.stl",
+			"/work/ipp/w7x/cad/passive/bg-targetting/shield-m4.off-aek41-cut.stl"
 	};
 
 	
-	public String getDesignName() { return "aek41-pelletsK41-op2.2";	}
+	public String getDesignName() { return "aek41-baffleW-op2.2";	}
 }
