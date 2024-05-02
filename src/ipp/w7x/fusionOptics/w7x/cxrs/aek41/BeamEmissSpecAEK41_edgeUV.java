@@ -1,6 +1,6 @@
 package ipp.w7x.fusionOptics.w7x.cxrs.aek41;
 
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7xNBI;
 import fusionOptics.Util;

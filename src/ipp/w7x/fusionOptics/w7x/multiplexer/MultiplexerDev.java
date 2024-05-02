@@ -14,7 +14,7 @@ import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
 import ipp.w7x.fusionOptics.w7x.augSpec.AugSpec4;
 import net.jafama.FastMath;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import otherSupport.ColorMaps;
 import otherSupport.RandomManager;
 

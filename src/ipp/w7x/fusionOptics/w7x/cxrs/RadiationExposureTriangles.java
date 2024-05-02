@@ -1,7 +1,9 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import net.jafama.FastMath;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.ColorMaps;
+import uk.co.oliford.jolu.OneLiners;
+import uk.co.oliford.jolu.RandomManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,8 +16,6 @@ import java.util.List;
 
 import algorithmrepository.Algorithms;
 import binaryMatrixFile.AsciiMatrixFile;
-import otherSupport.ColorMaps;
-import otherSupport.RandomManager;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.collection.IntensityInfo;

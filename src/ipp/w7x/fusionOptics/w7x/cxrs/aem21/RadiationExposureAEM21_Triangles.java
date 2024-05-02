@@ -1,7 +1,7 @@
 package ipp.w7x.fusionOptics.w7x.cxrs.aem21;
 
 import net.jafama.FastMath;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;

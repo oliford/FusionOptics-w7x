@@ -3,7 +3,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs.aem21;
 import ipp.w7x.fusionOptics.w7x.cxrs.other.BeamEmissSpecAEW21;
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import algorithmrepository.Algorithms;
 import net.jafama.FastMath;
 import fusionOptics.Util;

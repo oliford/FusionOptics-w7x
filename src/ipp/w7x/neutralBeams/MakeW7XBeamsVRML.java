@@ -2,7 +2,7 @@ package ipp.w7x.neutralBeams;
 
 
 import algorithmrepository.Algorithms;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
 import fusionOptics.drawing.VRMLDrawer;

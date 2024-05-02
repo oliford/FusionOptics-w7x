@@ -2,7 +2,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs.other;
 
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import seed.matrix.DenseMatrix;
 import algorithmrepository.Algorithms;
 import net.jafama.FastMath;
@@ -45,8 +45,8 @@ public class BeamEmissSpecAEB20new extends Optic {
 	
 	public double opticsTiltInPortSideways = 0 * Math.PI / 180;
 	public double opticsTiltInPortToSource = 0 * Math.PI / 180;
-	public double opticAxisA[] = Util.reNorm(Algorithms.matrixMul(Algorithms.rotationMatrix(portSourcePerp, opticsTiltInPortToSource), portNormal));
-	public double opticAxis[] = Util.reNorm(Algorithms.matrixMul(Algorithms.rotationMatrix(portSourcePlane, opticsTiltInPortSideways), opticAxisA));
+	public double opticAxisA[] = Util.reNorm(OneLiners.matrixMul(Algorithms.rotationMatrix(portSourcePerp, opticsTiltInPortToSource), portNormal));
+	public double opticAxis[] = Util.reNorm(OneLiners.matrixMul(Algorithms.rotationMatrix(portSourcePlane, opticsTiltInPortSideways), opticAxisA));
 	
 	/**** Mirror *****/
 	public double mirrorDistIntoPort = -0.100;

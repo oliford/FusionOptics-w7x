@@ -4,7 +4,7 @@ import org.apache.commons.math3.util.FastMath;
 
 import algorithmrepository.Algorithms;
 import fusionOptics.Util;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 
 public class BeamEmissSpecAEA21U extends BeamEmissSpecAEA21 {
 

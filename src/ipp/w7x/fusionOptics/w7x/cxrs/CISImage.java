@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import algorithmrepository.Algorithms;
 import binaryMatrixFile.AsciiMatrixFile;
 import binaryMatrixFile.BinaryMatrixFile;

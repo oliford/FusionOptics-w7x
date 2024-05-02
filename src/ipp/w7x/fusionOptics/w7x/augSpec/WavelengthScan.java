@@ -13,7 +13,7 @@ import fusionOptics.types.Intersection;
 import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
 import net.jafama.FastMath;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import otherSupport.ColorMaps;
 import otherSupport.RandomManager;
 

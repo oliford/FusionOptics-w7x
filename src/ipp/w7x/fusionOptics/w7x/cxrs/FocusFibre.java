@@ -13,7 +13,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import algorithmrepository.Algorithms;
 import binaryMatrixFile.BinaryMatrixWriter;
 import otherSupport.ColorMaps;

@@ -5,7 +5,7 @@ import java.util.List;
 
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import seed.matrix.DenseMatrix;
 import algorithmrepository.Algorithms;
 import algorithmrepository.exceptions.NotImplementedException;

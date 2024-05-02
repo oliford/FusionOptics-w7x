@@ -31,7 +31,7 @@ import fusionOptics.types.Intersection;
 import fusionOptics.types.Optic;
 import fusionOptics.types.Pol;
 import fusionOptics.types.RaySegment;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import otherSupport.ColorMaps;
 import otherSupport.RandomManager;
 

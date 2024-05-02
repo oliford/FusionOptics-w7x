@@ -1,7 +1,7 @@
 package ipp.w7x.neutralBeams;
 
 
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import fusionDefs.neutralBeams.SimpleBeamGeometryAUGType;
 
 /** Simple static beam line info for use in the ray tracer 

@@ -46,7 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 import algorithmrepository.Algorithms;
 import binaryMatrixFile.BinaryMatrixWriter;
 import fusionDefs.neutralBeams.SimpleBeamGeometry;

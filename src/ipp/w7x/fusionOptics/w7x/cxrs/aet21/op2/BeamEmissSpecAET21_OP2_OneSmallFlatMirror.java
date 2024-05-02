@@ -1,7 +1,7 @@
 package ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2;
 
 import ipp.w7x.neutralBeams.W7xNBI;
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 
 import org.apache.commons.math3.util.FastMath;
 

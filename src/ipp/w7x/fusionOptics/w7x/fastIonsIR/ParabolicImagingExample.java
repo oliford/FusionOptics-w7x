@@ -36,7 +36,7 @@ import algorithmrepository.Algorithms;
 import binaryMatrixFile.BinaryMatrixFile;
 
 
-import oneLiners.OneLiners;
+import uk.co.oliford.jolu.OneLiners;
 
 
 /** Parabolic imaging example bent into something roughly like the QHW geometry 
