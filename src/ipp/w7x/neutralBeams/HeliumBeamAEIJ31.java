@@ -24,13 +24,20 @@ public class HeliumBeamAEIJ31 extends SimpleBeamGeometry {
 	public HeliumBeamAEIJ31() {
 
 		Px = new double[][]{
-				{-4.531, 2.095, 0.850 }, 
+			{-4.531, 2.095, 0.850 }, 
+			{-4.531, 2.095, 0.850 }, 
+			{-4.531, 2.095, 0.850 }, 
 			};
 			
-		double[] p2 = { -5.245, 2.177, 0.922  };
+		double[][] p2 = {{ -5.245, 2.177, 0.922  },
+				{ -5.245, 2.177, 0.922  },
+				{ -5.245, 2.177, 0.922  },
+		};
 		
 		u = new double[][]{
-				Util.reNorm(Util.minus(Px[0], p2)) 
+			Util.reNorm(Util.minus(Px[0], p2[0])), 
+			Util.reNorm(Util.minus(Px[1], p2[1])), 
+			Util.reNorm(Util.minus(Px[2], p2[2])) 
 			};
 		
 		beamWidth = 0.02; //Made up
