@@ -233,7 +233,8 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	// Adjust to best hit the centre of the beams for beam power
 	// slightly low Q8, slightly high on Q7.
 	public double fibreAdjustX = 0.0004;
-	public double fibreAdjustY = -0.0008;
+	//public double fibreAdjustY = -0.0008;
+	public double fibreAdjustY = 0.001320;
 	public double fibreRotation = -9 * Math.PI / 180;
 	//*/
 	
@@ -268,6 +269,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	public Surface losStartSurface = entryTarget;
 		
 	public STLMesh panelEdge = new STLMesh("panel", "/work/cad/aet21/conflicting-panel-aet21.stl");
+	public STLMesh lensProtectionPlate = new STLMesh("lensProtectionPlate", "/work/cad/aet21/lens-protection-plate-with-slot.stl"); 
 	
 	public Element tracingTarget = entryTarget;
 	
@@ -371,6 +373,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 		
 		//addElement(frontDisc);
 		addElement(panelEdge);
+		addElement(lensProtectionPlate);
 		addElement(targetSphere);
 		addElement(entryTarget);
 		addElement(entryAperture);

@@ -31,7 +31,7 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	public String lightPathsSystemName() { return "AEM41"; };	
 
 	@Override
-	protected String[] lightPathRowNames() { return new String[]{ "_A", "_B" };	}
+	protected String[] lightPathRowNames() { return new String[]{ "_A", "_HI1","_HI2","_HI3","_HI4","_HI5", "_HI6", "_HI7" };	}
 	
 	public Element strayPlane = null;
 	
@@ -167,7 +167,8 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	public Iris lens3Iris = new Iris("lens3Iris", lens3IrisPos, portNormal, lens3Diameter, lens3ClearAperture/2, null, null, Absorber.ideal());
 	
 	//public STLMesh portLiner = new STLMesh("portLiner", "/work/cad/aem41/portLiner-AEM41-201706.stl");
-	public STLMesh portLiner = new STLMesh("portLiner", "/work/cad/aem41/portLiner-simple-edges-for-vignetting.stl");
+	//public STLMesh portLiner = new STLMesh("portLiner", "/work/cad/aem41/portLiner-simple-edges-for-vignetting.stl");
+	public STLMesh portLiner = new STLMesh("portLiner", "/work/cad/aem41/portLiner-edges-only.stl");
 	
 	public double overrideObsPositions[][][] = null;
 	
@@ -221,10 +222,11 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 
 	//public double shift[] = new double[nFibres]; //set to 0 for optimisation
 
-	public int beamIdx[] = { 0, 0 };
+	public int beamIdx[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 	
 	// ----------- Oct2021 for OP2 passive -------------
 	//50x 400um fibres in straight array
+	/*
 	public double[][] channelR = { 
 			{ 6.1, 6.094, 6.086, 6.076, 6.065, 6.054, 6.041, 6.028, 6.015, 6.001, 5.986, 5.971, 5.955, 5.94, 5.923, 5.907, 5.89, 5.873, 5.855, 5.837, 5.819, 5.801, 5.782, 5.763, 5.744, 5.725, 5.705, 5.685, 5.665, 5.645, 5.624, 5.604, 5.583, 5.562, 5.54, 5.519, 5.497, 5.475, 5.453, 5.431, 5.409, 5.386, 5.363, 5.341, 5.318, 5.294, 5.271, 5.247, 5.224, 5.2, },
 			//{ 6.05, 5.993, 5.918, 5.836, 5.748, 5.655, 5.558, 5.458, 5.355, 5.25, }, 
@@ -281,6 +283,8 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 					{ -2.891569930772904, -4.552045286415267, 1.4315026819262198 },
 					{ -2.8927033714389707, -4.553690065603098, 1.4311753449427025 },
 					*/
+	
+	/*
 			{-2.8956,-4.5509,1.4335},
 			{-2.8940,-4.5491,1.4332},
 			{-2.8924,-4.5474,1.4330},
@@ -417,12 +421,16 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	
 	public double[][] Z;
 	
+	public double channelR[][];
+	public double fibreEndPos[][][];
+	public double fibreEndNorm[][][];
+	
 	//public double fibreEndPos[][];
 	//public double fibreNA = 0.28; // RUDIX-AEM41 [ written on the fibre bundle packing reel ]	
 	//public double fibreEndDiameter = 0.001; // RUDIX-AEM41 roughly 1mm diameter [ looking at the fibres, and it agrees with 540x total / 10 = 54x per bundle. 54x * jacket size = ~1mm area ]
 	
-	private double fibreNA[] = { 0.22, 0.28 }; // [ written on the fibre bundle packing reel ]
-	private double fibreEndDiameter[] = { 0.000400, 0.001000 }; // 400um fibres, patched via XFER-AEM21
+	private double fibreNA[] = { 0.22, 0.22, 0.22, 0.22, 0.22, 0.22, 0.22, 0.22 }; // [ written on the fibre bundle packing reel ]
+	private double fibreEndDiameter[] = { 0.000400, 0.000400, 0.000400 , 0.000400 , 0.000400 , 0.000400 , 0.000400 , 0.000400 }; // 400um fibres, patched via XFER-AEM21
 			
 	public double fibresXVec[] = Util.reNorm(Util.minus(fibre10EndPos, fibre1EndPos));
 	public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, portNormal));
@@ -435,9 +443,9 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 											portNormal, fibresYVec, 0.200, 0.200, Absorber.ideal());
 	
 	public final String backgroundSTLFiles[] = {			
-			"/work/cad/aem41/bg-targetting/baffle-m4-cut.stl",
-			"/work/cad/aem41/bg-targetting/shield-m4-cut.stl",
-			"/work/cad/aem41/bg-targetting/target-m4-cut.stl",			
+			"/work/cad/aem41/bg-targetting/baffle-m4-cut2.stl",
+			"/work/cad/aem41/bg-targetting/shield-m4-cut2.stl",
+			"/work/cad/aem41/bg-targetting/target-m4-cut2.stl",			
 	};
 
 	/***** Observation target ****/
@@ -490,23 +498,32 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 			addElement(fibrePlanes[i]);
 		}*/
 		
-		int nBeams = channelR.length;
+		int[] nFibresInRow = new int[] { 50, 20, 20, 20, 20, 20, 20, 20 };
+		double[] rowHeightFromBaseplateMM = new double[] { 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0 };
+		int nBeams = nFibresInRow.length;
+		
+		channelR = new double[nBeams][];
 		fibrePlanes = new Square[nBeams][];
+		fibreEndPos = new double[nBeams][][];
+		fibreEndNorm = new double[nBeams][][];
 		for(int iB=0; iB < nBeams; iB++){
-			int nFibres = channelR[iB].length;
+			int nFibres = nFibresInRow[iB];
+			channelR[iB] = new double[nFibres];
 			
 			//shift fibres of 10-channel system and 50-channel systems in opposite directions
 			double outOfPlaneShift = (nFibres <= 10 ? 1 : -1) * 0.003;
 			
 			fibrePlanes[iB] = new Square[nFibres];
-			if(iB == 0) { 
+			fibreEndPos[iB] = new double[nFibres][];
+			fibreEndNorm[iB] = new double[nFibres][];
+			if(iB >= 0) { 
 				//AEM21 row A
 				//build according to Peter's freecad design of the head fingers
 				int fingerFibres[] = { 10, 10, 10, 10, 10 };
 				double fingerWidthMM[] = { 10.2, 10.2, 13.1, 14.7, 18.8 };
 				double fingerOffsetLongMM[] = { 1.02, 6.22, 8.38, 7.99, 3.00 };
 				double fingerFibreSpacingMM[] = { 0.8, 0.8, 1.3, 1.3, 2.00 };
-				double rowHeightFromBaseplateMM = 10.0;
+				
 				int nFingers = 5;
 				
 				double focusAdjustAll = 0.010;
@@ -517,18 +534,23 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 				int iF = 0;
 				for(int iFn=0; iFn < nFingers; iFn++) {
 					
+					
 					double fingerX0 = fingerRight - fingerWidthMM[iFn]/1000 /2;
 					
 					
 					int n = fingerFibres[iFn];
 					double dx = fingerFibreSpacingMM[iFn]/1000;
 					for(int iFF=0; iFF < fingerFibres[iFn]; iFF++) {
+						if(iF >= nFibresInRow[iB])
+							break;
 						
+						channelR[iB][iF] = (iF == 0) ? 5.0 : (channelR[iB][iF-1] + 0.01);
+							
 						double x = fingerX0 - (iFF - (n - 1.0)/2.0) * dx;
 						double y = basePlateLength/2 - fingerOffsetLongMM[iFn]/1000
 										+ focusAdjustAll
 										+ (iFF * 1e-6); //offset to avoid multiple surfaces
-						double z = rowHeightFromBaseplateMM/1000;
+						double z = rowHeightFromBaseplateMM[iB]/1000;
 						
 						fibreEndPos[iB][iF] = Util.plus(basePlateCentrePos,
 												Util.plus(Util.plus(

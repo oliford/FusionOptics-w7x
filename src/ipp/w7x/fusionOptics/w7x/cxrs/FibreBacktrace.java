@@ -78,13 +78,13 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAET21_postDesign sys = new BeamEmissSpecAET21_postDesign();
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
+	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
 	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.LC3a);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK41_edgeUV sys = new BeamEmissSpecAEK41_edgeUV();
 	//public static BeamEmissSpecAEK41_edgeVIS_OP22a sys = new BeamEmissSpecAEK41_edgeVIS_OP22a();
@@ -99,8 +99,8 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41();
 	//public static SimpleBeamGeometry beams = W7XPelletsL41.def();
 		
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -117,7 +117,7 @@ public class FibreBacktrace {
 	
 	//public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 5000;
+	public final static int nAttempts = 1000;
 
 	public static String writeWRLForDesigner = null; //"20220915";
 	

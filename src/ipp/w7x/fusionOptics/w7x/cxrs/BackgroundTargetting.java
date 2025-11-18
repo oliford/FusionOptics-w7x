@@ -68,14 +68,14 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
-	public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
+	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.AsBuilt);
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
-	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	//public static SimpleBeamGeometry beams = W7XRudix.def();
+	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	//public static BeamEmissSpecAEK41_edgeVIS_OP22_torScan sys = new BeamEmissSpecAEK41_edgeVIS_OP22_torScan();
 	//public static BeamEmissSpecAEK41_edgeVIS_OP22 sys = new BeamEmissSpecAEK41_edgeVIS_OP22();	
@@ -95,7 +95,7 @@ public class BackgroundTargetting {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 500;
+	public final static int nAttempts = 50;
 	public static int nRaysToDraw = 50;
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/background/";
