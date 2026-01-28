@@ -16,8 +16,9 @@ public class BeamEmissSpecAEM50 extends BeamEmissSpecAEM41 {
 	
 	public String getDesignName() { return "aem50";	}
 	
-	public static HashMap<String, double[]> measured = new HashMap<>();
+	public static HashMap<String, double[]> measured = new HashMap<>();	
 	static {
+		// Pre OP2.4 in-vessel alignment measurement
 		measured.put("AEM50_A:12", new double[]{ -1120.97802734375, -6132.107421875, 437.01336669921875 }); //is cut by portliner. This might be 10. Not sure.
 		measured.put("AEM50_A:14", new double[]{  -1122.32373046875, -5998.87158203125, 434.38946533203125 }); //
 		measured.put("AEM50_A:13", new double[]{  -1115.2227783203125, -6019.15771484375, 438.15399169921875 }); //clear of portliner
