@@ -8,12 +8,14 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsK41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsL41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolete;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem41.BeamEmissSpecAEM41;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem50.BeamEmissSpecAEM50;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_AsMeasured;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET20_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_asMeasuredOP12b;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
 import ipp.w7x.neutralBeams.W7XPelletsL41;
@@ -22,6 +24,7 @@ import ipp.w7x.neutralBeams.W7xNBI;
 import net.jafama.FastMath;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import uk.co.oliford.jolu.OneLiners;
 import algorithmrepository.Algorithms;
@@ -54,12 +57,15 @@ public class BackgroundTargettingFit {
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, true);	
+	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
-	public static BeamEmissSpecAEM21_postDesign_AsMeasured sys = new BeamEmissSpecAEM21_postDesign_AsMeasured(false); //not in LC3
+	//public static BeamEmissSpecAEM21_postDesign_AsMeasured sys = new BeamEmissSpecAEM21_postDesign_AsMeasured(false); //not in LC3
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	//public static BeamEmissSpecAEM50 sys = new BeamEmissSpecAEM50();
 	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	//public static BeamEmissSpecAEK21_edgeVIS sys = new BeamEmissSpecAEK21_edgeVIS();
@@ -83,10 +89,10 @@ public class BackgroundTargettingFit {
 			"Scale { scaleFactor 1000 1000 1000 }\n";
 	
 	public static double losCyldRadius = 0.005;
-	public static Surface startSurface = sys.mirror;
+	public static Surface startSurface = sys.losStartSurface;
 	
 	/** Fibres that were lit */
-	public static String[] targetNames = {
+	/*public static String[] targetNames = {
 		"AEM21_S7:15",
 		"AEM21_S8:11",
 		"AEM21_X1:08",
@@ -100,7 +106,7 @@ public class BackgroundTargettingFit {
 		"AEM21_S8:54",
 	};
 	
-	/** Measured target coordinates */	
+	// Measured target coordinates 	
 	public static double[][] targetCoords = {
 			{	0.9052531128, 	6.2926098633	, 	-0.3715768738	 },
 			{	0.6772341309, 	6.3165771484	, 	-0.3224136963	 },
@@ -113,7 +119,9 @@ public class BackgroundTargettingFit {
 			{	0.5899093628, 	5.8579711914	, 	-0.7600310059	 },
 			{	0.4898992615, 	5.4723950195	, 	-0.0459667435	 },
 			{	0.317631897, 	5.510652832	, 	-0.1408085785	 },
-	};
+	};*/
+	public static String targetNames[];
+	public static double targetCoords[][];	
 		
 	public static void main(String[] args) {
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+".vrml", 5.005);
@@ -124,6 +132,14 @@ public class BackgroundTargettingFit {
 		double col[][] = ColorMaps.jet(sys.channelR[0].length);
 		
 		double rad = 0.005;
+		targetNames = new String[sys.measured.size()];
+		targetCoords = new double[sys.measured.size()][];
+		int k=0;
+		for(Entry<String, double[]> entry : sys.measured.entrySet()) {
+			targetNames[k] = entry.getKey();
+			targetCoords[k] = OneLiners.mul(entry.getValue(), 1e-3);
+			k++;
+		}
 		for(int iT=0; iT < targetCoords.length; iT++){
 			System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+targetCoords[iT][0]*1e3+","+targetCoords[iT][1]*1e3+","+targetCoords[iT][2]*1e3 + ")));"
 					+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"measHit_" + targetNames[iT] + "\";");
@@ -157,7 +173,7 @@ public class BackgroundTargettingFit {
 					
 			int iB=-1;				
 			for(int jB=0; jB < sys.channelR.length; jB++){
-				if(parts[0].equalsIgnoreCase(sys.lightPathsSystemName + "_" + sys.lightPathRowName[jB])){
+				if(parts[0].equalsIgnoreCase(sys.lightPathsSystemName() + "_" + sys.lightPathRowName(jB))){
 					iB = jB;
 					break;
 				}
@@ -172,7 +188,7 @@ public class BackgroundTargettingFit {
 			double sumI=0, sumIX[]={0,0,0}, sumIX2[] = {0,0,0};
 			double sumIXsp[]={0,0,0};
 			for(int i=0; i < nAttempts; i++){
-				double x, y, rMax = sys.fibreEndDiameter / 2;
+				double x, y, rMax = sys.getFibreDiameter(0, 0) / 2;
 				do{
 					x = RandomManager.instance().nextUniform(-rMax, rMax);
 					y = RandomManager.instance().nextUniform(-rMax, rMax);				
@@ -303,7 +319,7 @@ public class BackgroundTargettingFit {
 		//double start[] = sys.lens1.getBackSurface().getCentre();
 		double uVec[] = Util.reNorm(Util.minus(hitPoints[iT], startPoints[iT]));
 		String chanName = targetNames[iT];
-	
+		
 		switch(thing){
 			case 0:		
 				System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iT][0]*1e3+","+hitPoints[iT][1]*1e3+","+hitPoints[iT][2]*1e3 + ")));"
