@@ -1,8 +1,9 @@
-package ipp.w7x.fusionOptics.w7x.cxrs.aem41;
+package ipp.w7x.fusionOptics.w7x.cxrs.aem50;
 
 import java.util.HashMap;
 
 import algorithmrepository.Algorithms;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem41.BeamEmissSpecAEM41;
 
 /** The AEM41 QSC Immersion tube and optics were moved from AEM41 to AEM50 before OP2.4. This class just does the appropriate rotation */
 public class BeamEmissSpecAEM50 extends BeamEmissSpecAEM41 {
