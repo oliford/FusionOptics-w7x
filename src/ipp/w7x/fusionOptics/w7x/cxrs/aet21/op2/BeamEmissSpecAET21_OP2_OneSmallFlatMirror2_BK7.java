@@ -4,6 +4,8 @@ import ipp.w7x.fusionOptics.w7x.cxrs.ObservationSystem;
 import ipp.w7x.neutralBeams.W7xNBI;
 import uk.co.oliford.jolu.OneLiners;
 
+import java.util.HashMap;
+
 import org.apache.commons.math3.util.FastMath;
 
 import algorithmrepository.Algorithms;
@@ -232,11 +234,14 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	
 	// Adjust to best hit the centre of the beams for beam power
 	// slightly low Q8, slightly high on Q7.
+	// This goes through the mid-point of Q7/Q8 and matches perfectly the post-OP2.3 alignment.
 	public double fibreAdjustX = 0.0004;
-	//public double fibreAdjustY = -0.0008;
-	public double fibreAdjustY = 0.001320;
+	public double fibreAdjustY = -0.0008;
+	//public double fibreAdjustY = 0.001320; //I dont know what this was, it's very high.
 	public double fibreRotation = -9 * Math.PI / 180;
 	//*/
+	
+	
 	
 	//original, aimed quite high on Q7, a bit high on Q8, nearer plasma axis
 	/*public double fibreAdjustX = 0.000;
@@ -278,6 +283,16 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 			"/work/cad/aet21/bg-targetting/baffle-m2-aet21-cxrs-cut.stl"
 	};
 	
+	public static HashMap<String, double[]> measured = new HashMap<>();
+	static {
+		measured.put("AET21:10", new double[]{ 1534.931884765625, 5139.80126953125, 709.6575927734375 });
+		measured.put("AET21:14", new double[]{ 1027.4925537109375, 5170.38525390625, 545.5587768554688 });
+		measured.put("AET21:19", new double[]{ 656.025634765625, 5148.65625, 423.71405029296875 });
+		measured.put("AET21:07", new double[]{ 2123.741943359375, 5082.59228515625, 905.5409545898438 });
+		measured.put("AET21:05", new double[]{ 2147.436767578125, 5229.2294921875, 918.227294921875 });
+		measured.put("AET21:06", new double[]{ 2136.430419921875, 5154.0556640625, 911.3750610351562 });
+		
+	}
 	
 	/** Fibres */
 	
