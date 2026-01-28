@@ -13,6 +13,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsL41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolete;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_OP2.CoordState;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem41.BeamEmissSpecAEM41;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem41.BeamEmissSpecAEM50;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_OP2;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging;
@@ -74,7 +75,8 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.AsBuilt);
 	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
-	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	public static BeamEmissSpecAEM50 sys = new BeamEmissSpecAEM50();
 	public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	//public static BeamEmissSpecAEK41_edgeVIS_OP22_torScan sys = new BeamEmissSpecAEK41_edgeVIS_OP22_torScan();
@@ -95,7 +97,7 @@ public class BackgroundTargetting {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 50;
+	public final static int nAttempts = 100;
 	public static int nRaysToDraw = 50;
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/background/";

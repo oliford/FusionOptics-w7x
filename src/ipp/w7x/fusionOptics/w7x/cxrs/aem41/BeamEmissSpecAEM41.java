@@ -442,7 +442,7 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	public Square catchPlane = new Square("catchPlane", Util.plus(fibrePlanePos, Util.mul(portNormal, 0.050)), 
 											portNormal, fibresYVec, 0.200, 0.200, Absorber.ideal());
 	
-	public final String backgroundSTLFiles[] = {			
+	public String backgroundSTLFiles[] = {			
 			"/work/cad/aem41/bg-targetting/baffle-m4-cut2.stl",
 			"/work/cad/aem41/bg-targetting/shield-m4-cut2.stl",
 			"/work/cad/aem41/bg-targetting/target-m4-cut2.stl",			
