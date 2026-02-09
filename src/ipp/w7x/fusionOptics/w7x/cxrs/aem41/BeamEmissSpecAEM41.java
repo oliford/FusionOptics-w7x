@@ -31,7 +31,7 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	public String lightPathsSystemName() { return "AEM41"; };	
 
 	@Override
-	protected String[] lightPathRowNames() { return new String[]{ "_A", "_HI1","_HI2","_HI3","_HI4","_HI5", "_HI6", "_HI7" };	}
+	public String[] lightPathRowNames() { return new String[]{ "_A", "_HI1","_HI2","_HI3","_HI4","_HI5", "_HI6", "_HI7" };	}
 	
 	public Element strayPlane = null;
 	

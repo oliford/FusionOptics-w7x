@@ -11,13 +11,16 @@ public abstract class ObservationSystem extends Optic {
 		return lightPathsSystemName() + lightPathRowName(iB) + ":" + String.format("%02d", iP+1);
 	}
 
-	protected abstract String lightPathsSystemName();
+	public abstract String lightPathsSystemName();
 
-	protected String lightPathRowName(int iB) {
+	public String lightPathRowName(int iB) {
 		String n[] = lightPathRowNames();
 		return n != null ? n[iB] : ""; 
 	}
 
-	protected abstract String[] lightPathRowNames();
+	public abstract String[] lightPathRowNames();
 	
+	public abstract double getFibreNA(int iB, int iP);
+	public abstract double getFibreDiameter(int iB, int iP);
+
 }

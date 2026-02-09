@@ -16,9 +16,9 @@ public class MantisAEE40Preliminary extends ObservationSystem {
 	public String getDesignName() { return "mantis1"; }
 	
 	@Override
-	protected String lightPathsSystemName() { return "MANTIS";	}
+	public String lightPathsSystemName() { return "MANTIS";	}
 	@Override
-	protected String[] lightPathRowNames() { return new String[] { "row1" };	}
+	public String[] lightPathRowNames() { return new String[] { "row1" };	}
 	
 	// 667.8, 728.1, 706.5
 	public double designWavelenth = 700e-9;
