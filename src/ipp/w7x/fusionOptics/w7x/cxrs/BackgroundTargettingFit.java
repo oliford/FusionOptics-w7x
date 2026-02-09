@@ -9,6 +9,8 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsL41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolete;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem41.BeamEmissSpecAEM41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem50.BeamEmissSpecAEM50;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_OP2;
+import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_OP2.CoordState;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_AsMeasured;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_LC3;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_imaging;
@@ -57,11 +59,12 @@ public class BackgroundTargettingFit {
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
-	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, true);	
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, true);	
 	
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	//public static BeamEmissSpecAEM21_postDesign_AsMeasured sys = new BeamEmissSpecAEM21_postDesign_AsMeasured(false); //not in LC3
+	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.LC3a);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
@@ -138,8 +141,12 @@ public class BackgroundTargettingFit {
 		for(Entry<String, double[]> entry : sys.measured.entrySet()) {
 			targetNames[k] = entry.getKey();
 			targetCoords[k] = OneLiners.mul(entry.getValue(), 1e-3);
+
+			System.out.println(String.format("\"%s\", %.6f, %.6f, %.6f",  targetNames[k], targetCoords[k][0], targetCoords[k][1], targetCoords[k][2]));
+			
 			k++;
 		}
+		
 		for(int iT=0; iT < targetCoords.length; iT++){
 			System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+targetCoords[iT][0]*1e3+","+targetCoords[iT][1]*1e3+","+targetCoords[iT][2]*1e3 + ")));"
 					+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"measHit_" + targetNames[iT] + "\";");

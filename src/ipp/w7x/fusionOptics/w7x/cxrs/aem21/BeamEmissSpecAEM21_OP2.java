@@ -1,8 +1,10 @@
 package ipp.w7x.fusionOptics.w7x.cxrs.aem21;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import ipp.w7x.fusionOptics.w7x.cxrs.ObservationSystem;
 import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import uk.co.oliford.jolu.OneLiners;
@@ -39,11 +41,14 @@ import fusionOptics.types.Surface;
 /** Beam Emission Spectroscopy / CXRS on AEM21 looking at AEK21 beams 
  * All coordinates refreshed according to OP2 CAD 
  * */
-public class BeamEmissSpecAEM21_OP2 extends Optic {
+public class BeamEmissSpecAEM21_OP2 extends ObservationSystem  {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
 	public String lightPathsSystemName = "AEM21";	
+	public String lightPathsSystemName() { return  lightPathsSystemName; }
+	
+	protected String[] lightPathRowNames() { return lightPathRowName;	}
 	
 	// CAD from designer
 	
@@ -346,7 +351,28 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 			"/work/cad/aem21/bg-targetting/shield-cut-smallArea.stl",
 			"/work/cad/aem21/bg-targetting/target-cut-smallArea.stl",
 	};
+	
+	public static HashMap<String, double[]> measured = new HashMap<>();	
+	static {
+		// Post OP2.3 in-vessel alignment measurement
 			
+		measured.put("AEM21_X1:08", new double[] { 466.7218322753906, 6225.28759765625, -324.10443115234375 });
+		measured.put("AEM21_X2:09", new double[] {555.29296875, 5860.6806640625, -752.0689697265625 });
+		measured.put("AEM21_S8:18", new double[] {641.0379028320312, 6178.72021484375, -350.35009765625 });
+		measured.put("AEM21_S8:47", new double[] {771.2401733398438, 5723.6962890625, -810.2572021484375  });// partially hits inner wall shield tiles and partially middle divertor
+		measured.put("AEM21_S8:50", new double[] {382.9178161621094, 5582.61279296875, -255.29550170898438  });//very elongated on inner wall shield
+		measured.put("AEM21_S8:03", new double[] {462.2842102050781, 6301.341796875, -31.91522216796875 });
+		measured.put("AEM21_S7:20", new double[] {909.2606201171875, 6214.39697265625, -415.4776611328125 });
+		measured.put("AEM21_S8:20", new double[] {654.0819702148438, 6149.9033203125, -389.78680419921875 });
+		measured.put("AEM21_S8:16", new double[] {665.125732421875, 6241.2744140625, -366.7857971191406 });
+		measured.put("AEM21_S7:16", new double[] {911.5806274414062, 6290.56005859375, -404.931640625 });
+		measured.put("AEM21_S7:28", new double[] {957.1038818359375, 6077.10546875, -508.0943603515625 });
+		measured.put("AEM21_S8:28", new double[] {836.449951171875, 6056.55810546875, -574.7227783203125 });
+		measured.put("AEM21_X2:04", new double[] {1044.7647705078125, 5867.5693359375, -752.2337036132812 });
+		measured.put("AEM21_X2:02", new double[] {1315.697998046875, 5855.73388671875, -750.0521240234375 });
+		measured.put("AEM21_X2:08", new double[] {669.0277709960938, 5878.771484375, -782.7886962890625 });
+	}
+					
 	/** Set fibre positions according to design sent to Ceramoptec.
 	 * The design was set to match Q7 and Q8 in LC3 with the mirror at +3' (and does)
 	 */
@@ -710,5 +736,7 @@ public class BeamEmissSpecAEM21_OP2 extends Optic {
 
 	}
 	*/	
-	
+
+	public double getFibreNA(int iB, int iP) { return fibreNA;	}
+	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter; }	
 }
