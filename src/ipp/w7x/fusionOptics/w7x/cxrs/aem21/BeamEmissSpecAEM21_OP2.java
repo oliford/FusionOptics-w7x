@@ -721,7 +721,7 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 		return "aem21" 
 				+ "-" + coordSate
 				+ ((mirrorAngleAdjust != 0) ? "-mAng_" + String.format("%.1f", mirrorAngleAdjust*180/Math.PI) : "")
-				+ "-try2"
+				//+ "-fitToMeasured"
 				;
 	}
 
