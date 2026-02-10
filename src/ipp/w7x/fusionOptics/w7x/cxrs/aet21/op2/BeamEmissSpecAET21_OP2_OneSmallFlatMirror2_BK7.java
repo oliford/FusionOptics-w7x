@@ -38,7 +38,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	private String lightPathsSystemName = "AET21"; //maybe modified to AET20 in constructor
 	public String lightPathsSystemName() { return  lightPathsSystemName; }
 	
-	protected String[] lightPathRowNames() { return new String[]{ "" };	}
+	public String[] lightPathRowNames() { return new String[]{ "" };	}
 	
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9;

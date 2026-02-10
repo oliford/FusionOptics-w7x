@@ -41,7 +41,7 @@ import fusionOptics.types.Surface;
 /** Beam Emission Spectroscopy / CXRS on AEM21 looking at AEK21 beams 
  * All coordinates refreshed according to OP2 CAD 
  * */
-public class BeamEmissSpecAEM21_OP2 extends ObservationSystem  {
+public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 	public double globalUp[] = {0,0,1};
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
@@ -447,6 +447,13 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem  {
 	private double ferruleAdjustFocus = (mirrorAngleAdjust < 1*Math.PI/180) ? 0.014 : 0.014;
 	
 	private void setupFibrePositions() {
+		if(coordSate == CoordState.measuredOP23) {
+			// set ferrule to match MP2.4 bgTargetting measurements, (assuming LC3a and mAng=+3)
+			ferruleAdjustUp = -0.012;
+			ferruleAdjustRight = 0.002;
+			ferruleAdjustFocus = 0.014;
+		}
+		
 		int nBeams = ferruleRowNFibres.length;
 		channelR = new double[nBeams][];
 		lightPathRowName = new String[]{ "S7", "S8", "X1", "X2", "HPPS7", "HPPS8" };
@@ -589,7 +596,21 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem  {
 		}
 	}
 	
-	public static enum CoordState { CAD, AsBuilt, LC3a };
+	public static enum CoordState { 
+		/** As original design in CAD */
+		CAD, 
+		
+		/** Using measurements of immersion tube and flange */
+		AsBuilt, 
+		
+		/** Using measurements of immersion tube and flange, in load case LC3 of machine. */
+		LC3a,
+	
+		/** Same as LC3a, but with fibre head adjusted to match measurements */ 
+		measuredOP23
+	};
+		
+		
 	public CoordState coordSate;
 	
 	public BeamEmissSpecAEM21_OP2(CoordState coordSate) {
@@ -656,8 +677,8 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem  {
 		}*/
 		
 		if(coordSate != CoordState.CAD){
-			double[][] rotate = (coordSate == CoordState.LC3a) ? rotateLC3 : rotateAsBuilt;
-			double[] offset = (coordSate == CoordState.LC3a) ? offsetLC3 : offsetAsBuilt;
+			double[][] rotate = (coordSate == CoordState.LC3a || coordSate == CoordState.measuredOP23) ? rotateLC3 : rotateAsBuilt;
+			double[] offset = (coordSate == CoordState.LC3a || coordSate == CoordState.measuredOP23) ? offsetLC3 : offsetAsBuilt;
 			
 			shift(offset);			
 			rotate(new double[3], rotate);
@@ -722,6 +743,18 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem  {
 		//outPath += "/carriageOnly/";	
 
 	}
+
+	@Override
+	public String lightPathsSystemName() { return lightPathsSystemName; }
+
+	@Override
+	public String[] lightPathRowNames() { return lightPathRowName; }
+
+	@Override
+	public double getFibreNA(int iB, int iP) { return fibreNA; }
+
+	@Override
+	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter; }
 	
 	
 	/*//maybe not

@@ -947,7 +947,7 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 	}
 
 	@Override
-	protected String[] lightPathRowNames() { return lightPathRowName; }
+	public String[] lightPathRowNames() { return lightPathRowName; }
 
 
 	public String getChanName(int iB, int iP) {
