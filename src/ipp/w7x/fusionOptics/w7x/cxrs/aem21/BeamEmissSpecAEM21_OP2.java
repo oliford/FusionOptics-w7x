@@ -354,7 +354,7 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem  {
 	
 	public static HashMap<String, double[]> measured = new HashMap<>();	
 	static {
-		// Post OP2.3 in-vessel alignment measurement
+		// Post OP2.3 in-vessel alignment measurement 11.09.2025
 			
 		measured.put("AEM21_X1:08", new double[] { 466.7218322753906, 6225.28759765625, -324.10443115234375 });
 		measured.put("AEM21_X2:09", new double[] {555.29296875, 5860.6806640625, -752.0689697265625 });
@@ -367,10 +367,11 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem  {
 		measured.put("AEM21_S8:16", new double[] {665.125732421875, 6241.2744140625, -366.7857971191406 });
 		measured.put("AEM21_S7:16", new double[] {911.5806274414062, 6290.56005859375, -404.931640625 });
 		measured.put("AEM21_S7:28", new double[] {957.1038818359375, 6077.10546875, -508.0943603515625 });
-		measured.put("AEM21_S8:28", new double[] {836.449951171875, 6056.55810546875, -574.7227783203125 });
+		measured.put("AEM21_S8:28", new double[] {731.0018920898438, 6070.09423828125, -554.4830932617188 });		
 		measured.put("AEM21_X2:04", new double[] {1044.7647705078125, 5867.5693359375, -752.2337036132812 });
 		measured.put("AEM21_X2:02", new double[] {1315.697998046875, 5855.73388671875, -750.0521240234375 });
 		measured.put("AEM21_X2:08", new double[] {669.0277709960938, 5878.771484375, -782.7886962890625 });
+		measured.put("AEM21_S8:50", new double[] {396.47784423828125, 5587.2822265625, -265.53302001953125 });
 	}
 					
 	/** Set fibre positions according to design sent to Ceramoptec.
