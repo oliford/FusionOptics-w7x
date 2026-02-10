@@ -46,9 +46,6 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 	public double designWavelenth = 500e-9; // [ e_II @468.58 and/or C_VI @529.06, average is pretty much 500nm ]
 	
 	public String lightPathsSystemName = "AEM21";	
-	public String lightPathsSystemName() { return  lightPathsSystemName; }
-	
-	protected String[] lightPathRowNames() { return lightPathRowName;	}
 	
 	// CAD from designer
 	
@@ -771,6 +768,4 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 	}
 	*/	
 
-	public double getFibreNA(int iB, int iP) { return fibreNA;	}
-	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter; }	
 }
