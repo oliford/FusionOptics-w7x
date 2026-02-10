@@ -45,6 +45,7 @@ import otherSupport.ColorMaps;
 import otherSupport.RandomManager;
 import fusionOptics.MinervaOpticsSettings;
 import fusionOptics.Util;
+import fusionOptics.collection.HitPositionAverage;
 import fusionOptics.collection.IntensityInfo;
 import fusionOptics.drawing.STLDrawer;
 import fusionOptics.drawing.VRMLDrawer;
@@ -139,14 +140,18 @@ public class BackgroundTargetting {
 				
 		//Need to get through the fibre plane
 		sys.fibrePlane.setInterface(NullInterface.ideal());		
-		//sys.addElement(sys.beamPlane);
+		sys.addElement(sys.beamPlane);
+		sys.beamPlane.setInterface(NullInterface.ideal());		
+		
 		
 		double hitPoints[][][] = new double[sys.channelR.length][][];
 		double startPoints[][][] = new double[sys.channelR.length][][];
+		double beamPlanePos[][][] = new double[sys.channelR.length][][];
 		
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			hitPoints[iB] = new double[sys.channelR[iB].length][];
 			startPoints[iB] = new double[sys.channelR[iB].length][];
+			beamPlanePos[iB] = new double[sys.channelR[iB].length][];
 			
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){
 							
@@ -155,7 +160,10 @@ public class BackgroundTargetting {
 				double startPos[] = sys.fibreEndPos[iB][iP];
 				
 				double sumI=0, sumIX[]={0,0,0}, sumIX2[] = {0,0,0};
-				double sumIXsp[]={0,0,0};
+				
+				HitPositionAverage startAvg = new HitPositionAverage(false);				
+				HitPositionAverage beamPlaneAvg = new HitPositionAverage(false);
+								
 				for(int i=0; i < nAttempts; i++){
 					//if((iP % 5) > 0)
 						//continue;
@@ -194,7 +202,7 @@ public class BackgroundTargetting {
 					ray.dir = Util.plus(Util.plus(Util.mul(aV, a), Util.mul(bV, b)), Util.mul(nV, c));
 							
 					//ray.dir = Tracer.generateRandomRayTowardSurface(startPos, sys.tracingTarget);
-					ray.wavelength = 530e-9; //sys.designWavelenth;
+					ray.wavelength = sys.designWavelenth;
 					ray.E0 = new double[][]{{1,0,0,0}};
 					ray.up = Util.createPerp(ray.dir);
 							
@@ -210,14 +218,13 @@ public class BackgroundTargetting {
 							sumIX[j] += p[j];
 							sumIX2[j] += p[j]*p[j];
 						}
-						
-						Intersection startSurfaceHit = hits.get(0).incidentRay.findFirstEarlierIntersection(sys.losStartSurface);						
-						for(int j=0; j < 3; j++){
-							sumIXsp[j] += startSurfaceHit.pos[j];						
-						}
-						
+												
 						nHit++;
 					}
+					
+					ray.processIntersections(sys.losStartSurface, startAvg);
+					ray.processIntersections(sys.beamPlane, beamPlaneAvg);
+					
 					
 					//if(ray.getIntersections(sys.strayPlane).size() > 0){
 					//	nStray++;
@@ -240,20 +247,17 @@ public class BackgroundTargetting {
 				//sys.addElement(new Sphere("hitPoint_"+iB+"_"+iP, p, fwhm/2, NullInterface.ideal()));
 				hitPoints[iB][iP] = new double[]{ p[0], p[1], p[2], fwhm };
 				
-				double sp[] = new double[3];
-				for(int j=0; j < 3; j++){
-					sp[j] = sumIXsp[j] / sumI;					
-				}				
-				startPoints[iB][iP] = new double[]{ sp[0], sp[1], sp[2]};
+				startPoints[iB][iP] = startAvg.getMeanXYZ();
+				beamPlanePos[iB][iP] = beamPlaneAvg.getMeanXYZ();
 				
-				hitInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], p[0], p[1], p[2], fwhm, (double)nHit / nAttempts, (double)nStray / nAttempts, sp[0], sp[1], sp[2]);
+				hitInfoOut.writeRow(iB, iP, sys.channelR[iB][iP], p[0], p[1], p[2], fwhm, (double)nHit / nAttempts, (double)nStray / nAttempts, startPoints[iB][iP][0], startPoints[iB][iP][1], startPoints[iB][iP][2]);
 				
 				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
 				System.out.println("P=" + iB + "." + iP + "(fwhm = " + fwhm + "):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 				
 				for(Thing thing : Thing.values()){
-					FibreBacktrace.outputInfo(System.out, startPoints, hitPoints, null, iB, iP, thing);
+					FibreBacktrace.outputInfo(System.out, startPoints, hitPoints, beamPlanePos, iB, iP, thing);
 				}
 				
 				System.out.println();	
@@ -294,69 +298,5 @@ public class BackgroundTargetting {
 		vrmlOut.destroy();
 	}
 	
-	/*private static enum Thing { FreeCADHitPos, FreeCADLOS, JSON_LOS, TXT_LOS_MM };
-	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, Thing thing){
-
-		boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
-
-		double rad = hitPoints[iB][iP][3] / 2;
-		
-		//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
-		//			"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "));");
-		double u[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
-		double losLen = Util.length(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
-		
-		//point on ray closest to beam axes
-		double approach[][] = new double[8][];
-		for(int jB=6; jB < 8; jB++){
-			if(sys.beamIdx[iB] < 0)
-				continue;
-			double beamStart[] = beams.start(sys.beamIdx[iB]);
-			double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
-			
-			double aL = Algorithms.pointOnLineNearestAnotherLine(startPoints[iB][iP], u, beamStart, beamVec);
-			approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(u, aL));
-		}
-		
-		//double start[] = sys.lens1.getBackSurface().getCentre();
-		double uVec[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
-		String chanName = sys.getChanName(iB, iP);
-	
-		switch(thing){
-			case FreeCADHitPos:		
-				stream.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iB][iP][0]*1e3+","+hitPoints[iB][iP][1]*1e3+","+hitPoints[iB][iP][2]*1e3 + ")));"
-						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+chanName+"\"; g.addObject(FreeCAD.ActiveDocument.ActiveObject);");
-				break;
-				
-			case FreeCADLOS:
-				stream.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+losLen*1e3 +","										
-						+"FreeCAD.Vector("+startPoints[iB][iP][0]*1e3+","+startPoints[iB][iP][1]*1e3+","+startPoints[iB][iP][2]*1e3+"), "
-						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+chanName+"\";");
-				break;
-				
-			case JSON_LOS:
-				stream.print("{ \"id\" : \"" + chanName
-						+ "\", \"start\":[ " + String.format("%7.5g", startPoints[iB][iP][0]) + ", " + String.format("%7.5g", startPoints[iB][iP][1]) + ", " + String.format("%7.5g", startPoints[iB][iP][2]) + "]"
-						+ ", \"uVec\":[ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "]");
-				for(int jB=0; jB < approach.length; jB++){
-					if(approach[jB] != null)
-						stream.print(", \"approachQ"+(jB+1)+"\":[ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "]");
-				}
-						
-				stream.println(", \"wallHit\":[ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
-									+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
-									+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "]"
-								+ "}" + (isLast ? "" : ", ")
-						);				
-				break;
-								
-			case TXT_LOS_MM:
-				stream.println(String.format("%7.3f", startPoints[iB][iP][0]*1e3) + " " + String.format("%7.3f", startPoints[iB][iP][1]*1e3) + " " + String.format("%7.3f", startPoints[iB][iP][2]*1e3) + " "
-							+ String.format("%7.3f", hitPoints[iB][iP][0]*1e3) + " " + String.format("%7.3f", hitPoints[iB][iP][1]*1e3) + " " + String.format("%7.3f", hitPoints[iB][iP][2]*1e3));
-						
-				break;
-		}
-	}
-	*/
 	
 }

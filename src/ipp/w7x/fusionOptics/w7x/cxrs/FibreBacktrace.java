@@ -417,9 +417,18 @@ public class FibreBacktrace {
 
 		//double rad = hitPoints[iB][iP][3];
 		double rad = losCyldRadius;
+		double uVec[];
+		double losLen;
 		
-		double u[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
-		double losLen = Util.length(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+		//use beam plane pos for LOS direction if not null, other hit positions
+		if(beamPlanePos != null) {
+			uVec = Util.reNorm(Util.minus(beamPlanePos[iB][iP], startPoints[iB][iP]));
+			losLen = Util.length(Util.minus(beamPlanePos[iB][iP], startPoints[iB][iP]));
+		}else {
+			uVec = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+			losLen = Util.length(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+			
+		}
 		
 		int approaches[] = (beams instanceof W7xNBI) ? new int[] { 6, 7 } : new int[] { 0 };
 		
@@ -432,15 +441,15 @@ public class FibreBacktrace {
 			double beamStart[] = beams.start(jB);
 			double beamVec[] =  beams.uVec(jB);
 			
-			double aL = Algorithms.pointOnLineNearestAnotherLine(startPoints[iB][iP], u, beamStart, beamVec);
-			approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(u, aL));
+			double aL = Algorithms.pointOnLineNearestAnotherLine(startPoints[iB][iP], uVec, beamStart, beamVec);
+			approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(uVec, aL));
 		}
 		
 		//double start[] = sys.lens1.getBackSurface().getCentre();
-		double uVec[] = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+		
 		String chanName = sys.getChanName(iB, iP);
 		
-		double p[] = Util.minus(startPoints[iB][iP], Util.mul(u, extendLOSCylds/2));
+		double p[] = Util.minus(startPoints[iB][iP], Util.mul(uVec, extendLOSCylds/2));
 		switch(thing){
 			case FreeCADWallHit:
 				stream.println(freecadMakeSphere("bgHit_Q"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, hitPoints[iB][iP], rad));				
@@ -457,7 +466,7 @@ public class FibreBacktrace {
 				break;
 		
 			case FreeCADLOS:
-				stream.println(freecadMakeCylinder("los_"+sys.getDesignName()+"_"+chanName, p, u, rad, (losLen + extendLOSCylds)));		
+				stream.println(freecadMakeCylinder("los_"+sys.getDesignName()+"_"+chanName, p, uVec, rad, (losLen + extendLOSCylds)));		
 				break;
 				
 			case JSON_LOS:
@@ -475,6 +484,11 @@ public class FibreBacktrace {
 										+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][2]) + "]");
 				}
 				
+				if(hitPoints != null) {
+					stream.println(", \"bgHit\":[ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
+										+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
+										+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "]");
+				}
 				
 				stream.println("}" + (isLast ? "" : ", ")
 						);

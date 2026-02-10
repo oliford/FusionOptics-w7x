@@ -472,7 +472,7 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 		
 		int nBeams = ferruleRowNFibres.length;
 		channelR = new double[nBeams][];
-		lightPathRowName = new String[]{ "S7", "S8", "X1", "X2", "HPPS7", "HPPS8" };
+		lightPathRowName = new String[]{ "_S7", "_S8", "_X1", "_X2", "_HPPS7", "_HPPS8" };
 		beamIdx = new int[] { W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 , W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q7, W7xNBI.BEAM_Q8 };
 		fibreEndPos = new double[nBeams][][];
 		fibreEndNorm = new double[nBeams][][];
