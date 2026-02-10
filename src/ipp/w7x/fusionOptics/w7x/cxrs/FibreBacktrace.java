@@ -80,11 +80,11 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAEA21U sys = new BeamEmissSpecAEA21U();
-	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.LC3a);
+	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.LC3a);
 	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, false);	
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	//public static BeamEmissSpecAEA21U_CISDual_OneOnDiv sys = new BeamEmissSpecAEA21U_CISDual_OneOnDiv();
-	//public static SimpleBeamGeometry beams = W7xNBI.def();
+	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEK41_edgeUV sys = new BeamEmissSpecAEK41_edgeUV();
 	//public static BeamEmissSpecAEK41_edgeVIS_OP22a sys = new BeamEmissSpecAEK41_edgeVIS_OP22a();
@@ -99,8 +99,8 @@ public class FibreBacktrace {
 	//public static BeamEmissSpecAEK21_pelletsL41 sys = new BeamEmissSpecAEK21_pelletsL41();
 	//public static SimpleBeamGeometry beams = W7XPelletsL41.def();
 		
-	public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
-	public static SimpleBeamGeometry beams = W7XRudix.def();
+	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
+	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -401,7 +401,8 @@ public class FibreBacktrace {
 		vrmlOut.destroy();
 	}
 		
-	private static enum Thing { 
+	public static enum Thing { 
+		FreeCADWallHit, //FreeCAD python to make wall hit position (BackgroundTargetting)
 		FreeCADApproach, //FreeCAD python to make sphere at closest approach to beam
 		FreeCADBeamPlane, //FreeCAD python to make sphere at contact with beam plane
 		FreeCADLOS,  //FreeCAD python to make cylinder of LOS
@@ -409,7 +410,7 @@ public class FibreBacktrace {
 		TXT_LOS_MM  //simple text LOS
 	};
 	
-	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], double beamPlanePos[][][], int iB, int iP, Thing thing){
+	public static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], double beamPlanePos[][][], int iB, int iP, Thing thing){
 		boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
 
 		double extendLOSCylds = 1.000; // extend 200mm in each direction
@@ -441,13 +442,18 @@ public class FibreBacktrace {
 		
 		double p[] = Util.minus(startPoints[iB][iP], Util.mul(u, extendLOSCylds/2));
 		switch(thing){
+			case FreeCADWallHit:
+				stream.println(freecadMakeSphere("bgHit_Q"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, hitPoints[iB][iP], rad));				
+				break;
+				
 			case FreeCADApproach:		
 				stream.println(freecadMakeSphere("beamApproach_Q"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, hitPoints[iB][iP], rad));
 				
 				break;
 		
 			case FreeCADBeamPlane:
-				stream.println(freecadMakeSphere("beamPlane_"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, beamPlanePos[iB][iP], rad));				
+				if(beamPlanePos != null)					
+					stream.println(freecadMakeSphere("beamPlane_"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, beamPlanePos[iB][iP], rad));				
 				break;
 		
 			case FreeCADLOS:
@@ -462,11 +468,15 @@ public class FibreBacktrace {
 					if(approach[jB] != null)
 						stream.print(", \"approachQ"+(jB+1)+"\":[ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "]");
 				}
-						
-				stream.println(", \"beamPlaneHit\":[ "+ String.format("%7.5g", beamPlanePos[iB][iP][0]) 
-									+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][1]) 
-									+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][2]) + "]"
-								+ "}" + (isLast ? "" : ", ")
+				
+				if(beamPlanePos != null) {
+					stream.println(", \"beamPlaneHit\":[ "+ String.format("%7.5g", beamPlanePos[iB][iP][0]) 
+										+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][1]) 
+										+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][2]) + "]");
+				}
+				
+				
+				stream.println("}" + (isLast ? "" : ", ")
 						);
 				break;
 				

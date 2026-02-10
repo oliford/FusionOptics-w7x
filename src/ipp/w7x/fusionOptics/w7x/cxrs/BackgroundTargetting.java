@@ -1,6 +1,8 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import fusionDefs.neutralBeams.SimpleBeamGeometry;
+import ipp.w7x.fusionOptics.w7x.cxrs.FibreBacktrace.Thing;
+
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21.Subsystem;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_baffleW;
@@ -251,7 +253,7 @@ public class BackgroundTargetting {
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 				
 				for(Thing thing : Thing.values()){
-					outputInfo(System.out, startPoints, hitPoints, iB, iP, thing);
+					FibreBacktrace.outputInfo(System.out, startPoints, hitPoints, null, iB, iP, thing);
 				}
 				
 				System.out.println();	
@@ -265,7 +267,7 @@ public class BackgroundTargetting {
 				((new SimpleDateFormat()).format(new Date()))+" \", \"los\" : [");
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
-				outputInfo(jsonOut, startPoints, hitPoints, iB, iP, Thing.JSON_LOS);				
+				FibreBacktrace.outputInfo(jsonOut, startPoints, hitPoints, null, iB, iP, Thing.JSON_LOS);				
 			}
 		}
 		jsonOut.println("]}");
@@ -276,8 +278,8 @@ public class BackgroundTargetting {
 		for(Thing thing : Thing.values()){
 			for(int iB=0; iB < sys.channelR.length; iB++){
 				for(int iP=0; iP < sys.channelR[iB].length; iP++){			
-					outputInfo(System.out, startPoints, hitPoints, iB, iP, thing);	
-					outputInfo(textOut, startPoints, hitPoints, iB, iP, thing);					
+					FibreBacktrace.outputInfo(System.out, startPoints, hitPoints, null, iB, iP, thing);	
+					FibreBacktrace.outputInfo(textOut, startPoints, hitPoints, null, iB, iP, thing);					
 				}
 			}
 		}
@@ -292,7 +294,7 @@ public class BackgroundTargetting {
 		vrmlOut.destroy();
 	}
 	
-	private static enum Thing { FreeCADHitPos, FreeCADLOS, JSON_LOS, TXT_LOS_MM };
+	/*private static enum Thing { FreeCADHitPos, FreeCADLOS, JSON_LOS, TXT_LOS_MM };
 	private static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], int iB, int iP, Thing thing){
 
 		boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
@@ -354,10 +356,7 @@ public class BackgroundTargetting {
 						
 				break;
 		}
-		
-		
-		
-		
 	}
+	*/
 	
 }

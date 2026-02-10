@@ -369,6 +369,22 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 		measured.put("AEM21_X2:02", new double[] {1315.697998046875, 5855.73388671875, -750.0521240234375 });
 		measured.put("AEM21_X2:08", new double[] {669.0277709960938, 5878.771484375, -782.7886962890625 });
 		measured.put("AEM21_S8:50", new double[] {396.47784423828125, 5587.2822265625, -265.53302001953125 });
+		//*/
+
+		// These were in BackgroundTargettingFit from much earlier, not sure which campaign they come from
+		// they're different points to the above
+		/*measured.put("AEM21_S7:15", new double[] {	905.2531128, 	6292.6098633, 	-371.5768738	 });
+		measured.put("AEM21_S8:11", new double[] {	677.2341309, 	6316.5771484, 	-322.4136963	 });
+		measured.put("AEM21_X1:08", new double[] {	476.4190674, 	6222.3681641, 	-325.8862915	 });
+		measured.put("AEM21_S7:46", new double[] {	1229.3759766, 	5758.8593750, 	-831.2332153	 });
+		measured.put("AEM21_X2:01", new double[] {	1461.7521973, 	5853.2197266, 	-735.6548462	 });
+		measured.put("AEM21_S8:37", new double[] {	829.0787964,	5935.3950195,	-706.7048340	 });
+		measured.put("AEM21_S7:33", new double[] {	1087.4625244, 	6011.7651367, 	-608.7009277	 });
+		measured.put("AEM21_S8:44", new double[] {	877.7481689, 	5813.1010742, 	-831.9437256	 });
+		measured.put("AEM21_X2:09", new double[] {	589.9093628, 	5857.9711914, 	-760.0310059	 });
+		measured.put("AEM21_S7:54", new double[] {	489.8992615, 	5472.3950195, 	-045.9667435	 });
+		measured.put("AEM21_S8:54", new double[] {	317.631897, 	5510.652832, 	-140.8085785	 });
+		//*/
 	}
 					
 	/** Set fibre positions according to design sent to Ceramoptec.
@@ -446,9 +462,12 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 	private void setupFibrePositions() {
 		if(coordSate == CoordState.measuredOP23) {
 			// set ferrule to match MP2.4 bgTargetting measurements, (assuming LC3a and mAng=+3)
-			ferruleAdjustUp = -0.012;
-			ferruleAdjustRight = 0.002;
-			ferruleAdjustFocus = 0.014;
+			ferruleAdjustUp = -0.0022;
+			ferruleAdjustRight = 0.0025;
+			//ferruleAdjustFocus = 0.014;
+			ferruleAdjustFocus = 0.007;
+			
+			lens2.shift(OneLiners.mul(portNormal, -0.015));			
 		}
 		
 		int nBeams = ferruleRowNFibres.length;
@@ -701,7 +720,9 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 	public String getDesignName() { 
 		return "aem21" 
 				+ "-" + coordSate
-				+ ((mirrorAngleAdjust != 0) ? "-mAng_" + String.format("%.1f", mirrorAngleAdjust*180/Math.PI) : "");
+				+ ((mirrorAngleAdjust != 0) ? "-mAng_" + String.format("%.1f", mirrorAngleAdjust*180/Math.PI) : "")
+				+ "-try2"
+				;
 	}
 
 	public List<Element> makeSimpleModel() {

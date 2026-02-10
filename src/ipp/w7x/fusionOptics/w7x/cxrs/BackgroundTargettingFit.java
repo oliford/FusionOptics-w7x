@@ -1,6 +1,7 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import fusionDefs.neutralBeams.SimpleBeamGeometry;
+import ipp.w7x.fusionOptics.w7x.cxrs.FibreBacktrace.Thing;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS;
@@ -25,6 +26,8 @@ import ipp.w7x.neutralBeams.W7XRudix;
 import ipp.w7x.neutralBeams.W7xNBI;
 import net.jafama.FastMath;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -64,7 +67,7 @@ public class BackgroundTargettingFit {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(false);
 	//public static BeamEmissSpecAEM21_postDesign_AsMeasured sys = new BeamEmissSpecAEM21_postDesign_AsMeasured(false); //not in LC3
-	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.LC3a);
+	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.measuredOP23);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
@@ -85,7 +88,7 @@ public class BackgroundTargettingFit {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 10;
+	public final static int nAttempts = 100;
 
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/background/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -94,39 +97,12 @@ public class BackgroundTargettingFit {
 	public static double losCyldRadius = 0.005;
 	public static Surface startSurface = sys.losStartSurface;
 	
-	/** Fibres that were lit */
-	/*public static String[] targetNames = {
-		"AEM21_S7:15",
-		"AEM21_S8:11",
-		"AEM21_X1:08",
-		"AEM21_S7:46",
-		"AEM21_X2:01",
-		"AEM21_S8:37",
-		"AEM21_S7:33",
-		"AEM21_S8:44",
-		"AEM21_X2:09",
-		"AEM21_S7:54",
-		"AEM21_S8:54",
-	};
 	
-	// Measured target coordinates 	
-	public static double[][] targetCoords = {
-			{	0.9052531128, 	6.2926098633	, 	-0.3715768738	 },
-			{	0.6772341309, 	6.3165771484	, 	-0.3224136963	 },
-			{	0.4764190674, 	6.2223681641	, 	-0.3258862915	 },
-			{	1.2293759766, 	5.758859375		, 	-0.8312332153	 },
-			{	1.4617521973, 	5.8532197266	, 	-0.7356548462	 },
-			{	0.8290787964,	5.9353950195	,	-0.7067048340	 },
-			{	1.0874625244, 	6.0117651367	, 	-0.6087009277	 },
-			{	0.8777481689, 	5.8131010742	, 	-0.8319437256	 },
-			{	0.5899093628, 	5.8579711914	, 	-0.7600310059	 },
-			{	0.4898992615, 	5.4723950195	, 	-0.0459667435	 },
-			{	0.317631897, 	5.510652832	, 	-0.1408085785	 },
-	};*/
 	public static String targetNames[];
-	public static double targetCoords[][];	
+	public static double targetCoords[][];
+	public static int[][] targetIndecies;
 		
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/fibresTrace-"+sys.getDesignName()+".vrml", 5.005);
 		vrmlOut.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
 		//vrmlOut.addVRML(vrmlScaleToAUGDDD);
@@ -171,6 +147,9 @@ public class BackgroundTargettingFit {
 		double hitPoints[][] = new double[targetNames.length][];
 		double startPoints[][] = new double[targetNames.length][];
 		
+		/** iB and iP of each target */
+		targetIndecies = new int[targetNames.length][2];
+		
 		for(int iT=0; iT < targetNames.length; iT++){ //foreach target (fibre/point)
 						
 			int nHit = 0, nStray = 0;
@@ -188,7 +167,9 @@ public class BackgroundTargettingFit {
 			if(iB<0)
 				throw new RuntimeException("Couldn't find fibre set for target '"+parts[0]+"'");
 			
+			
 			int iP = Integer.parseInt(parts[1]) - 1; 
+			targetIndecies[iT] = new int[] { iB, iP };
 			
 			double startPos[] = sys.fibreEndPos[iB][iP];
 			
@@ -287,21 +268,27 @@ public class BackgroundTargettingFit {
 			System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
 			System.out.println("P=" + iB + "." + iP + "(fwhm = " + fwhm + "):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
 																				" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
-			
-			for(int j=0;j < 3; j++){				
-				outputInfo(startPoints, hitPoints, iT, j);
+			for(Thing thing : Thing.values()){
+				if(thing == Thing.FreeCADBeamPlane)
+					continue;
+				outputTargetInfo(System.out, startPoints, hitPoints, iT, thing);
 			}
 			
 			System.out.println();	
 		}
 	
 		
+
+		PrintStream textOut = new PrintStream(outPath + "/info.txt");
 		//spit out build commands and LOS definitions in blocks
-		for(int j=0;j < 3; j++){
-			for(int iT=0; iT < targetNames.length; iT++){			
-					outputInfo(startPoints, hitPoints, iT, j);
+		for(Thing thing : Thing.values()){
+			System.out.println("\n" + thing.toString() + ": ");
+			for(int iT=0; iT < targetNames.length; iT++){ //foreach target (fibre/point)
+				outputTargetInfo(System.out, startPoints, hitPoints, iT, thing);	
+				outputTargetInfo(textOut, startPoints, hitPoints, iT, thing);	
 			}
 		}
+		textOut.close();
 		
 		hitInfoOut.close();
 				
@@ -312,48 +299,15 @@ public class BackgroundTargettingFit {
 		vrmlOut.destroy();
 	}
 	
-	private static void outputInfo(double startPoints[][], double hitPoints[][], int iT, int thing){
-	
-
-		double rad = hitPoints[iT][3] / 4;
-		
-		//System.out.println("o=FreeCAD.ActiveDocument.addObject(\"Part::Sphere\", \"bgHit_"+sys.getDesignName()+"_"+iB+"_"+iP+"\"); "+
-		//			"o.Shape = Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+b[0]*1e3+","+b[1]*1e3+","+b[2]*1e3 + "));");
-		double u[] = Util.reNorm(Util.minus(hitPoints[iT], startPoints[iT]));
-		double losLen = Util.length(Util.minus(hitPoints[iT], startPoints[iT]));
-		
-				
-		//double start[] = sys.lens1.getBackSurface().getCentre();
-		double uVec[] = Util.reNorm(Util.minus(hitPoints[iT], startPoints[iT]));
-		String chanName = targetNames[iT];
-		
-		switch(thing){
-			case 0:		
-				System.out.println("Part.show(Part.makeSphere("+rad*1e3+",FreeCAD.Vector("+hitPoints[iT][0]*1e3+","+hitPoints[iT][1]*1e3+","+hitPoints[iT][2]*1e3 + ")));"
-						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"bgHit_"+sys.getDesignName()+"_"+chanName+"\";");
-				break;
-				
-			case 1:
-				System.out.println("Part.show(Part.makeCylinder("+losCyldRadius*1e3+","+losLen*1e3 +","										
-						+"FreeCAD.Vector("+startPoints[iT][0]*1e3+","+startPoints[iT][1]*1e3+","+startPoints[iT][2]*1e3+"), "
-						+"FreeCAD.Vector("+u[0]*1e3+","+u[1]*1e3+","+u[2]*1e3+ "))); FreeCAD.ActiveDocument.ActiveObject.Label=\"los_"+sys.getDesignName()+"_"+chanName+"\";");
-				break;
-				
-			case 2:
-				System.out.print(chanName
-						+ ", start={ " + String.format("%7.5g", startPoints[iT][0]) + ", " + String.format("%7.5g", startPoints[iT][1]) + ", " + String.format("%7.5g", startPoints[iT][2]) + "}"
-						+ ", uVec={ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "}");
-										
-				System.out.println(", wall={ "+ String.format("%7.5g", hitPoints[iT][0]) 
-									+ ", " + String.format("%7.5g", hitPoints[iT][1]) 
-									+ ", " + String.format("%7.5g", hitPoints[iT][2]) + "}"
-						);
-				break;
-		}
-		
-		
-		
-		
+	public static void outputTargetInfo(PrintStream stream, double startPoints[][], double hitPoints[][], int iT, Thing thing){
+		int iB = targetIndecies[iT][0];
+		int iP = targetIndecies[iT][1];
+		//interface to [iB][iP] style arrays expected by FibreBacktrace
+		double[][][] startPointsAll = new double[iB+1][iP+1][];
+		double[][][] hitPointsAll = new double[iB+1][iP+1][];
+		startPointsAll[iB][iP] = startPoints[iT];
+		hitPointsAll[iB][iP] = hitPoints[iT];
+		FibreBacktrace.outputInfo(stream, startPointsAll, hitPointsAll, null, iB, iP, thing);
 	}
 	
 }
