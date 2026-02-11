@@ -301,7 +301,7 @@ public class FibreBacktrace {
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 
 				for(Thing j : Thing.values())
-					outputInfo(System.out, startPoints, closestApproachPos, beamPlanePos, iB, iP, j);
+					outputInfo(System.out, startPoints, null, beamPlanePos, closestApproachPos, iB, iP, j);
 				
 				
 				intensityInfo.reset();
@@ -315,7 +315,7 @@ public class FibreBacktrace {
 				stream.println("Output " + thing + ":");
 				for(int iB=0; iB < sys.channelR.length; iB++){
 					for(int iP=0; iP < sys.channelR[iB].length; iP++){					
-						outputInfo(stream, startPoints, closestApproachPos, beamPlanePos, iB, iP, thing);						
+						outputInfo(stream, startPoints, null, beamPlanePos, closestApproachPos, iB, iP, thing);						
 					}
 				}
 			}
@@ -328,7 +328,7 @@ public class FibreBacktrace {
 				((new SimpleDateFormat()).format(new Date()))+" \", \"los\" : [");
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
-				outputInfo(jsonOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.JSON_LOS);				
+				outputInfo(jsonOut, startPoints, null, beamPlanePos, closestApproachPos, iB, iP, Thing.JSON_LOS);				
 			}
 		}
 		jsonOut.println("]}");
@@ -338,7 +338,7 @@ public class FibreBacktrace {
 		losOut.println("# x1 y2 z2 x2 y2 z2 [mm]");
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
-				outputInfo(losOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.TXT_LOS_MM);				
+				outputInfo(losOut, startPoints, null, beamPlanePos, closestApproachPos, iB, iP, Thing.TXT_LOS_MM);				
 			}
 		}
 				
@@ -410,7 +410,10 @@ public class FibreBacktrace {
 		TXT_LOS_MM  //simple text LOS
 	};
 	
-	public static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], double beamPlanePos[][][], int iB, int iP, Thing thing){
+	public static void outputInfo(PrintStream stream, 
+			double startPoints[][][], double bgHit[][][], 
+			double beamPlanePos[][][], double beamApproach[][][], 
+			int iB, int iP, Thing thing){
 		boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
 
 		double extendLOSCylds = 1.000; // extend 200mm in each direction
@@ -424,10 +427,18 @@ public class FibreBacktrace {
 		if(beamPlanePos != null) {
 			uVec = Util.reNorm(Util.minus(beamPlanePos[iB][iP], startPoints[iB][iP]));
 			losLen = Util.length(Util.minus(beamPlanePos[iB][iP], startPoints[iB][iP]));
-		}else {
-			uVec = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
-			losLen = Util.length(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
+		}
+		else if(beamApproach != null) {
+			uVec = Util.reNorm(Util.minus(beamApproach[iB][iP], startPoints[iB][iP]));
+			losLen = Util.length(Util.minus(beamApproach[iB][iP], startPoints[iB][iP]));
 			
+		}
+		else if(bgHit != null) {
+			uVec = Util.reNorm(Util.minus(bgHit[iB][iP], startPoints[iB][iP]));
+			losLen = Util.length(Util.minus(bgHit[iB][iP], startPoints[iB][iP]));
+			
+		}else {
+			throw new RuntimeException("No valid points from which to get a LOS");
 		}
 		
 		int approaches[] = (beams instanceof W7xNBI) ? new int[] { 6, 7 } : new int[] { 0 };
@@ -452,12 +463,13 @@ public class FibreBacktrace {
 		double p[] = Util.minus(startPoints[iB][iP], Util.mul(uVec, extendLOSCylds/2));
 		switch(thing){
 			case FreeCADWallHit:
-				stream.println(freecadMakeSphere("bgHit_Q"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, hitPoints[iB][iP], rad));				
+				if(bgHit != null)	
+					stream.println(freecadMakeSphere("bgHit_Q"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, bgHit[iB][iP], rad));				
 				break;
 				
-			case FreeCADApproach:		
-				stream.println(freecadMakeSphere("beamApproach_Q"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, hitPoints[iB][iP], rad));
-				
+			case FreeCADApproach:	
+				if(beamApproach != null)		
+					stream.println(freecadMakeSphere("beamApproach_Q"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, beamApproach[iB][iP], rad));
 				break;
 		
 			case FreeCADBeamPlane:
@@ -484,10 +496,10 @@ public class FibreBacktrace {
 										+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][2]) + "]");
 				}
 				
-				if(hitPoints != null) {
-					stream.println(", \"bgHit\":[ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
-										+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
-										+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "]");
+				if(bgHit != null) {
+					stream.println(", \"wallHit\":[ "+ String.format("%7.5g", bgHit[iB][iP][0]) 
+										+ ", " + String.format("%7.5g", bgHit[iB][iP][1]) 
+										+ ", " + String.format("%7.5g", bgHit[iB][iP][2]) + "]");
 				}
 				
 				stream.println("}" + (isLast ? "" : ", ")
@@ -496,7 +508,7 @@ public class FibreBacktrace {
 				
 			case TXT_LOS_MM:
 				stream.println(String.format("%7.3f", startPoints[iB][iP][0]*1e3) + " " + String.format("%7.3f", startPoints[iB][iP][1]*1e3) + " " + String.format("%7.3f", startPoints[iB][iP][2]*1e3) + " "
-							+ String.format("%7.3f", hitPoints[iB][iP][0]*1e3) + " " + String.format("%7.3f", hitPoints[iB][iP][1]*1e3) + " " + String.format("%7.3f", hitPoints[iB][iP][2]*1e3));
+							+ ((bgHit == null) ? "NaN NaN NaN" : (String.format("%7.3f", bgHit[iB][iP][0]*1e3) + " " + String.format("%7.3f", bgHit[iB][iP][1]*1e3) + " " + String.format("%7.3f", bgHit[iB][iP][2]*1e3))));
 						
 				break;
 		}

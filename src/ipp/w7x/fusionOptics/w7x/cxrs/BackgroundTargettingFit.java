@@ -159,7 +159,7 @@ public class BackgroundTargettingFit {
 					
 			int iB=-1;				
 			for(int jB=0; jB < sys.channelR.length; jB++){
-				if(parts[0].equalsIgnoreCase(sys.lightPathsSystemName() + "_" + sys.lightPathRowName(jB))){
+				if(parts[0].equalsIgnoreCase(sys.lightPathsSystemName() + sys.lightPathRowName(jB))){
 					iB = jB;
 					break;
 				}
@@ -307,7 +307,7 @@ public class BackgroundTargettingFit {
 		double[][][] hitPointsAll = new double[iB+1][iP+1][];
 		startPointsAll[iB][iP] = startPoints[iT];
 		hitPointsAll[iB][iP] = hitPoints[iT];
-		FibreBacktrace.outputInfo(stream, startPointsAll, hitPointsAll, null, iB, iP, thing);
+		FibreBacktrace.outputInfo(stream, startPointsAll, hitPointsAll, null, null, iB, iP, thing);
 	}
 	
 }

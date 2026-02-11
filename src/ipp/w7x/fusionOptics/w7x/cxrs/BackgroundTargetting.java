@@ -257,7 +257,7 @@ public class BackgroundTargetting {
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 				
 				for(Thing thing : Thing.values()){
-					FibreBacktrace.outputInfo(System.out, startPoints, hitPoints, beamPlanePos, iB, iP, thing);
+					FibreBacktrace.outputInfo(System.out, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);
 				}
 				
 				System.out.println();	
@@ -271,7 +271,7 @@ public class BackgroundTargetting {
 				((new SimpleDateFormat()).format(new Date()))+" \", \"los\" : [");
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
-				FibreBacktrace.outputInfo(jsonOut, startPoints, hitPoints, null, iB, iP, Thing.JSON_LOS);				
+				FibreBacktrace.outputInfo(jsonOut, startPoints, hitPoints, beamPlanePos, null, iB, iP, Thing.JSON_LOS);				
 			}
 		}
 		jsonOut.println("]}");
@@ -281,9 +281,9 @@ public class BackgroundTargetting {
 		//spit out build commands and LOS definitions in blocks
 		for(Thing thing : Thing.values()){
 			for(int iB=0; iB < sys.channelR.length; iB++){
-				for(int iP=0; iP < sys.channelR[iB].length; iP++){			
-					FibreBacktrace.outputInfo(System.out, startPoints, hitPoints, null, iB, iP, thing);	
-					FibreBacktrace.outputInfo(textOut, startPoints, hitPoints, null, iB, iP, thing);					
+				for(int iP=0; iP < sys.channelR[iB].length; iP++){
+					FibreBacktrace.outputInfo(System.out, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);	
+					FibreBacktrace.outputInfo(textOut, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);					
 				}
 			}
 		}
