@@ -285,13 +285,20 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	
 	public static HashMap<String, double[]> measured = new HashMap<>();
 	static {
+		/*
 		measured.put("AET21:10", new double[]{ 1534.931884765625, 5139.80126953125, 709.6575927734375 });
 		measured.put("AET21:14", new double[]{ 1027.4925537109375, 5170.38525390625, 545.5587768554688 });
 		measured.put("AET21:19", new double[]{ 656.025634765625, 5148.65625, 423.71405029296875 });
 		measured.put("AET21:07", new double[]{ 2123.741943359375, 5082.59228515625, 905.5409545898438 });
 		measured.put("AET21:05", new double[]{ 2147.436767578125, 5229.2294921875, 918.227294921875 });
 		measured.put("AET21:06", new double[]{ 2136.430419921875, 5154.0556640625, 911.3750610351562 });
-		
+		*/
+		measured.put("AET20:06", new double[]{ 2133.16, 5218.03, 919.041 });
+		measured.put("AET20:02", new double[]{ 1902.66,5586.21,844.087 });
+		measured.put("AET20:03", new double[]{ 2009.08,5491.3,886.642 });
+		measured.put("AET20:10", new double[]{ 1680.97,5123.46,759.746});
+		measured.put("AET20:14", new double[]{ 1058.76,5169.8,555.312});
+		measured.put("AET20:19", new double[]{ 627.84,5148.77,403.503 });
 	}
 	
 	/** Fibres */
