@@ -55,7 +55,12 @@ public class OutputUtil {
 			
 		}
 		
-		int approaches[] = (beams instanceof W7xNBI) ? new int[] { 6, 7 } : new int[] { 0 };
+		int approaches[];
+		if(beams instanceof W7xNBI) {
+			approaches = new int[] { 2, 3, 6, 7 };			
+		}else {
+			approaches = new int[] { 0 };
+		}
 		
 		//point on ray closest to beam axes
 		double approach[][] = new double[8][];
@@ -67,7 +72,11 @@ public class OutputUtil {
 			double beamVec[] =  beams.uVec(jB);
 			
 			double aL = Algorithms.pointOnLineNearestAnotherLine(startPoints[iB][iP], uVec, beamStart, beamVec);
-			approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(uVec, aL));
+			if(aL > 0 && aL < 10) {
+				approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(uVec, aL));
+			}else {
+				approach[jB] = null;
+			}
 		}
 		
 		//double start[] = sys.lens1.getBackSurface().getCentre();

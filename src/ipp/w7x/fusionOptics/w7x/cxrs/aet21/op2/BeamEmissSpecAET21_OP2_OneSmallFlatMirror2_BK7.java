@@ -390,8 +390,10 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 		this.rotateToAET20 = rotateToAET20;
 		this.adjustToLC3 = adjustToLC3;
 		
-		if(rotateToAET20)
+		if(rotateToAET20) {
 			lightPathsSystemName = "AET20";
+			beamIdx = new int[]{ W7xNBI.BEAM_Q4, W7xNBI.BEAM_Q4 };
+		}
 		
 		//addElement(frontDisc);
 		addElement(panelEdge);
