@@ -23,4 +23,13 @@ public abstract class ObservationSystem extends Optic {
 	public abstract double getFibreNA(int iB, int iP);
 	public abstract double getFibreDiameter(int iB, int iP);
 
+	protected abstract String getDesignName();
+
+	protected abstract double[][] channelR();
+
+	protected abstract int[] beamIdx();
+
+	protected abstract double[][][] fibreEndPos();
+	protected abstract double[][][] fibreEndNorm();
+
 }

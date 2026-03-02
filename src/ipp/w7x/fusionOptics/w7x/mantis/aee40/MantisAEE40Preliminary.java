@@ -101,4 +101,12 @@ public class MantisAEE40Preliminary extends ObservationSystem {
 		addElement(imagePlane);
 		
 	}
+	@Override
+	protected double[][] channelR() { throw new RuntimeException("Not implemented"); }
+	@Override
+	protected int[] beamIdx() { return beamIdx; }
+	@Override
+	protected double[][][] fibreEndPos() { throw new RuntimeException("Not implemented"); }
+	@Override
+	protected double[][][] fibreEndNorm() { throw new RuntimeException("Not implemented"); }
 }

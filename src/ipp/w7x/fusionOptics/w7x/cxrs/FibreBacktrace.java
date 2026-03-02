@@ -1,6 +1,7 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
 
+import ipp.w7x.fusionOptics.w7x.cxrs.OutputUtil.Thing;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U_CISDual;
@@ -124,7 +125,9 @@ public class FibreBacktrace {
 	static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/fibreTrace/"+((int)(traceWavelength/1e-9))+"nm/"; // /laserAlign
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		makeFibreCyldSTL(); //		System.exit(0);
+		OutputUtil ou = new OutputUtil(sys, beams, outPath);
+		
+		ou.makeFibreCyldSTL(); //		System.exit(0);
 
 		//sys.carriageOnly();
 		//outPath += "carriageOnly/";
@@ -301,7 +304,7 @@ public class FibreBacktrace {
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 
 				for(Thing j : Thing.values())
-					outputInfo(System.out, startPoints, closestApproachPos, beamPlanePos, iB, iP, j);
+					ou.outputInfo(System.out, startPoints, closestApproachPos, beamPlanePos, iB, iP, j);
 				
 				
 				intensityInfo.reset();
@@ -315,7 +318,7 @@ public class FibreBacktrace {
 				stream.println("Output " + thing + ":");
 				for(int iB=0; iB < sys.channelR.length; iB++){
 					for(int iP=0; iP < sys.channelR[iB].length; iP++){					
-						outputInfo(stream, startPoints, closestApproachPos, beamPlanePos, iB, iP, thing);						
+						ou.outputInfo(stream, startPoints, closestApproachPos, beamPlanePos, iB, iP, thing);						
 					}
 				}
 			}
@@ -328,7 +331,7 @@ public class FibreBacktrace {
 				((new SimpleDateFormat()).format(new Date()))+" \", \"los\" : [");
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
-				outputInfo(jsonOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.JSON_LOS);				
+				ou.outputInfo(jsonOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.JSON_LOS);				
 			}
 		}
 		jsonOut.println("]}");
@@ -338,7 +341,7 @@ public class FibreBacktrace {
 		losOut.println("# x1 y2 z2 x2 y2 z2 [mm]");
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
-				outputInfo(losOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.TXT_LOS_MM);				
+				ou.outputInfo(losOut, startPoints, closestApproachPos, beamPlanePos, iB, iP, Thing.TXT_LOS_MM);				
 			}
 		}
 				
@@ -401,150 +404,4 @@ public class FibreBacktrace {
 		vrmlOut.destroy();
 	}
 		
-	public static enum Thing { 
-		FreeCADWallHit, //FreeCAD python to make wall hit position (BackgroundTargetting)
-		FreeCADApproach, //FreeCAD python to make sphere at closest approach to beam
-		FreeCADBeamPlane, //FreeCAD python to make sphere at contact with beam plane
-		FreeCADLOS,  //FreeCAD python to make cylinder of LOS
-		JSON_LOS,   //JSON LOS definition (without end)
-		TXT_LOS_MM  //simple text LOS
-	};
-	
-	public static void outputInfo(PrintStream stream, double startPoints[][][], double hitPoints[][][], double beamPlanePos[][][], int iB, int iP, Thing thing){
-		boolean isLast = (iB == sys.channelR.length-1) && (iP == sys.channelR[iB].length-1);
-
-		double extendLOSCylds = 1.000; // extend 200mm in each direction
-
-		//double rad = hitPoints[iB][iP][3];
-		double rad = losCyldRadius;
-		double uVec[];
-		double losLen;
-		
-		//use beam plane pos for LOS direction if not null, other hit positions
-		if(beamPlanePos != null) {
-			uVec = Util.reNorm(Util.minus(beamPlanePos[iB][iP], startPoints[iB][iP]));
-			losLen = Util.length(Util.minus(beamPlanePos[iB][iP], startPoints[iB][iP]));
-		}else {
-			uVec = Util.reNorm(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
-			losLen = Util.length(Util.minus(hitPoints[iB][iP], startPoints[iB][iP]));
-			
-		}
-		
-		int approaches[] = (beams instanceof W7xNBI) ? new int[] { 6, 7 } : new int[] { 0 };
-		
-		//point on ray closest to beam axes
-		double approach[][] = new double[8][];
-		for(int jB : approaches){			
-			
-			//double beamStart[] = beams.start(sys.beamIdx[iB]);
-			//double beamVec[] =  beams.uVec(sys.beamIdx[iB]);
-			double beamStart[] = beams.start(jB);
-			double beamVec[] =  beams.uVec(jB);
-			
-			double aL = Algorithms.pointOnLineNearestAnotherLine(startPoints[iB][iP], uVec, beamStart, beamVec);
-			approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(uVec, aL));
-		}
-		
-		//double start[] = sys.lens1.getBackSurface().getCentre();
-		
-		String chanName = sys.getChanName(iB, iP);
-		
-		double p[] = Util.minus(startPoints[iB][iP], Util.mul(uVec, extendLOSCylds/2));
-		switch(thing){
-			case FreeCADWallHit:
-				stream.println(freecadMakeSphere("bgHit_Q"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, hitPoints[iB][iP], rad));				
-				break;
-				
-			case FreeCADApproach:		
-				stream.println(freecadMakeSphere("beamApproach_Q"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, hitPoints[iB][iP], rad));
-				
-				break;
-		
-			case FreeCADBeamPlane:
-				if(beamPlanePos != null)					
-					stream.println(freecadMakeSphere("beamPlane_"+sys.beamIdx[iB]+"_"+sys.getDesignName()+"_"+chanName, beamPlanePos[iB][iP], rad));				
-				break;
-		
-			case FreeCADLOS:
-				stream.println(freecadMakeCylinder("los_"+sys.getDesignName()+"_"+chanName, p, uVec, rad, (losLen + extendLOSCylds)));		
-				break;
-				
-			case JSON_LOS:
-				stream.print("{ \"id\" : \"" + chanName
-						+ "\", \"start\":[ " + String.format("%7.5g", startPoints[iB][iP][0]) + ", " + String.format("%7.5g", startPoints[iB][iP][1]) + ", " + String.format("%7.5g", startPoints[iB][iP][2]) + "]"
-						+ ", \"uVec\":[ " + String.format("%7.5g", uVec[0]) + ", " + String.format("%7.5g", uVec[1]) + ", " + String.format("%7.5g", uVec[2]) + "]");
-				for(int jB=0; jB < approach.length; jB++){
-					if(approach[jB] != null)
-						stream.print(", \"approachQ"+(jB+1)+"\":[ " + String.format("%7.5g", approach[jB][0]) + ", " + String.format("%7.5g", approach[jB][1]) + ", " + String.format("%7.5g", approach[jB][2]) + "]");
-				}
-				
-				if(beamPlanePos != null) {
-					stream.println(", \"beamPlaneHit\":[ "+ String.format("%7.5g", beamPlanePos[iB][iP][0]) 
-										+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][1]) 
-										+ ", " + String.format("%7.5g", beamPlanePos[iB][iP][2]) + "]");
-				}
-				
-				if(hitPoints != null) {
-					stream.println(", \"bgHit\":[ "+ String.format("%7.5g", hitPoints[iB][iP][0]) 
-										+ ", " + String.format("%7.5g", hitPoints[iB][iP][1]) 
-										+ ", " + String.format("%7.5g", hitPoints[iB][iP][2]) + "]");
-				}
-				
-				stream.println("}" + (isLast ? "" : ", ")
-						);
-				break;
-				
-			case TXT_LOS_MM:
-				stream.println(String.format("%7.3f", startPoints[iB][iP][0]*1e3) + " " + String.format("%7.3f", startPoints[iB][iP][1]*1e3) + " " + String.format("%7.3f", startPoints[iB][iP][2]*1e3) + " "
-							+ String.format("%7.3f", hitPoints[iB][iP][0]*1e3) + " " + String.format("%7.3f", hitPoints[iB][iP][1]*1e3) + " " + String.format("%7.3f", hitPoints[iB][iP][2]*1e3));
-						
-				break;
-		}
-	}
-	
-	private static String freecadMakeCylinder(String name, double[] pos, double[] unitVec, double radius, double length) {
-		return "Part.show(Part.makeCylinder("+radius*1e3+","+length*1e3 +","										
-				+ "FreeCAD.Vector("+pos[0]*1e3+","+pos[1]*1e3+","+pos[2]*1e3+"), "
-				+ "FreeCAD.Vector("+unitVec[0]*1e3+","+unitVec[1]*1e3+","+unitVec[2]*1e3+ ")));"
-				+ "FreeCAD.ActiveDocument.ActiveObject.Label=\""+name+"\"; "
-				+ "g.addObject(FreeCAD.ActiveDocument.ActiveObject);";
-	}
-
-	private static String freecadMakeSphere(String name, double[] pos, double radius) {
-		return "Part.show(Part.makeSphere("+radius*1e3+",FreeCAD.Vector("+pos[0]*1e3+","+pos[1]*1e3+","+pos[2]*1e3 + ")));"
-				+ " FreeCAD.ActiveDocument.ActiveObject.Label=\""+name+"\"; g.addObject(FreeCAD.ActiveDocument.ActiveObject);";
-	}
-	
-	private static void makeFibreCyldSTL() {
-		Optic fibreCylds = new Optic("fibreCylds");
-		double l = 0.050;
-		for(int iB = 0; iB < sys.channelR.length; iB++){
-			for(int iF=0; iF < sys.channelR[iB].length; iF++){
-
-				double c[] = Util.plus(sys.fibreEndPos[iB][iF], Util.mul(sys.fibreEndNorm[iB][iF], -l/2));
-				fibreCylds.addElement(new Cylinder("fibre_"+iB+"_"+iF, c, sys.fibreEndNorm[iB][iF], sys.getFibreDiameter(iB, iF)/2, l, NullInterface.ideal()));
-			}
-		}
-		
-		STLDrawer stlDrawer = new STLDrawer(outPath + "/fibreCylds-"+sys.getDesignName()+".stl");		
-		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
-		stlDrawer.drawOptic(fibreCylds);
-		stlDrawer.destroy();
-
-		stlDrawer = new STLDrawer(outPath + "/lens1-"+sys.getDesignName()+".stl");		
-		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
-		stlDrawer.drawOptic(sys.lens1);
-		stlDrawer.destroy();
-
-		//stlDrawer = new STLDrawer(outPath + "/lens2-"+sys.getDesignName()+".stl");		
-		//stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});	
-		//stlDrawer.drawOptic(sys.lens2);
-		//stlDrawer.destroy();
-		
-		stlDrawer = new STLDrawer(outPath + "/rodCyld-"+sys.getDesignName()+".stl");		
-		stlDrawer.setTransformationMatrix(new double[][]{ {1000,0,0},{0,1000,0},{0,0,1000}});
-		//if(sys.rod != null)
-		//	stlDrawer.drawOptic(new Optic("rodOptic", new Element[]{ sys.rod }));
-		stlDrawer.destroy();
-	}
 }

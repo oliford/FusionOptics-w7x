@@ -530,4 +530,13 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	public double getFibreNA(int iB, int iP) { return fibreNA;	}
 	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter; }
 
+	@Override
+	protected double[][] channelR() { return channelR; }
+	@Override
+	protected int[] beamIdx() { return beamIdx; }
+	@Override
+	protected double[][][] fibreEndPos() { return fibreEndPos; }
+	@Override
+	protected double[][][] fibreEndNorm() { return fibreEndNorm; }
+
 }

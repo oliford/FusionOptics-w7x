@@ -773,7 +773,15 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 
 	@Override
 	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter; }
-	
+
+	@Override
+	protected double[][] channelR() { return channelR; }
+	@Override
+	protected int[] beamIdx() { return beamIdx; }
+	@Override
+	protected double[][][] fibreEndPos() { return fibreEndPos; }
+	@Override
+	protected double[][][] fibreEndNorm() { return fibreEndNorm; }
 	
 	/*//maybe not
 	private void setupFibresForMaciej() {

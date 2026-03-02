@@ -611,4 +611,12 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	public double getFibreNA(int iB, int iP) { return fibreNA[iB];	}
 	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter[iB]; }
 
+	@Override
+	protected double[][] channelR() { return channelR; }
+	@Override
+	protected int[] beamIdx() { return beamIdx; }
+	@Override
+	protected double[][][] fibreEndPos() { return fibreEndPos; }
+	@Override
+	protected double[][][] fibreEndNorm() { return fibreEndNorm; }
 }
