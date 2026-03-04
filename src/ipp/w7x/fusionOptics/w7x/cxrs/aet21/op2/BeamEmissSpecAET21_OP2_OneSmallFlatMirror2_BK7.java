@@ -4,7 +4,9 @@ import ipp.w7x.fusionOptics.w7x.cxrs.ObservationSystem;
 import ipp.w7x.neutralBeams.W7xNBI;
 import uk.co.oliford.jolu.OneLiners;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.apache.commons.math3.util.FastMath;
 
@@ -35,8 +37,7 @@ import fusionOptics.types.Surface;
 
 /** Beam Emission Spectroscopy / CXRS on AET21 looking at AEK21 beams */
 public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationSystem {
-	private String lightPathsSystemName = "AET21"; //maybe modified to AET20 in constructor
-	public String lightPathsSystemName() { return  lightPathsSystemName; }
+	public String lightPathsSystemName() { return  port.toString(); } //use the port name
 	
 	public String[] lightPathRowNames() { return new String[]{ "" };	}
 	
@@ -70,8 +71,8 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	
 	public Disc frontDisc = new Disc("frontDisc", frontDiscCentre, portAxis, frontDiscRadius, NullInterface.ideal());
 
-	public boolean rotateToAET20 = false;
-	public boolean adjustToLC3 = false;
+	public Port port;
+	public CoordStateT2x coordState;
 	
 	/***** Observation target ****/
 	public int targetBoxIdx = 1; //NI21
@@ -235,7 +236,7 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	// Adjust to best hit the centre of the beams for beam power
 	// slightly low Q8, slightly high on Q7.
 	// This goes through the mid-point of Q7/Q8 and matches perfectly the post-OP2.3 alignment.
-	public double fibreAdjustX = 0.0004;
+	public double fibreAdjustX = 0.0004; //modified in constructor for measured_AET20_MP24
 	public double fibreAdjustY = -0.0008;
 	//public double fibreAdjustY = 0.001320; //I dont know what this was, it's very high.
 	public double fibreRotation = -9 * Math.PI / 180;
@@ -278,32 +279,31 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	
 	public Element tracingTarget = entryTarget;
 	
-	public final String backgroundSTLFiles[] = {
-			"/work/cad/aet21/bg-targetting/target-m2-aet21-cxrs-cut.stl",
-			"/work/cad/aet21/bg-targetting/baffle-m2-aet21-cxrs-cut.stl"
-	};
+	public String[] backgroundSTLFiles() { 
+		if(port == Port.AET21) {
+			return new String[] { 
+					"/work/cad/aet21/bg-targetting/target-m2-aet21-cxrs-cut.stl",
+					"/work/cad/aet21/bg-targetting/baffle-m2-aet21-cxrs-cut.stl"
+			};
+		}else {
+			return new String[] { 
+					"/work/cad/aet21/bg-targetting/target-m2-aet20-cxrs-cut-horiz.stl",
+					"/work/cad/aet21/bg-targetting/target-m2-aet20-cxrs-cut-vert.stl",
+					//"/work/cad/aet21/bg-targetting/baffle-m2-aet20-cxrs-cut-part1.stl",
+					"/work/cad/aet21/bg-targetting/baffle-m2-aet20-cxrs-cut-part2.stl",
+					"/work/cad/aet21/bg-targetting/baffle-m2-aet20-cxrs-cut-part3.stl",
+					"/work/cad/aet21/bg-targetting/baffle-m2-aet20-cxrs-cut-part4.stl",
+					"/work/cad/aet21/bg-targetting/baffle-m2-aet20-cxrs-cut-part5.stl"
+			};			
+		}
+	}
 	
 	public static HashMap<String, double[]> measured = new HashMap<>();
-	static {
-		/*
-		measured.put("AET21:10", new double[]{ 1534.931884765625, 5139.80126953125, 709.6575927734375 });
-		measured.put("AET21:14", new double[]{ 1027.4925537109375, 5170.38525390625, 545.5587768554688 });
-		measured.put("AET21:19", new double[]{ 656.025634765625, 5148.65625, 423.71405029296875 });
-		measured.put("AET21:07", new double[]{ 2123.741943359375, 5082.59228515625, 905.5409545898438 });
-		measured.put("AET21:05", new double[]{ 2147.436767578125, 5229.2294921875, 918.227294921875 });
-		measured.put("AET21:06", new double[]{ 2136.430419921875, 5154.0556640625, 911.3750610351562 });
-		*/
-		measured.put("AET20:06", new double[]{ 2133.16, 5218.03, 919.041 });
-		measured.put("AET20:02", new double[]{ 1902.66,5586.21,844.087 });
-		measured.put("AET20:03", new double[]{ 2009.08,5491.3,886.642 });
-		measured.put("AET20:10", new double[]{ 1680.97,5123.46,759.746});
-		measured.put("AET20:14", new double[]{ 1058.76,5169.8,555.312});
-		measured.put("AET20:19", new double[]{ 627.84,5148.77,403.503 });
-	}
+	
 	
 	/** Fibres */
 	
-	public int beamIdx[] = { W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q8 };
+	public int beamIdx[]; //set in constructor
 	//public double[] channelR = OneLiners.linSpace(5.38, 5.88, nFibres);
 	public String[] lightPathRowName = null;
 	
@@ -382,17 +382,55 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	}
 
 	public BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7() {
-		this(false, false);
+		this(Port.AET21, CoordStateT2x.CAD);
 	}
 	
-	public BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(boolean rotateToAET20, boolean adjustToLC3) {
-		super("beamSpec-aet21-op2");
-		this.rotateToAET20 = rotateToAET20;
-		this.adjustToLC3 = adjustToLC3;
+
+	public static enum CoordStateT2x { 
+		/** As original design in CAD */
+		CAD, 
 		
-		if(rotateToAET20) {
-			lightPathsSystemName = "AET20";
+		/** Using measurements of immersion tube and flange, in load case LC3 of machine. */
+		LC3a,	
+		
+		/** As measured for AET20 in MP2.4, valid at least for OP2.2 - OP2.4*/
+		measured_AET20_MP24
+	};
+	
+	public static enum Port { 
+		/** As originally designed in AET21 */
+		AET21, 
+		
+		/** Rotated around M20-M21 join axis so that it's in AET20 */
+		AET20,	
+	};
+		
+	
+	public BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(Port port, CoordStateT2x coordState) {
+		super("beamSpec-aet21-op2");
+		this.port = port;
+		this.coordState = coordState;
+		
+		if(port == Port.AET20) {
 			beamIdx = new int[]{ W7xNBI.BEAM_Q4, W7xNBI.BEAM_Q4 };
+			
+			measured.put("AET20:06", new double[]{ 2133.16, 5218.03, 919.041 });
+			measured.put("AET20:02", new double[]{ 1902.66,5586.21,844.087 });
+			measured.put("AET20:03", new double[]{ 2009.08,5491.3,886.642 });
+			measured.put("AET20:10", new double[]{ 1680.97,5123.46,759.746});
+			measured.put("AET20:14", new double[]{ 1058.76,5169.8,555.312});
+			measured.put("AET20:19", new double[]{ 627.84,5148.77,403.503 });
+		
+		}else {
+			beamIdx = new int[]{ W7xNBI.BEAM_Q8, W7xNBI.BEAM_Q8 };
+
+			measured.put("AET21:10", new double[]{ 1534.931884765625, 5139.80126953125, 709.6575927734375 });
+			measured.put("AET21:14", new double[]{ 1027.4925537109375, 5170.38525390625, 545.5587768554688 });
+			measured.put("AET21:19", new double[]{ 656.025634765625, 5148.65625, 423.71405029296875 });
+			measured.put("AET21:07", new double[]{ 2123.741943359375, 5082.59228515625, 905.5409545898438 });
+			measured.put("AET21:05", new double[]{ 2147.436767578125, 5229.2294921875, 918.227294921875 });
+			measured.put("AET21:06", new double[]{ 2136.430419921875, 5154.0556640625, 911.3750610351562 });
+			
 		}
 		
 		//addElement(frontDisc);
@@ -416,9 +454,25 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 
 		dumpInfoForDesigner();
 		
+
+		if(coordState == CoordStateT2x.measured_AET20_MP24) {
+			fibreAdjustX += 0.000;
+			lens3.shift(OneLiners.mul(portAxis, 0.020));
+		}
+		
+		
 		setupFibrePositions();
 		
-		if(rotateToAET20) {
+		if(port == Port.AET20) {
+			ArrayList<Sphere> spheres = new ArrayList<>();
+			for(Entry<String, double[]> point : measured.entrySet()) {
+				String name = point.getKey();
+				double[] pos = point.getValue();
+				Sphere sphere = new Sphere("measured_" + name, pos, 0.01, NullInterface.ideal());
+				spheres.add(sphere);
+				addElement(sphere);
+			}
+			
 			double[] rotAxis = { FastMath.cos(2*FastMath.PI / 5), FastMath.sin(2*FastMath.PI / 5), 0 }; 
 			double rotMat[][] = Algorithms.rotationMatrix(rotAxis, FastMath.PI);
 			/*for(int i=0; i < 3; i++)
@@ -433,9 +487,14 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 					fibreEndNorm[i][j] = Algorithms.rotateVector(rotMat, fibreEndNorm[i][j]);
 				}				
 			}
+			
+			for(Sphere sphere : spheres) {
+				System.out.print("measured.put(\"" + sphere.getName() + "\", new double[]{ \"");				
+				OneLiners.dumpArray(sphere.getCentre());
+			}
 		}
 		
-		if(adjustToLC3) {
+		if(coordState == CoordStateT2x.LC3a || coordState == CoordStateT2x.measured_AET20_MP24) {
 			//these are adjustments for AET20 (not 21)
 			/*double[] flangeCenterL0 = { 5.552504638671875, 5.833919921875, 0.7168470764160156 };
 			double[] flangeNormalL0 = { -0.61593547, -0.72288279, -0.31315167 };
@@ -524,9 +583,9 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 	}
 
 	public String getDesignName() { 
-		return (rotateToAET20 ? "aet20" : "aet21")
+		return port.toString().toLowerCase()
 				+ "-op2-oneFlat-beamCentre" 
-				+ (adjustToLC3 ? "-lc3" : "");
+				+ coordState.toString();
 	}
 
 	public double getFibreNA(int iB, int iP) { return fibreNA;	}

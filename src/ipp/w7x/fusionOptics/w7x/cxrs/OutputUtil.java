@@ -18,7 +18,7 @@ public class OutputUtil {
 	public SimpleBeamGeometry beams;
 	public String outPath;
 	
-	public double losCyldRadius = 1.0;
+	public double losCyldRadius = 0.005;
 	
 	public OutputUtil(ObservationSystem sys, SimpleBeamGeometry beams, String outPath) {
 		this.sys = sys;
@@ -42,12 +42,14 @@ public class OutputUtil {
 			int iB, int iP, Thing thing){
 		boolean isLast = (iB == sys.channelR().length-1) && (iP == sys.channelR()[iB].length-1);
 
-		double extendLOSCylds = 1.000; // extend 200mm in each direction
+		double extendLOSCylds = 0.500; // extend 500mm in each direction
 
-		//double rad = hitPoints[iB][iP][3];
 		double rad = losCyldRadius;
 		double uVec[];
 		double losLen;
+		
+		if(bgHit != null && bgHit[iB][iP].length > 3)
+			rad = bgHit[iB][iP][3] / 2;
 		
 		//use beam plane pos for LOS direction if not null, other hit positions
 		if(beamPlanePos != null) {
@@ -67,7 +69,7 @@ public class OutputUtil {
 			throw new RuntimeException("No valid points from which to get a LOS");
 		}
 		
-		int approaches[] = (beams instanceof W7xNBI) ? new int[] { 6, 7 } : new int[] { 0 };
+		int approaches[] = (beams instanceof W7xNBI) ? new int[] { (3) -1, (4) -1, (7) -1, (8) -1 } : new int[] { 0 };
 		
 		//point on ray closest to beam axes
 		double approach[][] = new double[8][];
@@ -79,7 +81,10 @@ public class OutputUtil {
 			double beamVec[] =  beams.uVec(jB);
 			
 			double aL = Algorithms.pointOnLineNearestAnotherLine(startPoints[iB][iP], uVec, beamStart, beamVec);
-			approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(uVec, aL));
+			if(aL > 0 && aL < 4)
+				approach[jB] = OneLiners.plus(startPoints[iB][iP], OneLiners.mul(uVec, aL));
+			else
+				approach[jB] = null;
 		}
 		
 		//double start[] = sys.lens1.getBackSurface().getCentre();

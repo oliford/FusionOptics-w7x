@@ -39,15 +39,18 @@ public class BeamEmissSpecAEM50 extends BeamEmissSpecAEM41 {
 		
 		
 	}
-
-	public BeamEmissSpecAEM50() {
-		super();
-		this.name = "beamSpec-aem41";
-		this.backgroundSTLFiles = new String[]{
+	
+	public String[] backgroundSTLFiles() {
+		return new String[] { 
 				"/work/cad/aem50/bg-targetting/shield-m50-cut2.stl",
 				"/work/cad/aem50/bg-targetting/baffle-m50-cut2.stl",
 				"/work/cad/aem50/bg-targetting/target-m50-cut2.stl",
 		};
+	}
+
+	public BeamEmissSpecAEM50() {
+		super();
+		this.name = "beamSpec-aem41";
 
 		this.rotate(new double[3], Algorithms.rotationMatrix(rotationAxis, rotationAngle));
 		

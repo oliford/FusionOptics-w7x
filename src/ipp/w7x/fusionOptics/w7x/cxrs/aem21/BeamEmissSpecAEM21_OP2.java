@@ -338,7 +338,8 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 	//at which surface the LOS should 'start'. This should be the last physical surface before the plasma
 	public Surface losStartSurface = mirror;		
 	
-	public final String backgroundSTLFiles[] = {
+	public String[] backgroundSTLFiles() {
+		return new String[] { 
 			"/work/cad/aem21/bg-targetting/baffles-cut.stl",
 		//"/work/cad/aem21/bg-targetting/panel1.stl",
 			"/work/cad/aem21/bg-targetting/panel2-smallArea.stl",
@@ -346,7 +347,8 @@ public class BeamEmissSpecAEM21_OP2 extends ObservationSystem {
 			//"/work/cad/aem21/bg-targetting/panel4.stl",
 			//"/work/cad/aem21/bg-targetting/panel5.stl",
 			"/work/cad/aem21/bg-targetting/shield-cut-smallArea.stl",
-			"/work/cad/aem21/bg-targetting/target-cut-smallArea.stl",
+			"/work/cad/aem21/bg-targetting/target-cut-smallArea.stl"
+		};
 	};
 	
 	public static HashMap<String, double[]> measured = new HashMap<>();	

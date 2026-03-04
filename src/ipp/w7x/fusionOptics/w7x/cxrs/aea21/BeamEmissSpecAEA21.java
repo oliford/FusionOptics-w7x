@@ -82,11 +82,13 @@ public class BeamEmissSpecAEA21 extends ObservationSystem {
 	
 	public Square mirror = new Square("mirror", mirrorCentrePos, mirrorNormal, mirrorX, mirrorHeight, mirrorWidth, Reflector.ideal());
 	
-	public final String backgroundSTLFiles[] = {
+	public String[] backgroundSTLFiles() {
+		return new String[] { 
 			"/work/cad/aea21/bg-targetting/baffle-m3.off-aea21-cut.stl",
 			"/work/cad/aea21/bg-targetting/panel-m21.off-aea21-cut.stl",
 			"/work/cad/aea21/bg-targetting/panel-m30.off-aea21-cut.stl",
 			"/work/cad/aea21/bg-targetting/shield-m3.off-aea21-cut.stl",
+		};
 	};
 		
 	//public NodesAndElementsMesh shieldTiles = new2 NodesAndElementsMesh("shield", "/work/ipp/w7x/cad/shield-m2", mirrorPos, 0.150);

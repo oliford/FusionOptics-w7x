@@ -24,6 +24,8 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aet21.BeamEmissSpecAET21_postDesign;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7;
 import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7.Focus;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7.CoordStateT2x;
+import ipp.w7x.fusionOptics.w7x.cxrs.aet21.op2.BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7.Port;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
 import ipp.w7x.neutralBeams.W7XPelletsL41;
@@ -73,7 +75,7 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
-	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(true, true);	
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(Port.AET20, CoordStateT2x.CAD);	
 	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.measuredOP23);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
@@ -108,8 +110,6 @@ public class BackgroundTargetting {
 	
 	public static String writeWRLForDesigner = null;//"20210817";
 	
-	public static double losCyldRadius = 0.005;
-		
 	public static void main(String[] args) throws FileNotFoundException {
 		OutputUtil ou = new OutputUtil(sys, beams, outPath);
 		
@@ -129,7 +129,7 @@ public class BackgroundTargetting {
 		BinaryMatrixWriter hitInfoOut = new BinaryMatrixWriter(outPath + "/hitInfo.bin", 12);
 		
 		Optic background = new Optic("background");
-		for(String fileName : sys.backgroundSTLFiles){			
+		for(String fileName : sys.backgroundSTLFiles()){			
 			String parts[] = fileName.split("/");
 			System.out.print("Loading BG mesh " + fileName + "... ");
 			background.addElement(new STLMesh("bg_"+parts[parts.length-1], fileName));

@@ -59,12 +59,6 @@ public class BeamEmissSpecAEK41_edgeUV extends BeamEmissSpecAEK41_base {
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 1.500, 2.000, NullInterface.ideal());
 
 	
-	public final String backgroundSTLFiles[] = {
-			"/work/ipp/w7x/cad/passive/bg-targetting/pumpslot-m4.off-aek41-cut.stl",
-			"/work/ipp/w7x/cad/passive/bg-targetting/target-m4.off-aek41-cut.stl"
-	};
-
-	
 	public String getDesignName() { return "aek41-edgeUV";	}
 	
 	public double getFibreNA(int iB, int iP) { return fibreNA;	}

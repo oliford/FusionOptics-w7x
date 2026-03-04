@@ -174,6 +174,15 @@ public abstract class BeamEmissSpecAEK41b extends ObservationSystem  {
 	protected abstract void setupFibrePositions();
 	
 	public Surface strayPlane = null;
+	
+
+	public String[] backgroundSTLFiles() {
+		return new String[] { 
+			"/work/ipp/w7x/cad/passive/bg-targetting/pumpslot-m4.off-aek41-cut.stl",
+			"/work/ipp/w7x/cad/passive/bg-targetting/target-m4.off-aek41-cut.stl"
+		};
+	};
+
 		
 	private void setupFibrePlanes() {
 		int nBeams = channelR.length;

@@ -109,4 +109,7 @@ public class MantisAEE40Preliminary extends ObservationSystem {
 	protected double[][][] fibreEndPos() { throw new RuntimeException("Not implemented"); }
 	@Override
 	protected double[][][] fibreEndNorm() { throw new RuntimeException("Not implemented"); }
+
+	@Override
+	public String[] backgroundSTLFiles() { throw new RuntimeException("Not implemented"); 	}
 }

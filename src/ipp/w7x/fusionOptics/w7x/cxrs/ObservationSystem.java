@@ -2,7 +2,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import fusionOptics.types.Optic;
 
-/* Generic fiber based observation system at W7X */
+/** Generic fiber based observation system at W7X. Used by the various design apps. */
 public abstract class ObservationSystem extends Optic {
 	
 	public ObservationSystem(String name) {		super(name);  }
@@ -31,5 +31,7 @@ public abstract class ObservationSystem extends Optic {
 
 	protected abstract double[][][] fibreEndPos();
 	protected abstract double[][][] fibreEndNorm();
-
+	
+	/** Return list of files containing STL meshes of the wall that the lines of sight might hit. Used primarily by BackgroundTargetting... */
+	public abstract String[] backgroundSTLFiles();
 }
