@@ -1,8 +1,7 @@
 package ipp.w7x.fusionOptics.w7x.cxrs;
 
 import fusionDefs.neutralBeams.SimpleBeamGeometry;
-import ipp.w7x.fusionOptics.w7x.cxrs.FibreBacktrace.Thing;
-
+import ipp.w7x.fusionOptics.w7x.cxrs.OutputUtil.Thing;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21.Subsystem;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_baffleW;
@@ -74,8 +73,8 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
-	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(false, true);	
-	public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.measuredOP23);
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(true, true);	
+	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.measuredOP23);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
@@ -112,6 +111,8 @@ public class BackgroundTargetting {
 	public static double losCyldRadius = 0.005;
 		
 	public static void main(String[] args) throws FileNotFoundException {
+		OutputUtil ou = new OutputUtil(sys, beams, outPath);
+		
 		System.out.println(outPath);
 		
 		VRMLDrawer vrmlOut = new VRMLDrawer(outPath + "/backTrace-"+sys.getDesignName()+((writeWRLForDesigner != null) ? ("-" + writeWRLForDesigner + ".wrl") : ".vrml"), 5.005);
@@ -257,7 +258,7 @@ public class BackgroundTargetting {
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
 				
 				for(Thing thing : Thing.values()){
-					FibreBacktrace.outputInfo(System.out, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);
+					ou.outputInfo(System.out, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);
 				}
 				
 				System.out.println();	
@@ -271,7 +272,7 @@ public class BackgroundTargetting {
 				((new SimpleDateFormat()).format(new Date()))+" \", \"los\" : [");
 		for(int iB=0; iB < sys.channelR.length; iB++){
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
-				FibreBacktrace.outputInfo(jsonOut, startPoints, hitPoints, beamPlanePos, null, iB, iP, Thing.JSON_LOS);				
+				ou.outputInfo(jsonOut, startPoints, hitPoints, beamPlanePos, null, iB, iP, Thing.JSON_LOS);				
 			}
 		}
 		jsonOut.println("]}");
@@ -282,8 +283,8 @@ public class BackgroundTargetting {
 		for(Thing thing : Thing.values()){
 			for(int iB=0; iB < sys.channelR.length; iB++){
 				for(int iP=0; iP < sys.channelR[iB].length; iP++){
-					FibreBacktrace.outputInfo(System.out, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);	
-					FibreBacktrace.outputInfo(textOut, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);					
+					ou.outputInfo(System.out, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);	
+					ou.outputInfo(textOut, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);					
 				}
 			}
 		}

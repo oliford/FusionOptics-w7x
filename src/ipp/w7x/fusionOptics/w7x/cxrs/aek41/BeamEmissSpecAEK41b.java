@@ -274,4 +274,13 @@ public abstract class BeamEmissSpecAEK41b extends ObservationSystem  {
 	public List<Element> makeSimpleModel() {
 		return new ArrayList<Element>();
 	}
+
+	@Override
+	protected double[][] channelR() { return channelR; }
+	@Override
+	protected int[] beamIdx() { return beamIdx; }
+	@Override
+	protected double[][][] fibreEndPos() { return fibreEndPos; }
+	@Override
+	protected double[][][] fibreEndNorm() { return fibreEndNorm; }
 }
