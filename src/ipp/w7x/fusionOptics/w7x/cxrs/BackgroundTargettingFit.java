@@ -90,7 +90,7 @@ public class BackgroundTargettingFit {
 	
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
-	public final static int nAttempts = 100;
+	public final static int nAttempts = 200;
 
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/bgFit/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -115,7 +115,7 @@ public class BackgroundTargettingFit {
 		vrmlOut.setSkipRays(nAttempts*totalFibres / 5000);
 		double col[][] = ColorMaps.jet(sys.channelR[0].length);
 		
-		double rad = 0.005;
+		double rad = 0.015;
 		targetNames = new String[sys.measured.size()];
 		targetCoords = new double[sys.measured.size()][];
 		int k=0;

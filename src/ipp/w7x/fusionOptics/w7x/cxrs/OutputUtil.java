@@ -24,6 +24,10 @@ public class OutputUtil {
 		this.sys = sys;
 		this.beams = beams;
 		this.outPath = outPath;
+		
+		System.out.println("Model: " + sys.getClass().getSimpleName() + "\n"
+				+ "Beams: " + beams.getClass().getSimpleName() + "\n"
+				+ "Outputting ray tracing models and LOS information to path:\n\t" + outPath);
 	}
 
 	public static enum Thing { 

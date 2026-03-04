@@ -456,23 +456,23 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 		
 
 		if(coordState == CoordStateT2x.measured_AET20_MP24) {
-			fibreAdjustX += 0.000;
+			//change focal length as points are a bit further apart
+			//I seem to recall that we did actually move lens3 to do this
 			lens3.shift(OneLiners.mul(portAxis, 0.020));
+			
+			//tweaked to match measured points more or less
+			//it could really use a little rotation, but it is within a few cm on the divertor, so should be ok at the beam
+			fibreAdjustX += 0.0001;
+			fibreAdjustY += 0.0002;
+			
+			//refocus, doesnt really get much better
+			fibrePlanePos = OneLiners.plus(fibrePlanePos, OneLiners.mul(portAxis, 0.0002));
 		}
 		
 		
 		setupFibrePositions();
 		
-		if(port == Port.AET20) {
-			ArrayList<Sphere> spheres = new ArrayList<>();
-			for(Entry<String, double[]> point : measured.entrySet()) {
-				String name = point.getKey();
-				double[] pos = point.getValue();
-				Sphere sphere = new Sphere("measured_" + name, pos, 0.01, NullInterface.ideal());
-				spheres.add(sphere);
-				addElement(sphere);
-			}
-			
+		if(port == Port.AET20) {			
 			double[] rotAxis = { FastMath.cos(2*FastMath.PI / 5), FastMath.sin(2*FastMath.PI / 5), 0 }; 
 			double rotMat[][] = Algorithms.rotationMatrix(rotAxis, FastMath.PI);
 			/*for(int i=0; i < 3; i++)
@@ -486,11 +486,6 @@ public class BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 extends ObservationS
 					fibreEndPos[i][j] = Algorithms.rotateVector(rotMat, fibreEndPos[i][j]);
 					fibreEndNorm[i][j] = Algorithms.rotateVector(rotMat, fibreEndNorm[i][j]);
 				}				
-			}
-			
-			for(Sphere sphere : spheres) {
-				System.out.print("measured.put(\"" + sphere.getName() + "\", new double[]{ \"");				
-				OneLiners.dumpArray(sphere.getCentre());
 			}
 		}
 		
