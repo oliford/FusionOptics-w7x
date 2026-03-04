@@ -75,7 +75,7 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
-	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(Port.AET20, CoordStateT2x.CAD);	
+	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(Port.AET20, CoordStateT2x.measured_AET20_MP24);	
 	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.measuredOP23);
 	public static SimpleBeamGeometry beams = W7xNBI.def();
 	
