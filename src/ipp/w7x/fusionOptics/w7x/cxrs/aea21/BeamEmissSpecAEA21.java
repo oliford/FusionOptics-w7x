@@ -6,6 +6,7 @@ import uk.co.oliford.jolu.OneLiners;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import algorithmrepository.Algorithms;
 import net.jafama.FastMath;
@@ -531,8 +532,24 @@ public class BeamEmissSpecAEA21 extends ObservationSystem {
 	public Element tracingTarget = mirror;
 	public Surface checkSurface = mirror;
 	
+	public static HashMap<String, double[]> measured = new HashMap<>();	
+	static {
+		// Post OP2.3 in-vessel alignment measurement 11.09.2025
+			
+		measured.put("AEA21_A:02", new double[] { 1, 0, 0 });
+		measured.put("AEA21_A:24", new double[] { 1, 0, 0 });
+		measured.put("AEA21_A:36", new double[] { 1, 0, 0 });
+		measured.put("AEA21_B:13", new double[] { 1, 0, 0 });
+		measured.put("AEA21_X1:01", new double[] { 1, 0, 0 });
+		measured.put("AEA21_X1:06", new double[] { 1, 0, 0 });
+		measured.put("AEA21_X2:01", new double[] { 1, 0, 0 });
+		measured.put("AEA21_X2:06", new double[] { 1, 0, 0 });
+		
+	}
+	
 	public enum Subsystem {
 		CXRS,
+		CXRS_OP23, //Marco and Oli screwed up the alignment and it shifted. This was measured by Marco and Lucas in the NBI pump room in MP2.4
 		Lamp,
 		SMSE,
 		TubeAxis,
@@ -559,6 +576,11 @@ public class BeamEmissSpecAEA21 extends ObservationSystem {
 		
 		switch(subsystem) {
 			case CXRS: setupFibrePositionsCXRS(); break;
+			case CXRS_OP23:
+				ferruleAdjustRight += 0.002880;
+				ferruleAdjustUp -= 0.000400;
+				setupFibrePositionsCXRS(); 
+				break;
 			case Lamp: makeLED(); break;
 			case TubeAxis: makeAxisLaser(); break;
 			case SMSE: setupFibrePositionsSMSE(); break;
@@ -636,6 +658,7 @@ public class BeamEmissSpecAEA21 extends ObservationSystem {
 	public String getDesignName() { 
 		switch(subsystem) {
 			case CXRS: return "aea21";
+			case CXRS_OP23: return "aea21_op23";
 			case Lamp: return "aea21-led";
 			case SMSE: return "aea21-smse";
 			case TubeAxis: return "tube-axis";
@@ -930,21 +953,23 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 		
 	public double getFibreNA(int iB, int iP) { 
 		switch(subsystem) {
-			case CXRS: return 0.22; 
+			case CXRS: return 0.22;
+			case CXRS_OP23: return 0.22;
 			case Lamp: return 0.6;
 			case TubeAxis: return 0.001;
 			case SMSE: return 0.22;
-			default: return Double.NaN;
+			default: throw new RuntimeException("wtf? how do enums work?");
 		}
 	}
 	
 	public double getFibreDiameter(int iB, int iP)  { 
 		switch(subsystem) {
 			case CXRS: return 0.22e-3; 
+			case CXRS_OP23: return 0.22e-3; 
 			case Lamp: return 0.019e-3;
 			case TubeAxis: return 0.001e-3;
 			case SMSE: return 0.22e-3;
-			default: return Double.NaN;
+			default: throw new RuntimeException("wtf? how do enums work?");
 		}
 	}
 
