@@ -549,7 +549,7 @@ public class BeamEmissSpecAEA21 extends ObservationSystem {
 	
 	public enum Subsystem {
 		CXRS,
-		CXRS_OP23, //Marco and Oli screwed up the alignment and it shifted. This was measured by Marco and Lucas in the NBI pump room in MP2.4
+		CXRS_MEASURED_OP23, //Marco and Oli screwed up the alignment and it shifted. This was measured by Marco and Lucas in the NBI pump room in MP2.4
 		Lamp,
 		SMSE,
 		TubeAxis,
@@ -576,7 +576,7 @@ public class BeamEmissSpecAEA21 extends ObservationSystem {
 		
 		switch(subsystem) {
 			case CXRS: setupFibrePositionsCXRS(); break;
-			case CXRS_OP23:
+			case CXRS_MEASURED_OP23:
 				ferruleAdjustRight += 0.002880;
 				ferruleAdjustUp -= 0.000400;
 				setupFibrePositionsCXRS(); 
@@ -658,7 +658,7 @@ public class BeamEmissSpecAEA21 extends ObservationSystem {
 	public String getDesignName() { 
 		switch(subsystem) {
 			case CXRS: return "aea21";
-			case CXRS_OP23: return "aea21_op23";
+			case CXRS_MEASURED_OP23: return "aea21_op23";
 			case Lamp: return "aea21-led";
 			case SMSE: return "aea21-smse";
 			case TubeAxis: return "tube-axis";
@@ -954,7 +954,7 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 	public double getFibreNA(int iB, int iP) { 
 		switch(subsystem) {
 			case CXRS: return 0.22;
-			case CXRS_OP23: return 0.22;
+			case CXRS_MEASURED_OP23: return 0.22;
 			case Lamp: return 0.6;
 			case TubeAxis: return 0.001;
 			case SMSE: return 0.22;
@@ -965,7 +965,7 @@ nextFibre:		for(int iX=0; iX < smseCols; iX++) {
 	public double getFibreDiameter(int iB, int iP)  { 
 		switch(subsystem) {
 			case CXRS: return 0.22e-3; 
-			case CXRS_OP23: return 0.22e-3; 
+			case CXRS_MEASURED_OP23: return 0.22e-3; 
 			case Lamp: return 0.019e-3;
 			case TubeAxis: return 0.001e-3;
 			case SMSE: return 0.22e-3;

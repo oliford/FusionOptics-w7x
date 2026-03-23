@@ -25,11 +25,13 @@ public abstract class ObservationSystem extends Optic {
 
 	protected abstract String getDesignName();
 
-	protected abstract double[][] channelR();
-
+	protected abstract double[][] channelR();	
 	protected abstract int[] beamIdx();
 
+	/** Positions of the ends of the fibes in real space [fibre set (or beam)][fibre index][x/y/z] */
 	protected abstract double[][][] fibreEndPos();
+	
+	/** Unit vector of the normal of the ends of the fibes in real space [fibre set (or beam)][fibre index][x/y/z] */
 	protected abstract double[][][] fibreEndNorm();
 	
 	/** Return list of files containing STL meshes of the wall that the lines of sight might hit. Used primarily by BackgroundTargetting... */

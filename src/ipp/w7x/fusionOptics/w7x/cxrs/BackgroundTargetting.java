@@ -38,6 +38,7 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 
 import uk.co.oliford.jolu.OneLiners;
 import algorithmrepository.Algorithms;
@@ -72,7 +73,7 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAET21_asMeasuredOP12b sys = new BeamEmissSpecAET21_asMeasuredOP12b();
 	//public static BeamEmissSpecAET20_postDesign_LC3 sys = new BeamEmissSpecAET20_postDesign_LC3();
 	
-	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS);
+	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS_MEASURED_OP23);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
 	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(Port.AET20, CoordStateT2x.measured_AET20_MP24);	
@@ -103,6 +104,9 @@ public class BackgroundTargetting {
 	 
 	public final static int nAttempts = 500;
 	public static int nRaysToDraw = 50;
+	
+	/** If true, the tracing is done only for the points in sys.measured. This is faster and used for tweaking the design to match the alignment measurements */
+	public static boolean traceMeasuredPoints = true;
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/background/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -144,6 +148,18 @@ public class BackgroundTargetting {
 		sys.addElement(sys.beamPlane);
 		sys.beamPlane.setInterface(NullInterface.ideal());		
 		
+		if(traceMeasuredPoints) {
+			double measuredBallRadius = 0.02;
+			
+			for(Entry<String, double[]> entry : sys.measured.entrySet()) {
+				String targetName = entry.getKey();
+				double[] targetCoords = OneLiners.mul(entry.getValue(), 1e-3);
+				
+				System.out.println("Part.show(Part.makeSphere("+measuredBallRadius*1e3+",FreeCAD.Vector("+targetCoords[0]*1e3+","+targetCoords[1]*1e3+","+targetCoords[2]*1e3 + ")));"
+						+ " FreeCAD.ActiveDocument.ActiveObject.Label=\"measHit_" + targetName + "\";");
+
+			}
+		}
 		
 		double hitPoints[][][] = new double[sys.channelR.length][][];
 		double startPoints[][][] = new double[sys.channelR.length][][];
@@ -155,6 +171,11 @@ public class BackgroundTargetting {
 			beamPlanePos[iB] = new double[sys.channelR[iB].length][];
 			
 			for(int iP=0; iP < sys.channelR[iB].length; iP++){
+				
+				if(traceMeasuredPoints) {
+					if(!sys.measured.containsKey(sys.getChanName(iB, iP)))
+						continue;
+				}
 							
 				int nHit = 0, nStray = 0;
 				
