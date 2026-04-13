@@ -48,72 +48,18 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 	
 	public double windowCentre[] = Util.plus(flangeCentre, Util.mul(portNormal, +0.008));
 	
+	public Disc entryWindowFront;
+	public Disc entryWindowBack;
+	public Iris entryWindowIris;
 	
-	/** OP1.2 Optic axis tilt to match spatial calibration images (18.08.2017)*/
-	//public double tiltVertical = 0.20 * Math.PI / 180;
-	//public double tiltHorizontal = -0.22 * Math.PI / 180;
-	//public double tiltInPlane = 0.0 * Math.PI / 180;
-	
-	/** OP2.1 Tilted up a bit to compensate for swtiching sides of edgeVIS on backplate and to miss the portliner */
-	//public double tiltVertical = -0.2 * Math.PI / 180;
-	//public double tiltHorizontal = 0 * Math.PI / 180; //put this back at 0, otherwise we clip the protliner
-	//public double tiltInPlane = 0.0 * Math.PI / 180;
-	
-	
-	// Design OP2.2, tilted to get out of the way of future QHW, but only just clip port liner
-	public double tiltVertical = 0.5 * Math.PI / 180;
-	public double tiltHorizontal = 1.6 * Math.PI / 180; //moved from 2.0 to 1.8 to stop pelK hitting QHW mirror box
-	public double tiltInPlane = 23.0 * Math.PI / 180;
-	
-	public double rotVert[] = Util.reNorm(Util.cross(portNormal, globalUp));
-	public double opticAxis0[] = OneLiners.rotateVectorAroundAxis(tiltVertical, rotVert, portNormal);
-	public double opticAxis[] = OneLiners.rotateVectorAroundAxis(tiltHorizontal, globalUp, opticAxis0);	
-	
-	
-	/***** Entry Window *****/
-	
-	public double entryWindowDiameter = 0.060; // DN63 CF Window
-	public double entryWindowThickness = 0.005; // Guessed
-	public double entryWindowShift = 0.000; 
-	
-	public double entryWindowFrontPos[] = Util.plus(windowCentre, Util.mul(opticAxis, entryWindowShift));
-	public double entryWindowIrisPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness / 2));
-	private double entryWindowBackPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness));
-	
-	Medium windowMedium = new Medium(new Sapphire());
-	public Disc entryWindowFront = new Disc("entryWindowFront", entryWindowFrontPos, opticAxis, entryWindowDiameter/2, windowMedium, null, NullInterface.ideal());
-	public Disc entryWindowBack = new Disc("entryWindowBack", entryWindowBackPos, opticAxis, entryWindowDiameter/2, null, windowMedium, NullInterface.ideal());
-	public Iris entryWindowIris = new Iris("entryWindowIris", entryWindowIrisPos, opticAxis, entryWindowDiameter*2, entryWindowDiameter*0.49, null, null, Absorber.ideal());
-	
-	/**** Main Lens *****/
-	//Thor Labs LA4795-ML Fused Silica lens, 
-	public double lens1DistBehindWindow = 0.028;
-	public double lens1Diameter = 0.075;
-	public double lens1CentreThickness = 0.011;
-	//public double lens1FocalLength = 0.200;
-	public double lens1CurvatureRadius = 0.092;
-	public double lens1ClearAperture = 0.0675;
-
-	public double lensCentrePos[] = Util.plus(windowCentre, Util.mul(opticAxis, lens1DistBehindWindow + lens1CentreThickness));
-	
-	public Medium lensMedium = new Medium(new FusedSilica());  
-	public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromRadiusOfCurvAndCentreThickness(
-	//public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
-											"lens1",
-											lensCentrePos,
-											opticAxis,
-											lens1Diameter/2, // radius
-											lens1CurvatureRadius, // rad curv
-//											lens1FocalLength, // rad curv
-											lens1CentreThickness,  
-											lensMedium, 
-											IsoIsoInterface.ideal()
-											);//,designWavelenth);
-	
-	public double lensIrisPos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, -0.005));
-	public Iris lensIris = new Iris("lensIris", lensIrisPos, opticAxis, lens1Diameter, lens1ClearAperture/2, null, null, Absorber.ideal());
-	
-	public Surface losStartSurface = entryWindowFront;
+	public enum AlignmentState {
+		OP12_design,
+		OP21_design,
+		OP22_design,
+		OP22_measured,
+	}
+		
+	public Surface losStartSurface;
 
 	/*** Fibres ****/
 	public int beamIdx[] = null;
@@ -129,30 +75,22 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 	public double fibreNA = 0.22; // standard
 	public double fibreDiameter = 0.000400; // standard
 	
-	
 	public double fibrePlaneBehindLens = 0.200;
+	
+	double[] lensCentrePos;
 	
 	//public double fibresXVec[] = Util.reNorm(Util.minus(fibre10EndPos, fibre1EndPos));
 	//public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, portNormal));
 	//public double fibrePlanePos[] = Util.mul(Util.plus(fibre1EndPos, fibre10EndPos), 0.5);
 	
-	
-	
-	public double fibrePlanePos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, fibrePlaneBehindLens)); 
-	public double fibresXVec0[] = Util.reNorm(new double[]{ 0.0208466796875, 0.02511328125, -0.13614230346679687 });
-	public double fibresYVec0[] = Util.reNorm(Util.cross(fibresXVec0, opticAxis));
-	
-	public double fibresXVec[] = Algorithms.rotateVector(Algorithms.rotationMatrix(opticAxis, tiltInPlane), fibresXVec0);
-	public double fibresYVec[] = Util.reNorm(Util.cross(fibresXVec, opticAxis));
-	
-	public Square fibrePlane = new Square("fibrePlane", fibrePlanePos, opticAxis, fibresYVec, 0.300, 0.300, NullInterface.ideal());
+	public double[] fibrePlanePos;
+	public double[] fibresXVec;
+	public double[] fibresYVec;
+	public Square fibrePlane;
 	public Square fibrePlanes[][];
-	
 
-
-	public Element tracingTarget = entryWindowFront;
-	
-	public Surface checkSurface = lens1.getFrontSurface();
+	public Element tracingTarget;
+	public Surface checkSurface;
 	
 
 	/** Plasma radiating surface for heat-load analysis */
@@ -176,7 +114,8 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 	protected abstract void setupFibrePositions();
 	
 	public Surface strayPlane = null;
-	
+
+	public AlignmentState alignmentState;	
 
 	public String[] backgroundSTLFiles() {
 		return new String[] { 
@@ -232,9 +171,112 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 		*/
 	}
 	
-	public BeamEmissSpecAEK41_base() {
+	public BeamEmissSpecAEK41_base(AlignmentState alignment) {
 		super("beamSpec-aek21");
-				
+		this.alignmentState = alignment;
+		
+		double tiltVertical, tiltHorizontal, tiltInPlane;
+		double lens1DistBehindWindow;
+		
+		switch(alignment) {
+		case OP12_design:
+			/** OP1.2 Optic axis tilt to match spatial calibration images (18.08.2017)*/
+			lens1DistBehindWindow = 0.028;
+			tiltVertical = 0.20 * Math.PI / 180;
+			tiltHorizontal = -0.22 * Math.PI / 180;
+			tiltInPlane = 0.0 * Math.PI / 180;
+			break;
+		
+		case OP21_design:
+			/** OP2.1 Tilted up a bit to compensate for swtiching sides of edgeVIS on backplate and to miss the portliner */
+			lens1DistBehindWindow = 0.028;
+			tiltVertical = -0.2 * Math.PI / 180;
+			tiltHorizontal = 0 * Math.PI / 180; //put this back at 0, otherwise we clip the protliner
+			tiltInPlane = 0.0 * Math.PI / 180;
+			break;
+			
+		case OP22_design:
+			// Design OP2.2, tilted to get out of the way of future QHW, but only just clip port liner
+			lens1DistBehindWindow = 0.028;
+			tiltVertical = 0.5 * Math.PI / 180;
+			tiltHorizontal = 1.6 * Math.PI / 180; //moved from 2.0 to 1.8 to stop pelK hitting QHW mirror box
+			tiltInPlane = 23.0 * Math.PI / 180;
+			break;
+			
+		case OP22_measured:
+			// Measured post OP2.3
+			lens1DistBehindWindow = 0.028;
+			tiltVertical = 0.5 * Math.PI / 180;
+			tiltHorizontal = 1.6 * Math.PI / 180; //moved from 2.0 to 1.8 to stop pelK hitting QHW mirror box
+			tiltInPlane = 23.0 * Math.PI / 180;
+			break;
+			
+		default:
+			throw new RuntimeException("Unknown alignment state");
+		}
+		
+		double[] rotVert, opticAxis0, opticAxis;
+		
+		rotVert = Util.reNorm(Util.cross(portNormal, globalUp));
+		opticAxis0 = OneLiners.rotateVectorAroundAxis(tiltVertical, rotVert, portNormal);
+		opticAxis = OneLiners.rotateVectorAroundAxis(tiltHorizontal, globalUp, opticAxis0);	
+		
+		/***** Entry Window *****/
+		
+		double entryWindowDiameter = 0.060; // DN63 CF Window
+		double entryWindowThickness = 0.005; // Guessed
+		double entryWindowShift = 0.000; 
+		
+		double entryWindowFrontPos[] = Util.plus(windowCentre, Util.mul(opticAxis, entryWindowShift));
+		double entryWindowIrisPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness / 2));
+		double entryWindowBackPos[] = Util.plus(entryWindowFrontPos, Util.mul(opticAxis, entryWindowThickness));
+		
+		Medium windowMedium = new Medium(new Sapphire());
+		entryWindowFront = new Disc("entryWindowFront", entryWindowFrontPos, opticAxis, entryWindowDiameter/2, windowMedium, null, NullInterface.ideal());
+		entryWindowBack = new Disc("entryWindowBack", entryWindowBackPos, opticAxis, entryWindowDiameter/2, null, windowMedium, NullInterface.ideal());
+		entryWindowIris = new Iris("entryWindowIris", entryWindowIrisPos, opticAxis, entryWindowDiameter*2, entryWindowDiameter*0.49, null, null, Absorber.ideal());
+		
+		/**** Main Lens *****/
+		//Thor Labs LA4795-ML Fused Silica lens, 
+		double lens1Diameter = 0.075;
+		double lens1CentreThickness = 0.011;
+		//double lens1FocalLength = 0.200;
+		double lens1CurvatureRadius = 0.092;
+		double lens1ClearAperture = 0.0675;
+
+		lensCentrePos = Util.plus(windowCentre, Util.mul(opticAxis, lens1DistBehindWindow + lens1CentreThickness));
+		
+		Medium lensMedium = new Medium(new FusedSilica());  
+		SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromRadiusOfCurvAndCentreThickness(
+		//public SimplePlanarConvexLens lens1 = SimplePlanarConvexLens.fromFocalLengthAndCentreThickness(
+												"lens1",
+												lensCentrePos,
+												opticAxis,
+												lens1Diameter/2, // radius
+												lens1CurvatureRadius, // rad curv
+//												lens1FocalLength, // rad curv
+												lens1CentreThickness,  
+												lensMedium, 
+												IsoIsoInterface.ideal()
+												);//,designWavelenth);
+		
+		double lensIrisPos[] = Util.plus(lensCentrePos, Util.mul(opticAxis, -0.005));
+		Iris lensIris = new Iris("lensIris", lensIrisPos, opticAxis, lens1Diameter, lens1ClearAperture/2, null, null, Absorber.ideal());
+		
+
+		fibrePlanePos = Util.plus(lensCentrePos, Util.mul(opticAxis, fibrePlaneBehindLens)); 
+		double fibresXVec0[] = Util.reNorm(new double[]{ 0.0208466796875, 0.02511328125, -0.13614230346679687 });
+		double fibresYVec0[] = Util.reNorm(Util.cross(fibresXVec0, opticAxis));
+		
+		fibresXVec = Algorithms.rotateVector(Algorithms.rotationMatrix(opticAxis, tiltInPlane), fibresXVec0);
+		fibresYVec = Util.reNorm(Util.cross(fibresXVec, opticAxis));
+		
+		losStartSurface = entryWindowFront;
+		tracingTarget = entryWindowFront;
+		checkSurface = lens1.getFrontSurface();
+
+		fibrePlane = new Square("fibrePlane", fibrePlanePos, opticAxis, fibresYVec, 0.300, 0.300, NullInterface.ideal());
+		
 		addElement(entryWindowIris);
 		addElement(entryWindowFront);
 		addElement(entryWindowBack);

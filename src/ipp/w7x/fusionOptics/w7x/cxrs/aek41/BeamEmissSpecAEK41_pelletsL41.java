@@ -2,6 +2,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs.aek41;
 
 import net.jafama.FastMath;
 import uk.co.oliford.jolu.OneLiners;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_base.AlignmentState;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
 import ipp.w7x.neutralBeams.W7XPelletsL41;
@@ -23,6 +24,10 @@ public class BeamEmissSpecAEK41_pelletsL41 extends BeamEmissSpecAEK41_base {
 	
 	public String lightPathsSystemName() { return "AEK41"; };	
 	public String[] lightPathRowNames() { return new String[]{ "PelletsL" }; };
+
+	public BeamEmissSpecAEK41_pelletsL41(AlignmentState alignment) {
+		super(alignment);
+	}
 	
 	@Override
 	protected void setupFibrePositions() {

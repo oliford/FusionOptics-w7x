@@ -1,6 +1,7 @@
 package ipp.w7x.fusionOptics.w7x.cxrs.aek41;
 
 import uk.co.oliford.jolu.OneLiners;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_base.AlignmentState;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7xNBI;
 import fusionOptics.Util;
@@ -15,6 +16,10 @@ public class BeamEmissSpecAEK41_edgeUV extends BeamEmissSpecAEK41_base {
 
 	public String lightPathsSystemName() { return "AEK41"; };	
 	public String[] lightPathRowNames() { return new String[]{ "EdgeUV" }; };
+
+	public BeamEmissSpecAEK41_edgeUV(AlignmentState alignment) {
+		super(alignment);
+	}
 	
 	/** Set fibre positions equal spacing in holder */
 	protected void setupFibrePositions() {

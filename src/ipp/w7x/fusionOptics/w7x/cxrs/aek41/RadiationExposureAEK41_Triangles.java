@@ -31,6 +31,7 @@ import fusionOptics.types.RaySegment;
 import fusionOptics.types.Surface;
 import ipp.w7x.fusionOptics.w7x.cxrs.RadiationExposureTriangles;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_base.AlignmentState;
 
 /** Simple radiation exposure calculation by emitting rays in 4.pi from a plane representing the plasma edge
  * and seeing how many hit a given surface.
@@ -41,7 +42,7 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 public class RadiationExposureAEK41_Triangles extends RadiationExposureTriangles {
 	
 	//public BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21();
-	public BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
+	public BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS(AlignmentState.OP22_design);
 	
 	public Optic portFlange = new STLMesh("/work/cad/aek41/radExposure1/portFlange-simplified.stl");
 	@Override public Element tracingTarget() { return sys.entryWindowIris;	}

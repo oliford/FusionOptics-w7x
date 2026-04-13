@@ -7,10 +7,12 @@ import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21.Subsystem;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_baffleW;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS;
-import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS_OP22;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS_ideaOP22;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS_ideaOP22;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS_OP22_torScan;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsK41;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsL41;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_base.AlignmentState;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_postDesign_obsolete;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem21.BeamEmissSpecAEM21_OP2.CoordState;
 import ipp.w7x.fusionOptics.w7x.cxrs.aem41.BeamEmissSpecAEM41;
@@ -76,20 +78,19 @@ public class BackgroundTargetting {
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.CXRS_MEASURED_OP23);
 	//public static BeamEmissSpecAEA21 sys = new BeamEmissSpecAEA21(Subsystem.SMSE);
 	//public static BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7 sys = new BeamEmissSpecAET21_HST_TwoFlatAndLenses2_BK7(false, false, Focus.BeamDump);
-	public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(Port.AET20, CoordStateT2x.measured_AET20_MP24);	
+	//public static BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7 sys = new BeamEmissSpecAET21_OP2_OneSmallFlatMirror2_BK7(Port.AET20, CoordStateT2x.measured_AET20_MP24);	
 	//public static BeamEmissSpecAEM21_OP2 sys = new BeamEmissSpecAEM21_OP2(CoordState.measuredOP23);
-	public static SimpleBeamGeometry beams = W7xNBI.def();
+	//public static SimpleBeamGeometry beams = W7xNBI.def();
 	
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	//public static BeamEmissSpecAEM50 sys = new BeamEmissSpecAEM50();
 	//public static SimpleBeamGeometry beams = W7XRudix.def();
 	
 	//public static BeamEmissSpecAEK41_edgeVIS_OP22_torScan sys = new BeamEmissSpecAEK41_edgeVIS_OP22_torScan();
-	//public static BeamEmissSpecAEK41_edgeVIS_OP22 sys = new BeamEmissSpecAEK41_edgeVIS_OP22();	
 	//public static BeamEmissSpecAEK41_baffleW sys = new BeamEmissSpecAEK41_baffleW();
-	//public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
+	public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS(AlignmentState.OP22_design);
 	//public static BeamEmissSpecAEK41_pelletsK41 sys = new BeamEmissSpecAEK41_pelletsK41();
-	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
+	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
 	//public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();	

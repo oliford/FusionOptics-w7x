@@ -4,6 +4,7 @@ import fusionDefs.neutralBeams.SimpleBeamGeometry;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21;
 import ipp.w7x.fusionOptics.w7x.cxrs.aea21.BeamEmissSpecAEA21U_CISDual;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_baffleW;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_base.AlignmentState;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeUV;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_edgeVIS;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_pelletsK41;
@@ -84,7 +85,7 @@ public class LightAssessmentW7X {
 	//public static BeamEmissSpecAEM21_postDesign_LC3 sys = new BeamEmissSpecAEM21_postDesign_LC3(true);
 	//public static BeamEmissSpecAEM41 sys = new BeamEmissSpecAEM41();
 	
-	public static BeamEmissSpecAEK41_baffleW sys = new BeamEmissSpecAEK41_baffleW();
+	public static BeamEmissSpecAEK41_baffleW sys = new BeamEmissSpecAEK41_baffleW(AlignmentState.OP22_design);
 	//public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS();
 	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	

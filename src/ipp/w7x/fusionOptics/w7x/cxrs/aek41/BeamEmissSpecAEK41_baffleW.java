@@ -2,6 +2,7 @@ package ipp.w7x.fusionOptics.w7x.cxrs.aek41;
 
 import net.jafama.FastMath;
 import uk.co.oliford.jolu.OneLiners;
+import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_base.AlignmentState;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
 import fusionOptics.Util;
@@ -20,6 +21,10 @@ public class BeamEmissSpecAEK41_baffleW extends BeamEmissSpecAEK41_base {
 
 	public String lightPathsSystemName() { return "AEK41"; };	
 	public String[] lightPathRowNames() { return new String[]{ "BaffleW" }; };
+
+	public BeamEmissSpecAEK41_baffleW(AlignmentState alignment) {
+		super(alignment);
+	}
 	
 	public double overrideObsPositions[][][] = {
 			{ //red

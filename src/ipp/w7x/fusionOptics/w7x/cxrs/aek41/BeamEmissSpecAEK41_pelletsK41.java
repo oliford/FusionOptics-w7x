@@ -21,6 +21,10 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 	public String lightPathsSystemName() { return "AEK41"; };	
 	public String[] lightPathRowNames() { return new String[]{ "PelletsK" }; };
 	
+	public BeamEmissSpecAEK41_pelletsK41(AlignmentState alignment) {
+		super(alignment);
+	}
+	
 	@Override
 	protected void setupFibrePositions() {
 		int nChans = 10;
