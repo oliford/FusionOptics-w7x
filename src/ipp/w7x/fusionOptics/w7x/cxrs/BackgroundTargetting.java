@@ -88,8 +88,8 @@ public class BackgroundTargetting {
 	
 	//public static BeamEmissSpecAEK41_edgeVIS_OP22_torScan sys = new BeamEmissSpecAEK41_edgeVIS_OP22_torScan();
 	//public static BeamEmissSpecAEK41_baffleW sys = new BeamEmissSpecAEK41_baffleW();
-	public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS(AlignmentState.OP22_design);
-	//public static BeamEmissSpecAEK41_pelletsK41 sys = new BeamEmissSpecAEK41_pelletsK41();
+	//public static BeamEmissSpecAEK41_edgeVIS sys = new BeamEmissSpecAEK41_edgeVIS(AlignmentState.OP22_measured);
+	public static BeamEmissSpecAEK41_pelletsK41 sys = new BeamEmissSpecAEK41_pelletsK41(AlignmentState.OP22_measured);
 	public static SimpleBeamGeometry beams = EdgePenetrationAEK41.def();
 	
 	//public static BeamEmissSpecAEK21_edgeUV sys = new BeamEmissSpecAEK21_edgeUV();
@@ -104,10 +104,10 @@ public class BackgroundTargetting {
 	public static double fibreEffectiveNA = 0.22; //0.28; //f/4 = 0.124, f/6=0.083
 	 
 	public final static int nAttempts = 500;
-	public static int nRaysToDraw = 50;
+	public static int nRaysToDraw = 1000;
 	
 	/** If true, the tracing is done only for the points in sys.measured. This is faster and used for tweaking the design to match the alignment measurements */
-	public static boolean traceMeasuredPoints = true;
+	public static boolean traceMeasuredPoints = false;
 	
 	final static String outPath = MinervaOpticsSettings.getAppsOutputPath() + "/rayTracing/cxrs/" + sys.getDesignName() + "/background/";
 	public static String vrmlScaleToAUGDDD = "Separator {\n" + //rescale to match the augddd STL models
@@ -278,7 +278,6 @@ public class BackgroundTargetting {
 				System.out.println("\n---------------------------------------- "+iP+" ----------------------------------------");
 				System.out.println("P=" + iB + "." + iP + "(fwhm = " + fwhm + "):\t Beam: " + nHit + " / " + nAttempts + " = " + (100 * nHit / nAttempts) + 
 																					" % \t Stray:" + nStray + " / " + nAttempts + " = " + (100 * nStray / nAttempts) + " %");
-				
 				for(Thing thing : Thing.values()){
 					ou.outputInfo(System.out, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);
 				}
@@ -293,22 +292,28 @@ public class BackgroundTargetting {
 		jsonOut.println("{ \"system\" : \""+sys.lightPathsSystemName()+"\", \"info\" : \"From raytracer "+sys.getDesignName()+" on "+
 				((new SimpleDateFormat()).format(new Date()))+" \", \"los\" : [");
 		for(int iB=0; iB < sys.channelR.length; iB++){
-			for(int iP=0; iP < sys.channelR[iB].length; iP++){		
+			for(int iP=0; iP < sys.channelR[iB].length; iP++){
+				if(hitPoints[iB] == null || hitPoints[iB][iP] == null)
+					continue;
 				ou.outputInfo(jsonOut, startPoints, hitPoints, beamPlanePos, null, iB, iP, Thing.JSON_LOS);				
 			}
 		}
 		jsonOut.println("]}");
-
+		System.out.println();
 		
 		PrintStream textOut = new PrintStream(outPath + "/info.txt");
 		//spit out build commands and LOS definitions in blocks
 		for(Thing thing : Thing.values()){
+			System.out.println(thing.toString() + ": ");
 			for(int iB=0; iB < sys.channelR.length; iB++){
 				for(int iP=0; iP < sys.channelR[iB].length; iP++){
+					if(hitPoints[iB] == null || hitPoints[iB][iP] == null)
+						continue;
 					ou.outputInfo(System.out, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);	
 					ou.outputInfo(textOut, startPoints, hitPoints, beamPlanePos, null, iB, iP, thing);					
 				}
 			}
+			System.out.println();
 		}
 		textOut.close();
 		

@@ -8,7 +8,7 @@ public abstract class ObservationSystem extends Optic {
 	public ObservationSystem(String name) {		super(name);  }
 
 	public String getChanName(int iB, int iP) {
-		return lightPathsSystemName() + lightPathRowName(iB) + ":" + String.format("%02d", iP+1);
+		return lightPathsSystemName() + "_" + lightPathRowName(iB) + ":" + String.format("%02d", iP+1);
 	}
 
 	public abstract String lightPathsSystemName();

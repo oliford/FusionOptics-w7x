@@ -4,6 +4,9 @@ import uk.co.oliford.jolu.OneLiners;
 import ipp.w7x.fusionOptics.w7x.cxrs.aek41.BeamEmissSpecAEK41_base.AlignmentState;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7xNBI;
+
+import java.util.HashMap;
+
 import fusionOptics.Util;
 import fusionOptics.interfaces.NullInterface;
 import fusionOptics.surfaces.Square;
@@ -11,7 +14,7 @@ import fusionOptics.surfaces.Square;
 /** 40 "EdgeVIS" line during OP1.2, OP2.1 and OP2.2  (change the dY in setupFibrePositions() and the design name appropriately) */ 
 public class BeamEmissSpecAEK41_edgeVIS extends BeamEmissSpecAEK41_base {
 	
-	public String getDesignName() { return "aek41-edgeVIS-op2.2";	}
+	public String getDesignName() { return "aek41-edgeVIS-op2.2-" + alignmentState.toString();	}
 
 	public double designWavelenth = 530e-9; // VIS centre
 	
@@ -22,6 +25,21 @@ public class BeamEmissSpecAEK41_edgeVIS extends BeamEmissSpecAEK41_base {
 
 	public BeamEmissSpecAEK41_edgeVIS(AlignmentState alignment) {
 		super(alignment);
+	}
+	
+
+	public static HashMap<String, double[]> measured = new HashMap<>();	
+	static {
+		// Post OP2.3 in-vessel alignment measurement 
+		//FreeCAD command to give coordinates of selected balls :
+		// for i in FreeCAD.Gui.Selection.getSelection() : print(i.Label + " " + str(i.Placement.Base.multiply(0.0001)))
+
+		 measured.put("AEK41_EdgeVIS:01",  new double[] {  -0.28671800000000003, -0.385801, 0.07436999999999999});
+		 measured.put("AEK41_EdgeVIS:05",  new double[] {  -0.28744800000000004, -0.38487099999999996, 0.0770999999999999});
+		 measured.put("AEK41_EdgeVIS:09",  new double[] {  -0.28819800000000007, -0.38487099999999996, 0.07966});
+		 measured.put("AEK41_EdgeVIS:21",  new double[] {  -0.28818800000000006, -0.37822100000000003, 0.08854000000000001});
+		 measured.put("AEK41_EdgeVIS:39",  new double[] {  -0.31222800000000006, -0.39828100000000005, 0.0937});
+			
 	}
 	
 	/** Set fibre positions equal spacing in holder */

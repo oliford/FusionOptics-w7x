@@ -52,8 +52,8 @@ public class OutputUtil {
 		double uVec[];
 		double losLen;
 		
-		if(bgHit != null && bgHit[iB][iP].length > 3)
-			rad = bgHit[iB][iP][3] / 2;
+		//if(bgHit != null && bgHit[iB][iP].length > 3)
+		//	rad = bgHit[iB][iP][3] / 2;
 		
 		//use beam plane pos for LOS direction if not null, other hit positions
 		if(beamPlanePos != null) {

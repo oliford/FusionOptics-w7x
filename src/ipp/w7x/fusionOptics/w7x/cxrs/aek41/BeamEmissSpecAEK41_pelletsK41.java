@@ -4,6 +4,9 @@ import net.jafama.FastMath;
 import uk.co.oliford.jolu.OneLiners;
 import ipp.w7x.neutralBeams.EdgePenetrationAEK41;
 import ipp.w7x.neutralBeams.W7XPelletsK41;
+
+import java.util.HashMap;
+
 import fusionOptics.Util;
 import fusionOptics.interfaces.NullInterface;
 import fusionOptics.surfaces.Square;
@@ -14,12 +17,24 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 	public static double fibreEndDiameter = 0.000400; // as AUG
 	public static double fibreSpacing = 0.000500;
 	
-	public static double fibre0R = -0.0013; //plate design, not arbitrary!
-	public static double fibre0U = 0.0185; //plate design, not arbitrary!
+	public static double fibre0R; //plate design, not arbitrary!
+	public static double fibre0U; //plate design, not arbitrary!
 	public static double axisAngleToUp = 0;// 1.625 * Math.PI / 180; 
 
 	public String lightPathsSystemName() { return "AEK41"; };	
-	public String[] lightPathRowNames() { return new String[]{ "PelletsK" }; };
+	public String[] lightPathRowNames() { return new String[]{ "PelK" }; };
+	
+
+	public static HashMap<String, double[]> measured = new HashMap<>();	
+	static {
+		// Post OP2.3 in-vessel alignment measurement 
+		//FreeCAD command to give coordinates of selected balls :
+		// for i in FreeCAD.Gui.Selection.getSelection() : print(i.Label + " " + str(i.Placement.Base.multiply(0.0001)))
+		  
+		measured.put("AEK41_PelK:07", new double[] {  -0.2907280000000001, -0.388421, 0.052029999999999986});
+		 measured.put("AEK41_PelK:03",  new double[] {  -0.29163800000000006, -0.388421, 0.05398999999999999});
+		 measured.put("AEK41_PelK:01",  new double[] {  -0.29202800000000007, -0.388251, 0.05597999999999999});
+	}
 	
 	public BeamEmissSpecAEK41_pelletsK41(AlignmentState alignment) {
 		super(alignment);
@@ -27,6 +42,21 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 	
 	@Override
 	protected void setupFibrePositions() {
+		
+		switch(alignmentState) {
+		case OP22_measured:
+			fibre0R = -0.0005; //should not change, but we have to move PelK relative to EdgeVIS
+			fibre0U = 0.0215; //should not change, but we have to move PelK relative to EdgeVIS
+			axisAngleToUp = 0;
+			break;
+			
+		default:
+			fibre0R = -0.0013; //plate design, not arbitrary!
+			fibre0U = 0.0185; //plate design, not arbitrary!
+			axisAngleToUp = 0;// 1.625 * Math.PI / 180;
+		}
+
+		
 		int nChans = 10;
 		
 		beamIdx = new int[]{ 0 };
@@ -104,5 +134,5 @@ public class BeamEmissSpecAEK41_pelletsK41 extends BeamEmissSpecAEK41_base {
 			
 	public Square beamPlane = new Square("beamPlane", targetObsPos, beamObsPlaneNormal, beamObsPerp, 1.500, 2.000, NullInterface.ideal());
 
-	public String getDesignName() { return "aek41-pelletsK41-op2.2";	}
+	public String getDesignName() { return "aek41-pelletsK41-op2.2" + alignmentState.toString();	}
 }

@@ -51,6 +51,15 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 	public Disc entryWindowFront;
 	public Disc entryWindowBack;
 	public Iris entryWindowIris;
+
+	//Thor Labs LA4795-ML Fused Silica lens, 
+	// (Maybe modified in constructor)
+	double lens1DistBehindWindow = 0.028;
+	double lens1Diameter = 0.075;
+	double lens1CentreThickness = 0.011;
+	//double lens1FocalLength = 0.200;
+	double lens1CurvatureRadius = 0.092;
+	double lens1ClearAperture = 0.0675;
 	
 	public enum AlignmentState {
 		OP12_design,
@@ -75,7 +84,7 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 	public double fibreNA = 0.22; // standard
 	public double fibreDiameter = 0.000400; // standard
 	
-	public double fibrePlaneBehindLens = 0.200;
+	public double fibrePlaneBehindLens;
 	
 	double[] lensCentrePos;
 	
@@ -119,8 +128,8 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 
 	public String[] backgroundSTLFiles() {
 		return new String[] { 
-			"/work/ipp/w7x/cad/passive/bg-targetting/pumpslot-m4.off-aek41-cut.stl",
-			"/work/ipp/w7x/cad/passive/bg-targetting/target-m4.off-aek41-cut.stl"
+			"/work/ipp/w7x/cad/aek41/bg-targetting/pumpslot-m4.off-aek41-cut.stl",
+			"/work/ipp/w7x/cad/aek41/bg-targetting/target-m4.off-aek41-cut.stl"
 		};
 	};
 		
@@ -176,12 +185,11 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 		this.alignmentState = alignment;
 		
 		double tiltVertical, tiltHorizontal, tiltInPlane;
-		double lens1DistBehindWindow;
 		
 		switch(alignment) {
 		case OP12_design:
 			/** OP1.2 Optic axis tilt to match spatial calibration images (18.08.2017)*/
-			lens1DistBehindWindow = 0.028;
+			fibrePlaneBehindLens = 0.200;
 			tiltVertical = 0.20 * Math.PI / 180;
 			tiltHorizontal = -0.22 * Math.PI / 180;
 			tiltInPlane = 0.0 * Math.PI / 180;
@@ -189,7 +197,7 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 		
 		case OP21_design:
 			/** OP2.1 Tilted up a bit to compensate for swtiching sides of edgeVIS on backplate and to miss the portliner */
-			lens1DistBehindWindow = 0.028;
+			fibrePlaneBehindLens = 0.200;
 			tiltVertical = -0.2 * Math.PI / 180;
 			tiltHorizontal = 0 * Math.PI / 180; //put this back at 0, otherwise we clip the protliner
 			tiltInPlane = 0.0 * Math.PI / 180;
@@ -197,18 +205,24 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 			
 		case OP22_design:
 			// Design OP2.2, tilted to get out of the way of future QHW, but only just clip port liner
-			lens1DistBehindWindow = 0.028;
+			fibrePlaneBehindLens = 0.200;
 			tiltVertical = 0.5 * Math.PI / 180;
 			tiltHorizontal = 1.6 * Math.PI / 180; //moved from 2.0 to 1.8 to stop pelK hitting QHW mirror box
 			tiltInPlane = 23.0 * Math.PI / 180;
 			break;
 			
 		case OP22_measured:
+			double adjustFocalLength = 1.15;
+			
 			// Measured post OP2.3
-			lens1DistBehindWindow = 0.028;
-			tiltVertical = 0.5 * Math.PI / 180;
-			tiltHorizontal = 1.6 * Math.PI / 180; //moved from 2.0 to 1.8 to stop pelK hitting QHW mirror box
-			tiltInPlane = 23.0 * Math.PI / 180;
+			fibrePlaneBehindLens = 0.200; //adjusting very weakly changes the magnification but totally kills the focus
+			
+			lens1CurvatureRadius *= adjustFocalLength; //This is a specific lens, so we shouldn't adjust this, but we need to somehow match the focal length
+			fibrePlaneBehindLens *= adjustFocalLength;
+			
+			tiltVertical = 0.7 * Math.PI / 180;
+			tiltHorizontal = 1.5 * Math.PI / 180; //moved from 2.0 to 1.8 to stop pelK hitting QHW mirror box
+			tiltInPlane = 25.0 * Math.PI / 180;
 			break;
 			
 		default:
@@ -237,13 +251,7 @@ public abstract class BeamEmissSpecAEK41_base extends ObservationSystem  {
 		entryWindowIris = new Iris("entryWindowIris", entryWindowIrisPos, opticAxis, entryWindowDiameter*2, entryWindowDiameter*0.49, null, null, Absorber.ideal());
 		
 		/**** Main Lens *****/
-		//Thor Labs LA4795-ML Fused Silica lens, 
-		double lens1Diameter = 0.075;
-		double lens1CentreThickness = 0.011;
-		//double lens1FocalLength = 0.200;
-		double lens1CurvatureRadius = 0.092;
-		double lens1ClearAperture = 0.0675;
-
+		
 		lensCentrePos = Util.plus(windowCentre, Util.mul(opticAxis, lens1DistBehindWindow + lens1CentreThickness));
 		
 		Medium lensMedium = new Medium(new FusedSilica());  
