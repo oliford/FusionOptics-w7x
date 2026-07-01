@@ -169,6 +169,7 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 	//public STLMesh portLiner = new STLMesh("portLiner", "/work/cad/aem41/portLiner-AEM41-201706.stl");
 	//public STLMesh portLiner = new STLMesh("portLiner", "/work/cad/aem41/portLiner-simple-edges-for-vignetting.stl");
 	public STLMesh portLiner = new STLMesh("portLiner", "/work/cad/aem41/portLiner-edges-only.stl");
+	public STLMesh shutterHalfOpen = new STLMesh("shutterHalfOpen", "/work/cad/aem41/shutter-mid-position.stl");
 	
 	public double overrideObsPositions[][][] = null;
 	
@@ -468,6 +469,7 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 		super("beamSpec-aem41");
 		
 		addElement(portLiner);
+		addElement(shutterHalfOpen);		
 		addElement(frontPlateAperture);
 		addElement(entryWindowIris);
 		addElement(entryWindowFront);
@@ -609,7 +611,7 @@ public class BeamEmissSpecAEM41 extends ObservationSystem {
 		System.out.print("Window centre posXYZ = "); OneLiners.dumpArray(entryWindowFront.getCentre());		
 	}
 
-	public String getDesignName() { return "aem41";	}
+	public String getDesignName() { return "aem41-shutterHalfOpen";	}
 
 	public double getFibreNA(int iB, int iP) { return fibreNA[iB];	}
 	public double getFibreDiameter(int iB, int iP) { return fibreEndDiameter[iB]; }
